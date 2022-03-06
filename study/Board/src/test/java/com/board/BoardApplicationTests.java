@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
+import com.board.domain.BoardVO;
+import com.board.mapper.BoardMapper;
+
 @SpringBootTest
 class BoardApplicationTests {
 
@@ -43,6 +46,20 @@ class BoardApplicationTests {
 		}
 	}
 	
+	@Autowired
+	BoardMapper boardMapper;
+	
+	@Test
+	public void mapperTest() {
+		for(int i=1;i<=50;i++) {
+			BoardVO vo = new BoardVO();
+		vo.setTitle(i+"번 게시글 제목");
+		vo.setWriter(i+"번 작성자");
+		vo.setContent(i+"번 게시글 내용");
+			int result = boardMapper.write(vo);
+			System.out.println(result);
+		}
+	}
 	
 
 }
