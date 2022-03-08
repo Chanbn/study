@@ -6,4 +6,8 @@
 insert into board values(board_seq.nextval,#{title},#{content},#{writer},sysdate,sysdate)
 </insert>
 
+<select id="getList" resultType="com.board.domain.BoardVO">
+select * from board
+</select>
+
 </mapper>

@@ -1,5 +1,7 @@
 package com.board;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,12 @@ class BoardApplicationTests {
 			int result = boardMapper.write(vo);
 			System.out.println(result);
 		}
+	}
+	
+	@Test
+	public void listmapperTest() {
+		List<BoardVO> vo = boardMapper.getList();
+		System.out.println(vo.get(0).getContent());
 	}
 	
 
