@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.board.domain.BoardVO;
+import com.board.domain.Criteria;
 import com.board.mapper.BoardMapper;
 
 @Service
@@ -20,10 +21,16 @@ public class BoardServiceImpl implements BoardService{
 		return chk;
 	}
 	@Override
-	public List<BoardVO> getList() {
+	public List<BoardVO> getList(Criteria cri) {
 		// TODO Auto-generated method stub
-		return boardMapper.getList();
+		return boardMapper.getList(cri);
 	}
+	@Override
+	public int getTotal() {
+		// TODO Auto-generated method stub
+		return boardMapper.getTotalCount();
+	}
+
 
 
 }

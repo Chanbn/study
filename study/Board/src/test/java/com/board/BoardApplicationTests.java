@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
 import com.board.domain.BoardVO;
+import com.board.domain.Criteria;
 import com.board.mapper.BoardMapper;
 
 @SpringBootTest
@@ -63,11 +64,17 @@ class BoardApplicationTests {
 		}
 	}
 	
+//	@Test
+//	public void listmapperTest() {
+//		List<BoardVO> vo = boardMapper.getList();
+//		System.out.println(vo.get(0).getContent());
+//	}
+//	
 	@Test
-	public void listmapperTest() {
-		List<BoardVO> vo = boardMapper.getList();
-		System.out.println(vo.get(0).getContent());
+	public void listWithPageTest() {
+		Criteria cri = new Criteria();
+		List<BoardVO> vo = boardMapper.getList(cri);
+		vo.forEach(board->System.out.println(board));
 	}
-	
 
 }

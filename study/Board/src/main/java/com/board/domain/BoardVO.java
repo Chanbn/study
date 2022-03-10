@@ -2,20 +2,16 @@ package com.board.domain;
 
 import java.time.LocalDateTime;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-
-@Getter
-@Setter
-
+@Data
 public class BoardVO {
 
 	private Long idx;
 	private String title;
 	private String content;
 	private String writer;
-	private LocalDateTime reg_time;
-	private LocalDateTime update_time;
+	private LocalDateTime regTime;
+	private LocalDateTime updateTime;
 	
 }

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.board.domain.BoardVO;
+import com.board.domain.Criteria;
+import com.board.domain.PageDTO;
 import com.board.service.BoardService;
 
 @Controller
@@ -18,10 +20,11 @@ public class BoardController {
 	BoardService boardService;
 	
 	@GetMapping(value = "/board/list")
-	public String getList(Model model,BoardVO vo) {
-		List<BoardVO> boardList =boardService.getList();
+	public void getList(Model model,BoardVO vo,Criteria cri) {
+		List<BoardVO> boardList =boardService.getList(cri);
+		int total = boardService.getTotal();
 		model.addAttribute("boardList",boardList);
-		return "/board/list";
+		model.addAttribute("pageMaker",new PageDTO(cri,total));
 	}
 	
 	@GetMapping(value = "/board/write")
