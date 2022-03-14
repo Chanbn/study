@@ -12,4 +12,5 @@ public interface BoardMapper {
 	public int write(BoardVO vo);
 	public List<BoardVO> getList(Criteria cri);
 	public int getTotalCount();
+	public BoardVO get(long idx);
 }

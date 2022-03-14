@@ -6,6 +6,10 @@
 insert into board values(board_seq.nextval,#{title},#{content},#{writer},sysdate,sysdate)
 </insert>
 
+<select id="get" resultType="com.board.domain.BoardVO">
+select * from board where idx = #{idx}
+</select>
+
 <select id="getList" resultType="com.board.domain.BoardVO">
 <![CDATA[
 select idx,title,content,writer,reg_time,update_time from 

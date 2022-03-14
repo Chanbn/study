@@ -76,5 +76,11 @@ class BoardApplicationTests {
 		List<BoardVO> vo = boardMapper.getList(cri);
 		vo.forEach(board->System.out.println(board));
 	}
+	
+	@Test
+	public void getgetget() {
+		BoardVO vo = boardMapper.get(2);
+		System.out.print(vo);
+	}
 
 }

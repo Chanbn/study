@@ -30,6 +30,11 @@ public class BoardServiceImpl implements BoardService{
 		// TODO Auto-generated method stub
 		return boardMapper.getTotalCount();
 	}
+	@Override
+	public BoardVO get(long idx) {
+		// TODO Auto-generated method stub
+		return boardMapper.get(idx);
+	}
 
 
 
