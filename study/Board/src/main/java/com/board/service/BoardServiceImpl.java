@@ -35,6 +35,16 @@ public class BoardServiceImpl implements BoardService{
 		// TODO Auto-generated method stub
 		return boardMapper.get(idx);
 	}
+	@Override
+	public int modify(BoardVO vo) {
+		// TODO Auto-generated method stub
+		return boardMapper.modify(vo);
+	}
+	@Override
+	public int remove(long idx) {
+		// TODO Auto-generated method stub
+		return boardMapper.remove(idx);
+	}
 
 
 

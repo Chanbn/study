@@ -82,5 +82,20 @@ class BoardApplicationTests {
 		BoardVO vo = boardMapper.get(2);
 		System.out.print(vo);
 	}
+	@Test
+	public void updateTest() {
+		BoardVO vo=new BoardVO();
+		vo.setIdx(74L);
+		vo.setTitle("제목변경");
+		vo.setContent("내용변경");
+		boardMapper.modify(vo);
+		
+	}
+	
+	@Test
+	public void removeTest() {
+
+		boardMapper.remove(74L);
+	}
 
 }

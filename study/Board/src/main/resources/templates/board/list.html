@@ -28,6 +28,7 @@
 	<tr th:unless="${not #lists.isEmpty(boardList)}">없습</tr>
   </tbody>
 </table>
+<a th:href="@{'/board/write'}" type="button" class="btn btn-primary" style="float:right">글쓰기</a>
 <nav aria-label="...">
   <ul class="pagination justify-content-center">
 
@@ -46,7 +47,6 @@
   </ul>
 </nav>
 
-<a th:text="${pageMaker.cri.pageNum}"></a>
 
 </body>
 

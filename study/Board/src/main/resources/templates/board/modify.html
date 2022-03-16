@@ -7,13 +7,14 @@
 </head>
 <body>
 <div class="col-lg-6" style="text-align:center">
-<form role="form" th:object=${vo} th:action="@{/board/write}" method="post">
+<form role="form" th:object=${vo} th:action="@{/board/modify}" method="post">
+<input type="hidden" th:field="*{idx}" id="idx" name="idx">
 <table class="table">
   <thead>
     <tr>
       <th colspan="3" scope="col">
       <label for="title" style="font-weight:bolder;">제목</label>
-      <input type="text" th:field="*{title}" id="title" name="title" placeholder="제목을 입력하세요." required="required">
+      <input type="text" th:field="*{title}" id="title" name="title" required="required">
       </th>
     </tr>
   </thead>
@@ -21,7 +22,7 @@
   <tr>
   <td colspan="3">
   <div style="text-align:right">
-  <span>작성자</span>&nbsp; <input type="text" th:field="*{writer}" id="writer" name="writer" placeholder="작성자를 입력하세요." required="required">&nbsp;&nbsp; <span>등록시간</span>
+  <span>작성자</span>&nbsp; <input type="text" th:field="*{writer}" id="writer" name="writer" placeholder="작성자를 입력하세요." required="required" readonly>&nbsp;&nbsp; <span>등록시간</span>
   </div>
   </td>
   </tr>
@@ -36,8 +37,7 @@
 </table>
 <div style="text-align:right;">
 <input type="submit" class="btn btn-primary" th:value="작성">
-<input type="reset" class="btn btn-secondary" th:value="초기화">
-<input type="reset" class="btn btn-info" th:value="목록">
+<a type="button" th:href="@{/board/list?pageNum=1}" class="btn btn-secondary">목록</a>
 </div>
 </form>
 </div>
