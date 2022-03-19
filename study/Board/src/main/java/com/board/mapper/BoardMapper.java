@@ -11,7 +11,7 @@ import com.board.domain.Criteria;
 public interface BoardMapper {
 	public int write(BoardVO vo);
 	public List<BoardVO> getList(Criteria cri);
-	public int getTotalCount();
+	public int getTotalCount(Criteria cri);
 	public BoardVO get(long idx);
 	public int modify(BoardVO vo);
 	public int remove(long idx);

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.thymeleaf.standard.expression.Each;
 
 import com.board.domain.BoardVO;
 import com.board.domain.Criteria;
@@ -26,11 +27,11 @@ public class BoardController {
 	BoardService boardService;
 	
 	@GetMapping(value = "/list")
-	public void getList(Model model,Criteria cri,@RequestParam("pageNum") int pageNum) {
-		List<BoardVO> boardList =boardService.getList(cri);
-		System.out.println(cri.getPageNum());
-		int total = boardService.getTotal();
-		model.addAttribute("boardList",boardList);
+	public void getList(Model model,Criteria cri) {
+		model.addAttribute("boardList",boardService.getList(cri));
+		List<BoardVO> vo = boardService.getList(cri);
+		vo.forEach(board->System.out.println(board));
+		int total = boardService.getTotal(cri);
 		model.addAttribute("pageMaker",new PageDTO(cri,total));
 	}
 	

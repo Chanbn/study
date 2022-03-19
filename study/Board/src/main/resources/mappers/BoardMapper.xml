@@ -16,8 +16,12 @@ select idx,title,content,writer,reg_time,update_time from
 (
 select /*+index_desc(board board_pk) */ rownum rn,idx,title,content,writer,reg_time,update_time from board 
 where
+ 
+]]>
+<include refid="criteria"></include>
+<![CDATA[
 rownum<=#{pageNum}*#{amount} 
-) where 
+) where
 rn>(#{pageNum}-1)*#{amount}
 ]]>
 </select>
@@ -27,10 +31,22 @@ update board set title=#{title}, content=#{content}, update_time=sysdate where i
 </update>
 
 <select id="getTotalCount" resultType="int">
-select count(*) from board
+select count(*) from board where
+<include refid="criteria"></include> idx>0
 </select>
 
 <delete id="remove">
 delete from board where idx=#{idx}
 </delete>
+
+<sql id="criteria">
+<trim prefix="(" suffix=") AND">
+<foreach item="type" collection="typeArr" separator="OR">
+<if test="type=='T'.toString()">title like '%' ||#{keyword}||'%'</if>
+<if test="type=='C'.toString()">content like '%' ||#{keyword}||'%'</if>
+<if test="type=='W'.toString()">writer like '%' ||#{keyword}||'%'</if>
+</foreach>
+</trim>
+</sql>
+
 </mapper>

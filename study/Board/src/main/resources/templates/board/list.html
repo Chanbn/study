@@ -28,26 +28,49 @@
 	<tr th:unless="${not #lists.isEmpty(boardList)}">없습</tr>
   </tbody>
 </table>
+
+
+<form  th:attr="action=@{/board/list?}">
+<select th:name="type" th:value="${pageMaker.cri.type}">
+	<option th:value="'T'" th:selected="${pageMaker.cri.type}=='T'" th:text="제목"></option>
+	<option th:value="'C'" th:selected="${pageMaker.cri.type}=='C'" th:text="내용"></option>
+	<option th:value="'W'" th:selected="${pageMaker.cri.type}=='W'" th:text="작성자"></option>
+	<option th:value="'TC'" th:selected="${pageMaker.cri.type}=='TC'" th:text="제목or내용"></option>
+</select>
+  <fieldset>
+    <input type="text" name="keyword" th:value="${pageMaker.cri.keyword}" />
+    <input type="submit" th:attr="value=확인"/>
+    <input type="hidden" name="pageNum" th:value="1">
+    <input type="hidden" name="amount" th:value="${pageMaker.cri.amount}">
+  </fieldset>
+</form>
+
+
+
+
+
+
 <a th:href="@{'/board/write'}" type="button" class="btn btn-primary" style="float:right">글쓰기</a>
 <nav aria-label="...">
   <ul class="pagination justify-content-center">
 
     <li class="page-item" th:classappend="${pageMaker.prev==true ? '' : 'disabled'}">
-    	<a class="page-link">Previous</a>
+    	<a class="page-link" th:href="@{/board/list(pageNum=${pageMaker.startPage-1},amount=${pageMaker.cri.amount},type=${pageMaker.cri.type},keyword=${pageMaker.cri.keyword})}">
+Previous</a>
     </li>
     <th:block th:each="num : ${#numbers.sequence(pageMaker.startPage,pageMaker.endPage)}">
     <li class="page-item" th:classappend="${pageMaker.cri.pageNum == num ? 'active':''}">
-    <a class="page-link" th:href="@{'/board/list?pageNum='+${num}}"><text th:text="${num}">
+    <a class="page-link" th:href="@{/board/list(pageNum=${num},amount=${pageMaker.cri.amount},type=${pageMaker.cri.type},keyword=${pageMaker.cri.keyword})}"><text th:text="${num}">
     </a></li>
 	</th:block>
 
     <li th:if="${pageMaker.next}" class="page-item" >
-    	<a class="page-link">Next</a>
+    	<a class="page-link" th:href="@{/board/list(pageNum=${pageMaker.endPage+1},amount=${pageMaker.cri.amount},type=${pageMaker.cri.type},keyword=${pageMaker.cri.keyword})}">
+Next</a>
     </li>
   </ul>
 </nav>
-
-
 </body>
+
 
 </html>

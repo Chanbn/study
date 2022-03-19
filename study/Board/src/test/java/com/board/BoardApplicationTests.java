@@ -97,5 +97,15 @@ class BoardApplicationTests {
 
 		boardMapper.remove(74L);
 	}
+	
+	@Test
+	public void getListwithCri() {
+		Criteria cri = new Criteria();
+		cri.setKeyword("내");
+		cri.setType("C");
+		List<BoardVO> vo = (boardMapper.getList(cri));
+		vo.forEach(board->System.out.println(board));
+		System.out.println("ASDSAD");
+	}
 
 }

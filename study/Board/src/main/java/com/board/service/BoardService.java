@@ -9,7 +9,7 @@ import com.board.domain.Criteria;
 public interface BoardService {
 	public int write(BoardVO vo);
 	public List<BoardVO> getList(Criteria cri);
-	public int getTotal();
+	public int getTotal(Criteria cri);
 	public BoardVO get(long idx);
 	public int modify(BoardVO vo);
 	public int remove(long idx);

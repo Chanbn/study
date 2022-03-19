@@ -26,9 +26,9 @@ public class BoardServiceImpl implements BoardService{
 		return boardMapper.getList(cri);
 	}
 	@Override
-	public int getTotal() {
+	public int getTotal(Criteria cri) {
 		// TODO Auto-generated method stub
-		return boardMapper.getTotalCount();
+		return boardMapper.getTotalCount(cri);
 	}
 	@Override
 	public BoardVO get(long idx) {

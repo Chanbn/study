@@ -9,6 +9,7 @@ public class PageDTO {
 	private boolean prev,next;
 	private int endPage;
 	private int startPage;
+	private String Type;
 	
 	private int total;
 	private Criteria cri;
@@ -26,6 +27,7 @@ public class PageDTO {
 		
 		this.prev = this.startPage>1;
 		this.next = this.endPage<realEnd;
+		System.out.println(this.endPage);
 	}
 	
 
