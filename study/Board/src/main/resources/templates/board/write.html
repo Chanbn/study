@@ -6,6 +6,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+  <div th:replace="/fragments/nav.html :: fragment-nav"></div>
 <div class="col-lg-6" style="text-align:center">
 <form role="form" th:object=${vo} th:action="@{/board/write}" method="post">
 <table class="table">
