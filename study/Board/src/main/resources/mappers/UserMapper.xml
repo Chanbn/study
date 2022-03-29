@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.mapper.UserMapper">
+<resultMap type="com.board.domain.UserVO" id="memberMap">
+	<id property="username" column="username"/>
+	<result property="username" column="username"/>
+	<result property="password" column="password"/>	
+	<collection property="authList" resultMap="authMap">
+	</collection>		
+	</resultMap>
+	
+	<resultMap type="com.board.domain.AuthVO" id="authMap">
+	<result property="username" column="username"/>
+	<result property="authority" column="authority"/>
+	</resultMap>
+
+	<select id="read" resultMap="memberMap">
+
+		SELECT
+	mem.username, password, enabled, authority 
+	FROM
+	users mem LEFT OUTER JOIN authorities auth on mem.username = auth.username
+	WHERE mem.username = #{username}
+
+	</select>
+	
+	<insert id="Signup">
+	insert into users(username,password) values(#{username},#{password})
+	</insert>
+	<insert id="SignupAuth">
+	insert into authorities(username) values(#{username})
+	</insert>
+</mapper>
