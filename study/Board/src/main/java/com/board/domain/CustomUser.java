@@ -16,7 +16,7 @@ public class CustomUser extends User{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private UserVO vo;
+	private UserVO uvo;
 	public CustomUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, authorities);
 		// TODO Auto-generated constructor stub
@@ -24,5 +24,7 @@ public class CustomUser extends User{
 public CustomUser(UserVO vo) {
 	// TODO Auto-generated constructor stub
 	super(vo.getUsername(),vo.getPassword(),vo.getAuthList().stream().map(auth->new SimpleGrantedAuthority(auth.getAuthority())).collect(Collectors.toList()));
+	this.uvo = vo;
+	System.out.println(uvo.toString());
 }
 }

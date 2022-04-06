@@ -1,18 +1,27 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="fragment-nav">
 <div class="collapse" id="navbarToggleExternalContent">
   <div class="bg-dark p-4">
     <h5 class="text-white h4">Collapsed content</h5>
     <span class="text-muted">Toggleable via the navbar brand.</span>
   </div>
-</div>
+</div>    	
 <nav class="navbar navbar-dark bg-primary">
+
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  </div>
+        <div sec:authorize="isAuthenticated()">
+    <span sec:authentication="name"></span>님이 로그인 상태
+    </div>
+        <button sec:authorize="isAnonymous()" onclick="location.href='/view/login'" type="submit">Login</button>
+        <form th:action="@{/logoutProc}" method="post" sec:authorize="isAuthenticated()">
+        <button sec:authorize="isAuthenticated()" type="submit">Logout</button>
+        </form>
+    </div>
+  
 </nav>
 </div>
 </html>

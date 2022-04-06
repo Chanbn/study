@@ -22,7 +22,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 		.authorizeRequests()
 		.antMatchers("/board/list").permitAll()
-		.anyRequest().authenticated()
+		.antMatchers("/view/signup").permitAll()
 		.and()
 		.formLogin()
 		.loginPage("/view/login")
@@ -33,7 +33,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		.permitAll()
 		.and()
 		.logout()
-		.logoutRequestMatcher(new AntPathRequestMatcher("/logoutProc"));
+		.logoutUrl("/logoutProc")
+		.logoutSuccessUrl("/board/list")
+		;
 	}
 
 	@Override

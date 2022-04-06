@@ -16,6 +16,8 @@ import com.board.domain.CustomUser;
 import com.board.domain.UserVO;
 import com.board.mapper.UserMapper;
 
+import lombok.Setter;
+
 @Service
 public class LoginIdPwValidator implements UserDetailsService{
 	   @Bean
@@ -23,16 +25,17 @@ public class LoginIdPwValidator implements UserDetailsService{
 
 	        return new BCryptPasswordEncoder();
 	    }
-	    
-	@Autowired
-	UserMapper mapper;
 
+	@Setter(onMethod_ = {@Autowired})
+	private UserMapper mapper;
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		System.out.println("S2faaaffAD");
 		UserVO vo;
 		vo = mapper.read(username);
+		System.out.println(new CustomUser(vo).toString());
 		return vo==null? null:new CustomUser(vo);
 	}
 

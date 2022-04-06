@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:replace="/fragments/header.html :: fragment-header"></div>
+<script src="//code.jquery.com/jquery.min.js"></script>
+</head>
+<body>
+<form method="post" th:object=${UserVO}  th:action="@{/view/signup}">
+	<input type="text" name="username">
+	<input type="password" name="password" maxlength="32" >
+	<button type="submit">회원가입</button>
+</form>
+</body>
+</html>

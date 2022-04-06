@@ -14,5 +14,5 @@ public class UserVO {
 	private String username;
 	private String password;
 	private List<AuthVO> authList;
-	private int enabled;
+	private boolean enabled;
 }
