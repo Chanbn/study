@@ -33,41 +33,40 @@
 </div>
 <div class="col-lg-6">
 
+
 <div style="float:left">
 <a th:href="@{'/board/list?pageNum='+${cri.pageNum}}" type="button" class="btn btn-secondary">목록</a>
 </div>
 <div style="float:right">
 <a th:href="@{'/board/remove?idx='+${board.idx}}" type="button" class="btn btn-danger">삭제</a>
-<a th:href="@{'/board/modify?idx='+${board.idx}}" type="button" class="btn btn-success">수정</a>
+<button type="button" id="modi" class="btn btn-success" >수정</button>
 </div>
 </div>
 
-			<form id="operForm" role="form" >
-              <div th:object="${cri}">
-<!--               	<input  type="hidden" th:value="${board.idx}" >
- -->                
- 				<div class="form-group">
- 
-<!--                   <input th:field="*{title}" type="hidden" class="form-control" th:value="${board.title}">
-                </div>
-                <div class="form-group">
-                  <input th:field="*{content}" type="hidden" class="form-control" th:value="${board.content}">
-                </div>
-                <div class="form-group">
-                  <input th:field="*{writer}" type="hidden"  class="form-control" th:value="${board.writer}">
-                </div> -->
-                                
-                <div class="form-group">
+<!-- 			<form id="operForm" role="form" th:object="${cri}" method="get" >
+                         
                   <input th:field="*{pageNum}" type="hidden" class="form-control" th:value="${cri.pageNum}">
-                </div>
-                
-                 <div class="form-group">
                   <input th:field="*{amount}" type="hidden" class="form-control" th:value="${cri.amount}">
-                </div>
-                
-              </div>
-			</div>
+
             </form>
+            
+            <form id="operForm2" role="form" th:object="${board}" method="get">
+                  <input th:field="*{idx}" type="hidden" class="form-control" th:value="${board.idx}">            	
+            </form>
+             -->
+
+			<form id="operForm" role="form" method="get">
+			<input id="idx" name="idx" type="hidden" th:value="${board.idx}">
+			<input name="pageNum" type="hidden" th:value="${cri.pageNum}">
+			<input name="amount" type="hidden" th:value="${cri.amount}">
+			</form>
+            <script type="text/javascript">
+
+        	var openForm = $("#openForm");
+        	$("#modi").on("click",function(e){
+        		$("#operForm").attr("action","/board/modify?").submit();
+        	});
+            </script>
 </body>
 
 

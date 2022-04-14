@@ -42,8 +42,7 @@ public class BoardController {
 	}
 	
 	@GetMapping(value="/write")
-	public void write(Model model,@ModelAttribute("vo") BoardVO vo) {
-		
+	public void write(Model model,@ModelAttribute("cri") Criteria cri,@ModelAttribute("vo") BoardVO vo) {
 	}
 	@PostMapping(value="/write")
 	public String insertCon(Model model,@ModelAttribute("vo") BoardVO vo,HttpServletRequest request) {
@@ -51,8 +50,9 @@ public class BoardController {
 		return "redirect:/board/list?pageNum=1";
 	}
 	@GetMapping(value="/modify")
-	public void modify1(Model model,@RequestParam("idx") int idx,@ModelAttribute("vo") BoardVO vo) {
-		model.addAttribute("vo",boardService.get(vo.getIdx()));
+	public void modify1(Model model,@RequestParam("idx") Long idx,@ModelAttribute("cri") Criteria cri) {
+		System.out.println(cri.getAmount());
+		model.addAttribute("vo",boardService.get(idx));
 
 	}
 	@PostMapping(value="/modify")
