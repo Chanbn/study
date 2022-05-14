@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+<script src="https://code.jquery.com/jquery.min.js"></script>
 <div th:replace="/fragments/header.html :: fragment-header"></div>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -50,11 +51,63 @@
 <a th:href="@{'/board/list?pageNum='+${cri.pageNum}}" type="button" class="btn btn-secondary">목록</a>
 </div>
 <div style="float:right">
-<a th:href="@{'/board/remove?}" type="button" class="btn btn-danger">삭제</a>
-<a th:href="@{'/board/modify?}" type="button" class="btn btn-success">수정</a>
+<button type="button" id="addbtn" class="btn btn-success">등록</button>
 </div>
 </div> 
 </form>
 </div>
 </body>
+
+<script th:inline="javascript">
+
+	var csrfHeaderName = /*[[${_csrf.headerName}]]*/
+	var csrfTokenValue = /*[[${_csrf.token}]]*/
+	$(document).ajaxSend(function(e,xhr,options){
+		xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+	});
+
+	var loginUserName = null;
+	/*[# sec:authorize="isAuthenticated()"]*/
+	loginUserName = /*[[${#authentication.principal.username}]]*/
+	/*[/]*/
+	
+	
+$(document).ready(function(){
+	
+	$(document).on("click","#addbtn",function(){
+		var content = document.getElementById("content").value;
+		var title = document.getElementById("title").value;
+		var vo={writer: loginUserName,title:title, content: content};
+		makeboard(vo);
+	});
+})
+
+function makeboard(param){
+	writeBoard(param,function(data){
+	alert("asdsad");
+	});
+}
+
+function writeBoard(param,callbackfunc){
+	$.ajax({
+		type:"POST",
+		url: "/board/write/",
+		data: JSON.stringify(param),
+
+        contentType : "application/json; charset=UTF-8",
+		success : function(data){
+			alert(data);
+			if(data){
+				alert("성공!");
+			}
+		}, 
+		error : function(request,status,error){
+
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+
+			}
+		
+	});
+}
+</script>
 </html>

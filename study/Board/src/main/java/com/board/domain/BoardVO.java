@@ -13,5 +13,6 @@ public class BoardVO {
 	private String writer;
 	private LocalDateTime regTime;
 	private LocalDateTime updateTime;
+	private Long rnt;
 	
 }

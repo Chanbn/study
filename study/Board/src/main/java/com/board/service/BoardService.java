@@ -13,4 +13,5 @@ public interface BoardService {
 	public BoardVO get(long idx);
 	public int modify(BoardVO vo);
 	public int remove(long idx);
+	public int rntcal(long rnt,long idx);
 }

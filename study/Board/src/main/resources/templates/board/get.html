@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<div th:replace="/fragments/header.html :: fragment-header"></div>
-<script src="//code.jquery.com/jquery.min.js"></script>
+
+<script src="https://code.jquery.com/jquery.min.js"></script>
 </head>
 <body>
+<div th:replace="/fragments/header.html :: fragment-header"></div>
   <div th:replace="/fragments/nav.html :: fragment-nav"></div>
 <span th:text="${cri.pageNum}"></span>
 <div class="col-lg-6" style="text-align:center">
@@ -60,6 +61,22 @@
 			<input name="pageNum" type="hidden" th:value="${cri.pageNum}">
 			<input name="amount" type="hidden" th:value="${cri.amount}">
 			</form>
+			
+
+	<div class="add-space">
+	
+	</div>
+
+			<ul class="chat">
+			</ul>
+			
+
+
+			
+			<div class="pannel-footer">
+			</div>
+
+			
             <script type="text/javascript">
 
         	var openForm = $("#openForm");
@@ -69,5 +86,266 @@
             </script>
 </body>
 
+
+<script>
+
+</script>
+
+<script  th:inline="javascript">
+
+var csrfHeaderName = /*[[${_csrf.headerName}]]*/
+var csrfTokenValue = /*[[${_csrf.token}]]*/
+$(document).ajaxSend(function(e,xhr,options){
+	xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+});
+
+var loginUserName = null;
+/*[# sec:authorize="isAuthenticated()"]*/
+loginUserName = /*[[${#authentication.principal.username}]]*/
+/*[/]*/
+
+$(document).ready(function(){
+	var replyPageFooter = $(".pannel-footer");
+	var replyUl=$(".chat");
+	var idxValue=/*[[ ${board.idx} ]]*/;
+	showList(1);
+	var writeSpace=$(".add-space");
+
+	if(loginUserName!=null)
+{
+	var str='';
+	str += "<input readonly='readonly'  value='"+loginUserName+"''>";
+	str += "<p>";
+	str += "<textarea id='replycontent'>";
+	str += "</textarea>";
+	str += "<button id='writebtn'>등록";
+	str += "</button>";
+	writeSpace.html(str);
+		}	
+	
+function getList(param,callbackFunc){
+	idx =param.idx;
+	page=param.page;
+	$.ajax({ 
+		type: "GET", 
+		url: "/board/"+idx+"/"+page, 
+		success: function(data) 
+		{
+		if(data){
+
+			callbackFunc(data.repCnt,data.list);
+		}
+		} 
+		,
+		error: function onError (error) {
+	    console.error(error);
+	    alert('실패');
+		}
+		});
+
+}
+
+function removereply(param,callbackFunc){
+	idx=param.idx;
+	bno=param.bno;
+	$.ajax({
+		type: "DELETE",
+		url: "/board/"+idx+"/"+bno,
+		data:JSON.stringify(param), 
+        contentType : "application/json; charset=UTF-8",
+		success: function(data){
+			if(data){
+				alert("댓글이 삭제되었습니다.");
+				showList(1);
+			}
+		},
+		error : function(request,status,error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			}
+	});
+}
+
+function insertReply(param,callbackFunc){
+
+	$.ajax({
+		type:"POST",
+		url:"/board/new/",
+		data: JSON.stringify(param),
+        contentType : "application/json; charset=UTF-8",
+		success: function(data){
+			if(data){
+				alert("댓글작성완료");
+				showList(1);
+			}
+		},
+		error : function(request,status,error){
+
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+
+			}
+	});
+}
+function makereply(param){
+	insertReply(param,function(data){
+	});
+}
+
+function showList(page){
+getList( {idx:idxValue,page:page||1},function(repCnt,list){
+	var str='';
+	for(var i = 0, len = list.length || 0 ; i<len;i++){
+		str +="<p>";
+		str +="<div id=comment"+list[i].bno+">";
+		if(list[i].parentBno!=0){
+			str += "<span style='padding-left:20px'>";
+			str += "</span>";
+		}
+		str +="<button type='button' class='btn_reply_write_all'"+"data-no="+list[i].bno+">";
+        str +="<li class='left clearfix' data-rno='"+list[i].bno+"'>";
+        str +=" <div ><div class='header'><strong class='primary-font'>"+list[i].writer+"</strong>";
+        str +="		<small class='pull-right text-muted'>"+list[i].regTime+"</small></div>";
+        str +="     <p> "+list[i].content+"</p></div></li>";       
+        str +="</button>";
+        str +="<button id='replyRemove' data-no="+list[i].bno+">x";
+        str +="</button>";
+        str +="</div>";
+        str +="</p>"
+    }
+	replyUl.html(str);
+	pageButton(repCnt,page);
+});
+}
+
+$(document).on("click","#replyRemove",function(){
+	var bno =$(this).attr('data-no');
+	var param={idx:idxValue,bno:bno};
+	removereply(param);
+});
+
+function pageButton(repCnt,page){
+
+	var endNum = Math.ceil(page/10.0)*10;
+	var startNum = endNum-9;
+
+	var prev = startNum!=1;
+	var next = false;
+	
+	if(endNum*10>=repCnt){
+		endNum=Math.ceil(repCnt/10.0);
+	}
+	if(endNum*10<repCnt){
+		next = true;
+	}
+	
+	var str = "<u1 class='pagination pull-right'>";
+	
+	if(prev){
+		 str+= "<li class='page-item'><a class='page-link' href='"+(startNum -1)+"'>Previous</a></li>";
+		 }
+
+		 for(var i = startNum; i <= endNum; i++){
+			console.log("showReplyPage 에서의 : "+page);
+		 var active = page == i? "active":"";
+
+		 str+= "<li class='page-item "+active+" '><a class='page-link' href='"+i+"'>"+i+"</a></li>";
+		 }
+		 
+		 if(next){
+
+		 str+= "<li class='page-item'><a class='page-link' href='"+(endNum + 1) +"'>Next</a></li>";
+		 }
+
+		 str += "</ul></div>";
+
+		 console.log(str);
+
+		 replyPageFooter.html(str);
+	
+		}
+		
+	replyPageFooter.on("click","li a",function(e){
+		e.preventDefault();
+		console.log("page click");
+	
+		var targetPageNum=$(this).attr("href");
+	
+		console.log("targetPageNum : " + targetPageNum);
+	
+		page = targetPageNum;
+		showList(page);
+		});
+
+	$(document).on('click','#writebtn',function(e){
+		var content = document.getElementById("replycontent").value;
+		var rep={idx: idxValue ,writer: loginUserName, content: content,parentBno: 0};
+		makereply(rep);
+		document.getElementById("replycontent").value='';
+	});
+	
+	$(document).on('click','#repaddBtn',function(e){
+		var no =$(this).attr('data-no');
+		var content = document.getElementById("fffg").value;
+		var parentreply = no;
+		var rep={idx: idxValue, writer: loginUserName, content: content, parentBno: parentreply};
+		alert(rep.parentBno);
+		makereply(rep);
+
+	});
+});
+
+$(document).on('click','.btn_reply_write_all',function(e){
+
+	var no =$(this).attr('data-no');
+
+	
+	if($("#reply_empty_last_li_"+no).length){
+		$("#reply_empty_last_li_" + no).remove();
+		return false;
+		}
+	var replyDiv ='';
+
+	replyDiv = "<li id=\"reply_empty_last_li_"+no+"\">";
+	replyDiv += "<div class=\"reply show\" id=\"reply_empty_"+no+"\">";
+	replyDiv += "<div class=\"reply_box\">";
+	replyDiv += "<input type='text' value="+loginUserName+">";
+	replyDiv +="<textarea id='fffg'>"; 
+	replyDiv +="</textarea>";
+    replyDiv += "</div>";
+    replyDiv += "</div>"
+    replyDiv += "<button id='repaddBtn' data-no="+no+">등록";
+    replyDiv += "</button>";
+    replyDiv += "</li>";
+    $("#comment"+no).after(replyDiv);
+    
+    
+});
+
+
+
+
+
+/* function addreply(param,callbackFunc){
+idx=param.idx
+	$.ajax({
+		type: "POST",
+		url: "/board/new/"+idx,
+		data: JSON.stringify(param),
+		dataType: 'json',
+        contentType : "application/json; charset=UTF-8",
+		success: function(data){
+			if(data){
+			callbackFunc(data);
+			}
+		}
+			,
+			error : function(request,status,error){
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				}
+	});
+	
+} */
+
+
+</script>
 
 </html>

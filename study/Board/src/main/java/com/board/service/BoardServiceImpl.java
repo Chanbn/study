@@ -45,6 +45,11 @@ public class BoardServiceImpl implements BoardService{
 		// TODO Auto-generated method stub
 		return boardMapper.remove(idx);
 	}
+	@Override
+	public int rntcal(long rnt, long idx) {
+		// TODO Auto-generated method stub
+		return boardMapper.rntcal(rnt, idx);
+	}
 
 
 
