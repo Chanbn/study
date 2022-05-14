@@ -2,21 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.board.mapper.ReplyMapper">
 <insert id="write">
-insert into Reply values(#{bno},#{idx},#{writer},sysdate,#{parentBno},#{content},1)
+insert into Reply values(#{bno},#{idx},#{writer},sysdate,#{parentBno},#{content},1,#{groupnum})
 </insert>
 <select id="repList" resultType="com.board.domain.ReplyDTO">
-select writer,bno,idx,parent_bno,reg_time,content from Reply where idx=#{idx}
+select writer,bno,idx,parent_bno,reg_time,content,groupnum from Reply where idx=#{idx}
 </select>
 
 <select id="repListWithpage" resultType="com.board.domain.ReplyDTO">
 <![CDATA[
-select writer,bno,idx,parent_bno,reg_time,content,avail from 
-(select /*+index_desc(reply reply_pk)*/ rownum rn, writer, bno, idx, parent_bno, reg_time,content,avail from reply 
+select writer,bno,idx,parent_bno,reg_time,content,avail,groupnum from 
+(select /*+index_desc(reply reply_pk)*/ rownum rn, writer, bno, idx, parent_bno, reg_time,content,avail,groupnum from reply 
 
 where idx=#{idx} and 
 rownum<=#{cri.pageNum}*#{cri.amount}
-start with parent_bno=0
-connect by prior bno=parent_bno
+start with groupnum=0
+connect by prior bno=groupnum 
 ) 
 where rn>(#{cri.pageNum}-1)*#{cri.amount}
 ]]>

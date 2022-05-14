@@ -52,7 +52,12 @@ public class ReplyController {
 		System.out.println("here?");
 		int nextBno = service.repCount(rep.getIdx())+1;
 		System.out.println("next :: "+nextBno);
-		rep.setBno(nextBno);	
+		rep.setBno(nextBno);
+		if(rep.getGroupnum()==-1) {
+			rep.setGroupnum(rep.getBno());
+		}
+		if(rep.getParentBno()!=0) {
+		}
 		/*
 		 * if(rep.getBno()!=1&&rep.getParentBno()!=0) {
 		 * 

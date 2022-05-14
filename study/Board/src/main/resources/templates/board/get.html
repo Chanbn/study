@@ -200,7 +200,7 @@ getList( {idx:idxValue,page:page||1},function(repCnt,list){
 			str += "<span style='padding-left:20px'>";
 			str += "</span>";
 		}
-		str +="<button type='button' class='btn_reply_write_all'"+"data-no="+list[i].bno+">";
+		str +="<button type='button' class='btn_reply_write_all'"+"data-no='"+list[i].bno+"'data-gp='"+list[i].groupnum+"'>";
         str +="<li class='left clearfix' data-rno='"+list[i].bno+"'>";
         str +=" <div ><div class='header'><strong class='primary-font'>"+list[i].writer+"</strong>";
         str +="		<small class='pull-right text-muted'>"+list[i].regTime+"</small></div>";
@@ -277,17 +277,18 @@ function pageButton(repCnt,page){
 
 	$(document).on('click','#writebtn',function(e){
 		var content = document.getElementById("replycontent").value;
-		var rep={idx: idxValue ,writer: loginUserName, content: content,parentBno: 0};
+		var rep={idx: idxValue ,writer: loginUserName, content: content,parentBno: 0,groupnum:0};
 		makereply(rep);
 		document.getElementById("replycontent").value='';
 	});
 	
 	$(document).on('click','#repaddBtn',function(e){
 		var no =$(this).attr('data-no');
+		var gpnum = $(this).attr('data-gp');
+		
 		var content = document.getElementById("fffg").value;
 		var parentreply = no;
-		var rep={idx: idxValue, writer: loginUserName, content: content, parentBno: parentreply};
-		alert(rep.parentBno);
+		var rep={idx: idxValue, writer: loginUserName, content: content, parentBno: parentreply,groupnum:gpnum};
 		makereply(rep);
 
 	});
@@ -296,7 +297,10 @@ function pageButton(repCnt,page){
 $(document).on('click','.btn_reply_write_all',function(e){
 
 	var no =$(this).attr('data-no');
-
+	var gpnum = $(this).attr('data-gp');
+	if(gpnum==0){
+		gpnum=no;
+	}
 	
 	if($("#reply_empty_last_li_"+no).length){
 		$("#reply_empty_last_li_" + no).remove();
@@ -312,7 +316,7 @@ $(document).on('click','.btn_reply_write_all',function(e){
 	replyDiv +="</textarea>";
     replyDiv += "</div>";
     replyDiv += "</div>"
-    replyDiv += "<button id='repaddBtn' data-no="+no+">등록";
+    replyDiv += "<button id='repaddBtn' data-no='"+no+"' data-gp='"+gpnum+"'>등록";
     replyDiv += "</button>";
     replyDiv += "</li>";
     $("#comment"+no).after(replyDiv);

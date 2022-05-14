@@ -17,5 +17,5 @@ public class ReplyDTO {
 	private long parentBno;
 	private String content;
 	private long avail;
-	private long groupid;
+	private long groupnum;
 }
