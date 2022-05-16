@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+	<!-- ... -->
 <script src="https://code.jquery.com/jquery.min.js"></script>
 </head>
 <body>
@@ -61,6 +64,11 @@
 			<input name="pageNum" type="hidden" th:value="${cri.pageNum}">
 			<input name="amount" type="hidden" th:value="${cri.amount}">
 			</form>
+
+			<div style="margin:60px 0px 0px 400px">
+			<button id="goodb">up</button>
+			<button id="hateb">down</button>
+			</div>
 			
 
 	<div class="add-space">
@@ -93,10 +101,13 @@
 
 <script  th:inline="javascript">
 
-var csrfHeaderName = /*[[${_csrf.headerName}]]*/
-var csrfTokenValue = /*[[${_csrf.token}]]*/
-$(document).ajaxSend(function(e,xhr,options){
-	xhr.setRequestHeader(csrfHeaderName,csrfTokenValue);
+
+$(function () {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
 });
 
 var loginUserName = null;
@@ -111,6 +122,35 @@ $(document).ready(function(){
 	showList(1);
 	var writeSpace=$(".add-space");
 
+	$(document).on("click","#goodb",function(){
+		var rvo = {idx:idxValue,writer:loginUserName,choose:"1"};
+		submitRating(rvo,function(data){
+			
+		});
+	});
+	$(document).on("click","#hateb",function(){
+		var rvo = {idx:idxValue,writer:loginUserName,choose:"0"};
+		submitRating(rvo,function(data){
+		});
+	});
+	
+	function submitRating(param,callbackFunc){
+		$.ajax({
+			type:"POST",
+			url:"/board/get",
+			data:JSON.stringify(param),
+	        contentType : "application/json; charset=UTF-8",
+			success : function(data){
+				alert(data);
+			},
+			error : function(request,status,error){
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				}
+			
+		});
+	}
+	
+	
 	if(loginUserName!=null)
 {
 	var str='';
@@ -137,10 +177,9 @@ function getList(param,callbackFunc){
 		}
 		} 
 		,
-		error: function onError (error) {
-	    console.error(error);
-	    alert('실패');
-		}
+		error : function(request,status,error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			}
 		});
 
 }
@@ -191,29 +230,31 @@ function makereply(param){
 }
 
 function showList(page){
-getList( {idx:idxValue,page:page||1},function(repCnt,list){
-	var str='';
-	for(var i = 0, len = list.length || 0 ; i<len;i++){
-		str +="<p>";
-		str +="<div id=comment"+list[i].bno+">";
-		if(list[i].parentBno!=0){
-			str += "<span style='padding-left:20px'>";
-			str += "</span>";
-		}
-		str +="<button type='button' class='btn_reply_write_all'"+"data-no='"+list[i].bno+"'data-gp='"+list[i].groupnum+"'>";
-        str +="<li class='left clearfix' data-rno='"+list[i].bno+"'>";
-        str +=" <div ><div class='header'><strong class='primary-font'>"+list[i].writer+"</strong>";
-        str +="		<small class='pull-right text-muted'>"+list[i].regTime+"</small></div>";
-        str +="     <p> "+list[i].content+"</p></div></li>";       
-        str +="</button>";
-        str +="<button id='replyRemove' data-no="+list[i].bno+">x";
-        str +="</button>";
-        str +="</div>";
-        str +="</p>"
-    }
-	replyUl.html(str);
-	pageButton(repCnt,page);
-});
+	getList( {idx:idxValue,page:page||1},function(repCnt,list){
+		var str='';
+		for(var i = 0, len = list.length || 0 ; i<len;i++){
+			str +="<p>";
+			str +="<div id=comment"+list[i].bno+">";
+			if(list[i].parentBno!=0){
+				str += "<span style='padding-left:20px'>";
+				str += "</span>";
+			}
+			str +="<button type='button' class='btn_reply_write_all'"+"data-no='"+list[i].bno+"'data-gp='"+list[i].groupnum+"'>";
+	        str +="<li class='left clearfix' data-rno='"+list[i].bno+"'>";
+	        str +=" <div ><div class='header'><strong class='primary-font'>"+list[i].writer+"</strong>";
+	        str +="		<small class='pull-right text-muted'>"+list[i].regTime+"</small></div>";
+	        str +="     <p> "+list[i].content+"</p></div></li>";       
+	        str +="</button>";
+	        if(loginUserName==list[i].writer){
+	        str +="<button id='replyRemove' data-no="+list[i].bno+">x";
+	        str +="</button>";
+	        }
+	        str +="</div>";
+	        str +="</p>"
+	    }
+		replyUl.html(str);
+		pageButton(repCnt,page);
+	});
 }
 
 $(document).on("click","#replyRemove",function(){
@@ -307,8 +348,8 @@ $(document).on('click','.btn_reply_write_all',function(e){
 		return false;
 		}
 	var replyDiv ='';
-
-	replyDiv = "<li id=\"reply_empty_last_li_"+no+"\">";
+	if(loginUserName!=null)
+	{replyDiv = "<li id=\"reply_empty_last_li_"+no+"\">";
 	replyDiv += "<div class=\"reply show\" id=\"reply_empty_"+no+"\">";
 	replyDiv += "<div class=\"reply_box\">";
 	replyDiv += "<input type='text' value="+loginUserName+">";
@@ -320,34 +361,15 @@ $(document).on('click','.btn_reply_write_all',function(e){
     replyDiv += "</button>";
     replyDiv += "</li>";
     $("#comment"+no).after(replyDiv);
-    
+	}else{
+		alert("로그인 후 댓굴 달아주세요");
+	}
     
 });
 
 
 
 
-
-/* function addreply(param,callbackFunc){
-idx=param.idx
-	$.ajax({
-		type: "POST",
-		url: "/board/new/"+idx,
-		data: JSON.stringify(param),
-		dataType: 'json',
-        contentType : "application/json; charset=UTF-8",
-		success: function(data){
-			if(data){
-			callbackFunc(data);
-			}
-		}
-			,
-			error : function(request,status,error){
-				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-				}
-	});
-	
-} */
 
 
 </script>

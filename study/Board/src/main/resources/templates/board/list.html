@@ -11,6 +11,7 @@
 	<tr>
 	<th scope="col">번호</th>
 	<th scope="col">제목</th>
+	<th scope="col">추천수</th>
 	<th scope="col">작성자</th>
 	<th scope="col">작성일자</th>
 	</tr>
@@ -20,8 +21,9 @@
 	<td th:text="${row.idx}">	</td>
 	<td> 
 	<a th:href="@{'/board/get?pageNum='+${pageMaker.cri.pageNum}+'&idx='+${row.idx}}">
-	<span th:text="${row.title}"></span></a>
+	<span th:text="${row.title}"></span>(<span th:text="${row.rnt}"></span>)</a>
 	</td>
+	<td th:text="${row.good}"></td>
 	<td th:text="${row.writer}"></td>
 	<td th:text="${row.regTime}">	</td>
 	</tr>

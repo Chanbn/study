@@ -56,21 +56,6 @@ public class ReplyController {
 		if(rep.getGroupnum()==-1) {
 			rep.setGroupnum(rep.getBno());
 		}
-		if(rep.getParentBno()!=0) {
-		}
-		/*
-		 * if(rep.getBno()!=1&&rep.getParentBno()!=0) {
-		 * 
-		 * int nowParentBno = service.findParent(rep.getIdx(), rep.getParentBno());
-		 * System.out.println("now !!:: " +nowParentBno); if(nowParentBno==0) {
-		 * System.out.println("this is parentBno ::"+rep.getParentBno()); }else {
-		 * rep.setParentBno(nowParentBno); }
-		 * 
-		 * }
-		 */
-
-
-
 
 		int chk = service.write(rep);
 		return chk == 1 ? new ResponseEntity<>("success", HttpStatus.OK)

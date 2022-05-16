@@ -14,5 +14,7 @@ public class BoardVO {
 	private LocalDateTime regTime;
 	private LocalDateTime updateTime;
 	private Long rnt;
-	
+	private Long good;
+	private Long hate;
+	 
 }

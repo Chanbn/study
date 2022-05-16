@@ -2,6 +2,8 @@ package com.board.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +52,24 @@ public class BoardServiceImpl implements BoardService{
 		// TODO Auto-generated method stub
 		return boardMapper.rntcal(rnt, idx);
 	}
-
-
+	
+	@Transactional
+	@Override
+	public int chooseRating(Long idx, String writer,char choose) {
+		// TODO Auto-generated method stub
+		int chk = boardMapper.boardRatingCheck(idx, writer);
+		System.out.println("rating Check ::" +chk);
+		if(chk==1) {
+			return 3;
+		}else {
+			if(choose=='1') {
+				boardMapper.boardRatingGood(idx);
+			}else {
+				boardMapper.boardRatingHate(idx);
+			}
+			return boardMapper.chooseRating(idx, writer,choose);
+			
+		}
+	}
 
 }

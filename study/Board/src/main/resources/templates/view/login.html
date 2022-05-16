@@ -6,6 +6,7 @@
 </head>
 <body>
 <form method="post" th:action="@{/loginProc}">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	<input type="text" name="username">
 	<input type="password" name="pw" maxlength="32" >
 	<button type="submit">로그인</button>

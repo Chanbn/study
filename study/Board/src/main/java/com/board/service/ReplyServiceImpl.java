@@ -66,9 +66,11 @@ public class ReplyServiceImpl implements ReplyService{
 		return mapper.getProfile(userid);
 	}
 
+	@Transactional
 	@Override
 	public int replydelete(long idx, long bno) {
 		// TODO Auto-generated method stub
+		boardmapper.updateReplyCnt(idx,-1);
 		return mapper.replydelete(idx, bno);
 	}
 

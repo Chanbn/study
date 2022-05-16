@@ -17,7 +17,8 @@
     <span sec:authentication="name"></span>님이 로그인 상태
     </div>
         <button sec:authorize="isAnonymous()" onclick="location.href='/view/login'" type="submit">Login</button>
-        <form th:action="@{/logoutProc}" method="post" sec:authorize="isAuthenticated()">
+        <form th:action="@{/view/logoutProc}" method="post" sec:authorize="isAuthenticated()">
+         <input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }">
         <button sec:authorize="isAuthenticated()" type="submit">Logout</button>
         </form>
     </div>
