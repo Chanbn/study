@@ -36,11 +36,11 @@ public class GoogleOauth implements SocialOauth {
 		// TODO Auto-generated method stub
 		System.out.println(googleClientId);
 		Map<String,Object> params = new HashMap<>();
-		params.put("scope", "profile");
+		params.put("scope", "email");
 		params.put("response_type", "code");
 		params.put("client_id", googleClientId);
 		params.put("redirect_uri", googleCallbackUri);
-		
+		params.put("access_type", "offline");
 		String parameterString = params.entrySet().stream()
 				.map(x->x.getKey()+"="+x.getValue())
 				.collect(Collectors.joining("&"));
@@ -63,9 +63,11 @@ public class GoogleOauth implements SocialOauth {
 		restTemplate.postForEntity(googleTokenUri, params, String.class);
 		
 		if(resposeEntity.getStatusCode()==HttpStatus.OK) {
+			System.out.println("SAD");
 			return resposeEntity.getBody();
 		}
 		return "구글 로그인 요청 처리 실패";
 	}
+
 
 }

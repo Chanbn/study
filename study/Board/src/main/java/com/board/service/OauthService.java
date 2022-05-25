@@ -38,6 +38,7 @@ public class OauthService {
     	return socialOauth.requestAccessToken(code);
     }
     
+    
     private SocialOauth findSocialOauthByType(SocialLoginType socialLoginType)
     {
 
