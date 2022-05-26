@@ -38,6 +38,10 @@ public class OauthService {
     	return socialOauth.requestAccessToken(code);
     }
     
+    public String getUserinfo(SocialLoginType socialLoginType, String AccessToken) {
+    	SocialOauth socialOauth = this.findSocialOauthByType(socialLoginType);
+    	return socialOauth.requestUserInfo(AccessToken);
+    }
     
     private SocialOauth findSocialOauthByType(SocialLoginType socialLoginType)
     {

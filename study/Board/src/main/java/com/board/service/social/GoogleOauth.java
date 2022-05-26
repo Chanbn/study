@@ -69,5 +69,22 @@ public class GoogleOauth implements SocialOauth {
 		return "구글 로그인 요청 처리 실패";
 	}
 
+	@Override
+	public String requestUserInfo(String AccessToken) {
+		// TODO Auto-generated method stub
+		RestTemplate restTemplate = new RestTemplate();
+		
+		String userinfoUri = "https://www.googleapis.com/oauth2/v1/userinfo";
+		Map<String,Object> params = new HashMap<>();
+		params.put("access_token",AccessToken);
+		ResponseEntity<String> responseEntity = restTemplate.getForEntity(userinfoUri+"?access_token="+AccessToken, String.class);
+		
+		if(responseEntity.getStatusCode()==HttpStatus.OK) {
+			return responseEntity.getBody();
+		}
+		return "정보획득 실패";
+	}
+	
+	
 
 }

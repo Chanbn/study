@@ -4,6 +4,7 @@
 <resultMap type="com.board.domain.UserVO" id="memberMap">
 	<id property="username" column="username"/>
 	<result property="username" column="username"/>
+	<result property="email" column="email"/>
 	<result property="password" column="password"/>	
 	<collection property="authList" resultMap="authMap">
 	</collection>		
@@ -17,7 +18,7 @@
 	<select id="read" resultMap="memberMap">
 
 		SELECT
-	mem.username, password, enabled, authority 
+	mem.username, password,email, enabled, authority 
 	FROM
 	users mem LEFT OUTER JOIN authorities auth on mem.username = auth.username
 	WHERE mem.username = #{username}
@@ -25,7 +26,7 @@
 	</select>
 	
 	<insert id="Signup">
-	insert into users(username,password) values(#{username},#{password})
+	insert into users(username,password,email) values(#{username},#{password},#{email})
 	</insert>
 	<insert id="SignupAuth">
 	insert into authorities(username) values(#{username})

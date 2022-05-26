@@ -55,6 +55,8 @@ public class OauthController {
 			JSONObject jsonObject = (JSONObject) jsonParser.parse(accessToken);
 //			System.out.println("jsonParser :: "+jsonObject.get("access_token"));
 			String AccessToken =jsonObject.get("access_token").toString();
+			String userInfo = oauthService.getUserinfo(socialLoginType, AccessToken);
+			System.out.println(userInfo);
 			httpSession.setAttribute("AccessToken", AccessToken);
 			return "redirect:/board/list";
 

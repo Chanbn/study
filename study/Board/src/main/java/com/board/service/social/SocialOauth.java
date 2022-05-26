@@ -5,6 +5,7 @@ import com.board.helper.constants.SocialLoginType;
 public interface SocialOauth {
 	String getOauthRedirectURL();
 	String requestAccessToken(String code);
+	String requestUserInfo(String AccessToken);
 	
 	default SocialLoginType type() {
 		if(this instanceof GoogleOauth) {
