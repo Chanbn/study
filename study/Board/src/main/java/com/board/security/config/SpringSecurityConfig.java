@@ -10,17 +10,23 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.board.service.CustomUserService;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	@Autowired
-	LoginIdPwValidator loginidPwValidator;
-	 
+
+	private final LoginIdPwValidator loginidPwValidator;
+	
+	private final CustomUserService customUserService;
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// TODO Auto-generated method stub
-		http
+		http .csrf().disable()
 		.authorizeRequests()
 		.antMatchers("/board/list").permitAll()
 		.antMatchers("/view/signup").permitAll()
@@ -36,6 +42,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		.logout()
 		.logoutUrl("/view/logoutProc")
 		.logoutSuccessUrl("/board/list")
+		.and()
+		.oauth2Login()
+		.defaultSuccessUrl("/board/list")
+		.failureUrl("/view/login")	
+		.userInfoEndpoint()
+		.userService(customUserService)
+	
 		;
 	}
 

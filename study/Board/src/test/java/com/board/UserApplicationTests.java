@@ -8,7 +8,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.board.domain.UserVO;
+import com.board.domain.user.Ouser;
+import com.board.domain.user.Role;
 import com.board.mapper.UserMapper;
+import com.board.service.UserService;
 
 @SpringBootTest
 public class UserApplicationTests {
@@ -36,5 +39,11 @@ public class UserApplicationTests {
 		vo.setPassword(bcry.encode("1234"));
 		System.out.println(userMapper.Signup(vo));
 		System.out.println(userMapper.SignupAuth(vo.getUsername()));
+	}
+	
+	@Test 
+	void userSearchOauth2() {
+		
+	
 	}
 }

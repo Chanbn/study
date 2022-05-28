@@ -31,4 +31,13 @@
 	<insert id="SignupAuth">
 	insert into authorities(username) values(#{username})
 	</insert>
+	
+	<insert id="save" >
+        INSERT INTO OUSER(name,email,role) VALUES(#{name}, #{email}, #{role})
+    </insert>
+    <select id="findByEmail" resultType="com.board.domain.user.Ouser">
+        SELECT * FROM OUSER WHERE email = #{email}
+    </select>
+    
+    
 </mapper>

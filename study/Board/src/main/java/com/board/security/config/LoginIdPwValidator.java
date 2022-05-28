@@ -2,6 +2,8 @@ package com.board.security.config;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.User;
@@ -16,9 +18,11 @@ import com.board.domain.CustomUser;
 import com.board.domain.UserVO;
 import com.board.mapper.UserMapper;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Service
+@RequiredArgsConstructor
 public class LoginIdPwValidator implements UserDetailsService{
 	   @Bean
 	    public PasswordEncoder passwordEncoder() {
@@ -29,12 +33,15 @@ public class LoginIdPwValidator implements UserDetailsService{
 	@Setter(onMethod_ = {@Autowired})
 	private UserMapper mapper;
 	
+	private final HttpSession session;
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
 		System.out.println("S2faaaffAD");
 		UserVO vo;
 		vo = mapper.read(username);
+		session.setAttribute("user", vo);
 		System.out.println(new CustomUser(vo).toString());
 		return vo==null? null:new CustomUser(vo);
 	}
