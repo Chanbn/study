@@ -2,8 +2,10 @@ package com.board.service;
 
 import com.board.domain.AuthVO;
 import com.board.domain.UserVO;
+import com.board.domain.user.User;
+import com.board.domain.user.UserDTO;
 
 public interface UserService {
-	public UserVO read(String username);
-	public int Signup(UserVO vo);
+	public User read(String username);
+	public int Signup(UserDTO vo);
 }

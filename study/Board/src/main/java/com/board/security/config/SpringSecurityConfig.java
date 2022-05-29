@@ -7,10 +7,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.board.service.CustomUserService;
+
+import com.board.service.PrincipalOauth2UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,12 +20,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 
 	private final LoginIdPwValidator loginidPwValidator;
-	
-	private final CustomUserService customUserService;
+	private final PrincipalOauth2UserService principalOauth2UserService;
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// TODO Auto-generated method stub
-		http .csrf().disable()
+		http 
 		.authorizeRequests()
 		.antMatchers("/board/list").permitAll()
 		.antMatchers("/view/signup").permitAll()
@@ -45,10 +43,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 		.oauth2Login()
 		.defaultSuccessUrl("/board/list")
-		.failureUrl("/view/login")	
+		.failureUrl("/view/SocialLogin")	
 		.userInfoEndpoint()
-		.userService(customUserService)
-	
+		.userService(principalOauth2UserService)
 		;
 	}
 

@@ -5,9 +5,12 @@
 <script src="//code.jquery.com/jquery.min.js"></script>
 </head>
 <body>
-<form method="post" th:object=${UserVO}  th:action="@{/view/signup}">
-	<input type="text" name="username">
-	<input type="password" name="password" maxlength="32" >
+<form method="post" th:object=${user}  th:action="@{/view/signup}">
+      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"> 
+	<input type="text" id="username" name="username">
+		<input type="text" id="name" name="name"> 
+	<input type="password" id="password" name="password" maxlength="32" >
+	<input type="text" id="email" name="email">
 	<button type="submit">회원가입</button>
 </form>
 </body>

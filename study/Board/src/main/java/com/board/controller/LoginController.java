@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.board.domain.UserVO;
+import com.board.domain.user.User;
+import com.board.domain.user.UserDTO;
 import com.board.mapper.UserMapper;
 import com.board.service.UserService;
 
@@ -17,7 +20,10 @@ public class LoginController {
 	
 	@Autowired
 	UserService service;
-
+	@GetMapping("/view/login") 
+	public void gevtLogin() {
+		
+	}
 	@GetMapping("/login")
 	public void getLogin() {
 		
@@ -29,9 +35,9 @@ public class LoginController {
 	}
 	
 	@PostMapping("/signup")
-	public String doSignup(Model model,UserVO vo) {
-		System.out.println(vo.toString());
-		service.Signup(vo);
+	public String doSignup(Model model,@ModelAttribute("user") UserDTO user) {
+		System.out.println(user.getEmail());
+		service.Signup(user);
 		return "redirect:/board/list?pageNum=1";
 	}
 }
