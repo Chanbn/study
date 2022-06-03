@@ -16,5 +16,6 @@ public class BoardVO {
 	private Long rnt;
 	private Long good;
 	private Long hate;
+	private String email;
 	 
 }

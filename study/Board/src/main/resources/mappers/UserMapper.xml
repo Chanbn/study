@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.board.mapper.UserMapper">
+
+
 <resultMap type="com.board.domain.user.User" id="memberMap">
 	<id property="username" column="username"/>
-	<result property="name" column="name"/>
 	<result property="username" column="username"/>
+	<result property="name" column="name"/>
 	<result property="email" column="email"/>
 	<result property="password" column="password"/>	
 	<collection property="authList" resultMap="authMap">
@@ -19,26 +21,31 @@
 	<select id="read" resultMap="memberMap">
 
 		SELECT
-	mem.username,name, password,email, enabled, authority 
+	mem.username, name, email, password, enabled, authority 
 	FROM
 	uuuser mem LEFT OUTER JOIN authorities auth on mem.username = auth.username
-	WHERE mem.username = #{username}
+	WHERE mem.username= #{username}
 
 	</select>
 	
+	
 	<insert id="Signup">
-	insert into uuuser(name,username,password,email) values(#{name},#{username},#{password},#{email})
+	insert into uuuser(name,username,password,email,enabled) values(#{name},#{username},#{password},#{email},'1')
 	</insert>
 	<insert id="SignupAuth">
 	insert into authorities(username) values(#{username})
 	</insert>
 	
 	<insert id="save" >
-        INSERT INTO uuuser(username,name,password,email,role) VALUES(#{username},#{name},#{password}, #{email}, #{role})
+        INSERT INTO uuuser(username,name,password,email) VALUES(#{username},#{name},#{password}, #{email})
     </insert>
     <select id="findByEmail" resultType="com.board.domain.user.User">
         SELECT * FROM uuuser WHERE email = #{email}
     </select>
     
     
+    
+    <select id="findMyPost">
+    select * from board where email=#{email}
+    </select>
 </mapper>

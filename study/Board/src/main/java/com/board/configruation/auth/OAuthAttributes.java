@@ -1,7 +1,9 @@
 package com.board.configruation.auth;
 
+import java.util.List;
 import java.util.Map;
 
+import com.board.domain.AuthVO;
 import com.board.domain.user.Ouser;
 import com.board.domain.user.Role;
 import com.board.domain.user.User;
@@ -14,16 +16,20 @@ public class OAuthAttributes {
 
 	public Map<String,Object> attributes;
 	private String nameAttributeKey,username, name, email,password;
+	private List<AuthVO> authList;
+	private AuthVO authVO;
 	
 	@Builder
 	public OAuthAttributes(Map<String,Object> attributes, String nameAttributeKey,
-			String name, String email,String username,String password) {
+			String name, String email,String username,String password,List<AuthVO> authList) {
+		System.out.println("???"+authList);
 		this.attributes = attributes;
 		this.nameAttributeKey = nameAttributeKey;
 		this.name=name;
 		this.email=email;
 		this.username=username;
 		this.password=password;
+		this.authList = authList;
 	}
 	
 	public static OAuthAttributes of(String registrationId, String userNameAttributeName,
@@ -32,7 +38,7 @@ public class OAuthAttributes {
 	}
 	
 	public static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String,Object> attributes) {
-		
+
 		System.out.println("attri?? :: "+attributes.toString());
 		return OAuthAttributes.builder()
 				.username((String) attributes.get("sub"))
@@ -45,13 +51,13 @@ public class OAuthAttributes {
 	}
 	
 	public User toEntity() {
-		System.out.println("toEntity username?? :"+username);
+
 		return User.builder()
 				.username(username)
 				.password(password)
 				.name(name)
 				.email(email)
-				.role(Role.GUEST)
+				.authList(authList)
 				.build();
 	}
 }

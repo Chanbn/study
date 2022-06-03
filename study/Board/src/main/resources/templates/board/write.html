@@ -7,6 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
+        <div sec:authorize="isAuthenticated()">
+        <span th:text="${session.user.email}">    </span>
+    <span sec:authentication="name"></span>님이 로그인 상태 
+    </div>
   <div th:replace="/fragments/nav.html :: fragment-nav"></div>
 <div class="col-lg-6" style="text-align:center">
 <form role="form" th:object=${vo} th:action="@{/board/write}" method="post">
@@ -67,17 +71,19 @@
 	});
 
 	var loginUserName = null;
+	var userEmail = null;
 	/*[# sec:authorize="isAuthenticated()"]*/
 	loginUserName = /*[[${#authentication.principal.username}]]*/
+	userEmail = /*[[${session.user.email}]]*/
 	/*[/]*/
 	
 	
 $(document).ready(function(){
-	
+alert(userEmail);
 	$(document).on("click","#addbtn",function(){
 		var content = document.getElementById("content").value;
 		var title = document.getElementById("title").value;
-		var vo={writer: loginUserName,title:title, content: content};
+		var vo={writer: loginUserName,title:title, content: content, email: userEmail};
 		makeboard(vo);
 	});
 })
@@ -99,6 +105,7 @@ function writeBoard(param,callbackfunc){
 			alert(data);
 			if(data){
 				alert("성공!");
+				window.location.href="http://localhost:8080/board/list?pageNum=1";
 			}
 		}, 
 		error : function(request,status,error){

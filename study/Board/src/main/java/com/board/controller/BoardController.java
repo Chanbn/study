@@ -3,6 +3,7 @@ package com.board.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ import com.board.service.BoardService;
 public class BoardController {
 	@Autowired
 	BoardService boardService;
-	
+
 	@GetMapping(value = "/list")
 	public void getList(Model model,Criteria cri) {
 		model.addAttribute("boardList",boardService.getList(cri));
@@ -58,6 +59,7 @@ public class BoardController {
 	
 	@GetMapping(value="/write") 
 	public void write(Model model,@ModelAttribute("cri") Criteria cri,@ModelAttribute("vo") BoardVO vo) {
+	
 	}
 	
 	@ResponseBody

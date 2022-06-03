@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.board.domain.UserVO;
 import com.board.domain.user.Ouser;
 import com.board.domain.user.Role;
+import com.board.domain.user.User;
 import com.board.mapper.UserMapper;
 import com.board.service.UserService;
 
@@ -26,14 +27,14 @@ public class UserApplicationTests {
 	
 	@Test
 	public void getInfoTest() {
-		UserVO vo;
+		User vo;
 		vo = userMapper.read("abc");
 		vo.getAuthList().forEach(authVO->System.out.println(authVO));
 	}
 	
 	@Test
 	public void inPutData() {
-		UserVO vo=new UserVO();
+		User vo=new User();
 		vo.setUsername("abc");
 		BCryptPasswordEncoder bcry = new BCryptPasswordEncoder();
 		vo.setPassword(bcry.encode("1234"));

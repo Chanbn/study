@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.board.domain.UserVO;
+
 import com.board.domain.user.User;
-import com.board.domain.user.UserDTO;
 import com.board.mapper.UserMapper;
 import com.board.service.UserService;
 
@@ -35,8 +34,8 @@ public class LoginController {
 	}
 	
 	@PostMapping("/signup")
-	public String doSignup(Model model,@ModelAttribute("user") UserDTO user) {
-		System.out.println(user.getEmail());
+	public String doSignup(Model model,@ModelAttribute("user") User user) {
+		System.out.println("hjffjdhgdjhgk"+user.getEmail());
 		service.Signup(user);
 		return "redirect:/board/list?pageNum=1";
 	}

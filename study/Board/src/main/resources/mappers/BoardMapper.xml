@@ -22,8 +22,9 @@ update board set hate = hate + 1 where idx=#{idx}
 update board set rnt = rnt + #{amount} where idx=#{idx}
 </update>
 
+
 <insert id="write">
-insert into board values(board_seq.nextval,#{title},#{content},#{writer},sysdate,sysdate,0)
+insert into board(idx,title,content,writer,reg_time,update_time,rnt,email) values(board_seq.nextval,#{title},#{content},#{writer},sysdate,sysdate,0,#{email})
 </insert>
 
 <select id="get" resultType="com.board.domain.BoardVO">
@@ -32,9 +33,9 @@ select * from board where idx = #{idx}
 
 <select id="getList" resultType="com.board.domain.BoardVO">
 <![CDATA[
-select idx,title,content,writer,reg_time,update_time,rnt,good from 
+select idx,title,content,writer,reg_time,update_time,rnt,good,email from 
 (
-select /*+index_desc(board board_pk) */ rownum rn,idx,title,content,writer,reg_time,update_time,rnt,good from board 
+select /*+index_desc(board board_pk) */ rownum rn,idx,title,content,writer,reg_time,update_time,rnt,good,email from board 
 where
  
 ]]>
