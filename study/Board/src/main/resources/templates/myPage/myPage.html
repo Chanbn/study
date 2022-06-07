@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<div th:replace="/fragments/header.html :: fragment-header"></div>
+</head>
+<body>
+<a th:text="${session.user.email}"></a>
+	<form th:action="@{/board/myList}" method="get">
+		<input type="hidden" id="pageNum" name="pageNum" th:value="1">
+		<input type="hidden" id="amount" name="amount" th:value="10" >
+		<input type="hidden" id="type" name="type" th:value="E" >
+		<input type="hidden" id="keyword" name="keyword" th:value="${session.user.email}" >
+		<button type="submit" id="myListbtn">내 게시물보기</button>
+	</form>
+    
+</body>
+</html>

@@ -12,6 +12,7 @@ private int pageNum;
 private int amount;
 private String keyword;
 private String type;
+private String email;
 
 public Criteria() {
 	this(1,10);

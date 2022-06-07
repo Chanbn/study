@@ -70,6 +70,7 @@ delete from board where idx=#{idx}
 <if test="type=='T'.toString()">title like '%' ||#{keyword}||'%'</if>
 <if test="type=='C'.toString()">content like '%' ||#{keyword}||'%'</if>
 <if test="type=='W'.toString()">writer like '%' ||#{keyword}||'%'</if>
+<if test="type=='E'.toString()">email=#{keyword}</if>
 </foreach>
 </trim>
 </sql>

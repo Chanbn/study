@@ -3,8 +3,11 @@
 <div th:fragment="fragment-nav">
 <div class="collapse" id="navbarToggleExternalContent">
   <div class="bg-dark p-4">
-    <h5 class="text-white h4">Collapsed content</h5>
-    <span class="text-muted">Toggleable via the navbar brand.</span>
+    <div class="btn-group" role="group" aria-label="Basic outlined example">
+  <button type="button" class="btn btn-outline-primary">Left</button>
+  <button type="button" class="btn btn-outline-primary">Middle</button>
+  <button type="button" class="btn btn-outline-primary" onclick="location.href='/myPage/myPage'">myPage</button>
+</div>
   </div>
 </div>    	
 <nav class="navbar navbar-dark bg-primary">
@@ -16,7 +19,11 @@
     <div>
     	<span sec:authorize="isAuthenticated()" th:text="${session.user.email}">    </span>
     	<span sec:authorize="isAuthenticated()" sec:authentication="name"></span>님이 로그인 상태 
-        <button sec:authorize="isAnonymous()" onclick="location.href='/view/login'" type="submit">Login</button>
+    	<a href="/board/myList?cri.pageNum=1&cri.amount=10&cri.type=E&cri.keyword=nbc0603@gmail.com">내가 작성한 글</a> 
+	<div sec:authorize="isAuthenticated()">
+
+	</div>
+		<button sec:authorize="isAnonymous()" onclick="location.href='/view/login'" type="submit">Login</button>
         <button sec:authorize="isAnonymous()" onclick="location.href='/view/signup'" type="submit">회원가입</button>
         <button sec:authorize="isAnonymous()" onclick="location.href='/oauth2/authorization/google'" type="submit">SocialLogin</button>
     </div>

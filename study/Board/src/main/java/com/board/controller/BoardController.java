@@ -33,9 +33,10 @@ public class BoardController {
 	@Autowired
 	BoardService boardService;
 
-	@GetMapping(value = "/list")
-	public void getList(Model model,Criteria cri) {
+	@GetMapping(value = {"/list","/myList"})
+	public void getList(Model model,@ModelAttribute("cri") Criteria cri) {
 		model.addAttribute("boardList",boardService.getList(cri));
+		System.out.println("keyword : "+cri.getKeyword()+" Email : "+cri.getEmail()+" Type : "+cri.getType());
 		int total = boardService.getTotal(cri);
 		model.addAttribute("pageMaker",new PageDTO(cri,total));
 	}
