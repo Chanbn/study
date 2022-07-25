@@ -18,4 +18,5 @@ public interface ReplyMapper {
 	public int findParent(@Param("idx") long idx,@Param("parentbno") long parentbno);
 	public AuthVO getProfile(String userid);
 	public int replydelete(@Param("idx") long idx, @Param("bno") long bno);
+	public int AllreplyDelete(long idx);
 }

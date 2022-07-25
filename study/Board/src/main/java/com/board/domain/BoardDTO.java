@@ -1,6 +1,7 @@
 package com.board.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,8 @@ public class BoardDTO {
 	private Long good;
 	private Long hate;
 	private String email;
+	private String changeYn;
+	private List<Long> fileIdxs;
+	private String deleteYn;
 	 
 }

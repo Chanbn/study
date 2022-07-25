@@ -4,17 +4,19 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.board.domain.BoardDTO;
 import com.board.domain.BoardVO;
 import com.board.domain.Criteria;
 
 @Mapper
 public interface BoardMapper {
-	public int write(BoardVO vo);
+	public int write(BoardDTO vo);
 	public List<BoardVO> getList(Criteria cri);
 	public int getTotalCount(Criteria cri);
-	public BoardVO get(long idx);
-	public int modify(BoardVO vo);
+	public BoardDTO get(long idx);
+	public int modify(BoardDTO vo);
 	public int remove(long idx);
 	public int rntcal(@Param("amount") long amount, @Param("idx") long idx);
 	public int updateReplyCnt(@Param("idx") long idx,@Param("amount") int amount);

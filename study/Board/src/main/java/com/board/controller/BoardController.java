@@ -1,10 +1,17 @@
 package com.board.controller;
 
+import java.io.File;
+import java.net.URLEncoder;
+import java.nio.file.Paths;
+import java.security.Principal;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,12 +26,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.standard.expression.Each;
 
+import com.board.domain.AttachDTO;
+import com.board.domain.BoardDTO;
 import com.board.domain.BoardVO;
 import com.board.domain.Criteria;
 import com.board.domain.PageDTO;
 import com.board.domain.RatingVO;
+import com.board.domain.user.User;
+import com.board.mapper.BoardMapper;
 import com.board.service.BoardService;
 
 @Controller
@@ -33,59 +46,130 @@ public class BoardController {
 	@Autowired
 	BoardService boardService;
 
-	@GetMapping(value = {"/list","/myList"})
-	public void getList(Model model,@ModelAttribute("cri") Criteria cri) {
-		model.addAttribute("boardList",boardService.getList(cri));
-		System.out.println("keyword : "+cri.getKeyword()+" Email : "+cri.getEmail()+" Type : "+cri.getType());
+	@GetMapping(value = { "/list", "/myList" })
+	public void getList(Model model, @ModelAttribute("cri") Criteria cri) {
+		model.addAttribute("boardList", boardService.getList(cri));
+		System.out.println("keyword : " + cri.getKeyword() + " Email : " + cri.getEmail() + " Type : " + cri.getType());
 		int total = boardService.getTotal(cri);
-		model.addAttribute("pageMaker",new PageDTO(cri,total));
+		model.addAttribute("pageMaker", new PageDTO(cri, total));
 	}
-	
+
 	@GetMapping(value = "/get")
-	public void get(Model model,@ModelAttribute("cri") Criteria cri, @RequestParam("idx") int idx,@RequestParam("pageNum") int pageNum) {
+	public void get(Model model, @ModelAttribute("cri") Criteria cri, @RequestParam("idx") int idx,
+			@RequestParam("pageNum") int pageNum) {
 		cri.setPageNum(pageNum);
-		model.addAttribute("board",boardService.get(idx));
+		BoardDTO board = boardService.get(idx);
+		model.addAttribute("board", board);
+		List<AttachDTO> fileList = boardService.getAttachFileList(board.getIdx());
+		model.addAttribute("fileList",fileList);
 	}
-	
+
 	@ResponseBody
-	@PostMapping(value="/get", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> getRating(Model model,@RequestBody RatingVO rvo) {
+	@PostMapping(value = "/get", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
+	public ResponseEntity<String> getRating(Model model, @RequestBody RatingVO rvo) {
 		System.out.println(rvo.getIdx());
 		int chk = boardService.chooseRating(rvo.getIdx(), rvo.getWriter(), rvo.getChoose());
-		if(chk==3) {
-			return new ResponseEntity<>("이미 추천/비추천을 누른 게시글입니다.",HttpStatus.OK);
+		if (chk == 3) {
+			return new ResponseEntity<>("이미 추천/비추천을 누른 게시글입니다.", HttpStatus.OK);
 		}
-		return chk==1? new ResponseEntity<>("success",HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	
-	@GetMapping(value="/write") 
-	public void write(Model model,@ModelAttribute("cri") Criteria cri,@ModelAttribute("vo") BoardVO vo) {
-	
-	}
-	
-	@ResponseBody
-	@PostMapping(value="/write", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> writeboard(@RequestBody BoardVO vo) {
-		int chk = boardService.write(vo);
-		System.out.println(chk);
 		return chk == 1 ? new ResponseEntity<>("success", HttpStatus.OK)
 				: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	@GetMapping(value="/modify")
-	public void modify1(Model model,@RequestParam("idx") Long idx,@ModelAttribute("cri") Criteria cri) {
-		System.out.println(cri.getAmount());
-		model.addAttribute("vo",boardService.get(idx));
 
+	@GetMapping(value = "/write")
+	public String write(Model model, @ModelAttribute("cri") Criteria cri, @ModelAttribute("vo") BoardDTO vo,
+			@SessionAttribute("user") User user) {
+
+		System.out.println("idx ?? ?? ??"+vo.getIdx());
+		
+		if(vo.getIdx()==null) {
+			vo.setEmail(user.getEmail());
+			vo.setWriter(user.getUsername());
+			model.addAttribute("vo",vo);
+		}else {
+			BoardDTO board = boardService.get(vo.getIdx());
+			if(board==null ||"Y".equals(board.getDeleteYn())) {
+				return "redirect:/board/list?pageNum=2";
+			}
+			model.addAttribute("vo",board);
+			
+			List<AttachDTO> fileList = boardService.getAttachFileList(vo.getIdx());
+			model.addAttribute("fileList",fileList);
+		} 
+		return "board/write";
 	}
-	@PostMapping(value="/modify")
-	public String modify2(Model model, @ModelAttribute("vo") BoardVO vo) {
-		System.out.println(vo.toString());
-		boardService.modify(vo);
+	
+	@GetMapping(value = "/download")
+	public void downloadAttachFile(@RequestParam("idx") Long idx,Model model,HttpServletResponse response) {
+		AttachDTO fileInfo = boardService.getAttachDetail(idx);
+		String uploadDate = fileInfo.getInsertTime().format(DateTimeFormatter.ofPattern("yyMMdd"));
+		String uploadPath = Paths.get("D:","SpringBootProject","upload",uploadDate).toString();
+		String filename = fileInfo.getOriginalName();
+		File file = new File(uploadPath,fileInfo.getSaveName());
+		
+		try {
+			byte[] data = FileUtils.readFileToByteArray(file);
+			response.setContentType("application/octet-stream");
+			response.setContentLength(data.length);
+			response.setHeader("Content-Transfer-Encoding", "binary");
+			response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(filename, "UTF-8") + "\";");
+			
+			response.getOutputStream().write(data);
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+		}catch (Exception e) {
+			// TODO: handle exception
+			
+		}
+	}
+	/*
+	 * @GetMapping(value = "/write", params = { "idx", "pageNum", "amount" }) public
+	 * void modify(Model model, @RequestParam("idx") Long
+	 * idx, @ModelAttribute("cri") Criteria cri) { long boardIdx = idx;
+	 * List<AttachDTO> fileList = boardService.getAttachFileList(boardIdx);
+	 * System.out.println("filesize" + fileList.toString());
+	 * model.addAttribute("fileList", fileList); model.addAttribute("vo",
+	 * boardService.get(idx));
+	 * 
+	 * }
+	 */
+	
+	/*
+	 * @PostMapping(value="/write") public void writeboard(@ModelAttribute("vo")
+	 * BoardVO vo,Model model) { int chk = boardService.write(vo);
+	 * System.out.println(chk); }
+	 * 
+	 */
+	@PostMapping(value = "/write" )
+	public String writeWithimage(@ModelAttribute("vo") BoardDTO vo, final MultipartFile[] files, Model model) {
+		
+		boardService.write(vo, files);
+
+
 		return "redirect:/board/list?pageNum=1";
-	}
-	@GetMapping(value="/remove")
-	public String remove(Model model,@RequestParam("idx") int idx) {
+}
+	/*
+	 * @GetMapping(value="/modify") public void modify1(Model
+	 * model,@RequestParam("idx") Long idx,@ModelAttribute("cri") Criteria cri) {
+	 * System.out.println(cri.getAmount()); long boardIdx = idx; List<AttachDTO>
+	 * fileList = boardService.getAttachFileList(boardIdx);
+	 * System.out.println("filesize"+fileList.toString());
+	 * model.addAttribute("fileList",fileList);
+	 * model.addAttribute("vo",boardService.get(idx));
+	 * 
+	 * }
+	 */
+	/*
+	 * @PostMapping(value = "/modify") public String modify2(Model
+	 * model, @ModelAttribute("vo") BoardDTO vo) {
+	 * System.out.println(vo.toString()); boardService.modify(vo); return
+	 * "redirect:/board/list?pageNum=1"; }
+	 * 
+	 */
+	@GetMapping(value = "/remove")
+	public String remove(Model model, @RequestParam("idx") int idx) {
 		boardService.remove(idx);
 		return "redirect:/board/list?pageNum=1";
 	}
+	 
 }

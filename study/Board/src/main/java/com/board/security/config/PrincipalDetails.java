@@ -52,7 +52,6 @@ public class PrincipalDetails implements UserDetails,OAuth2User{
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		System.out.println("#%@@#@#^sfdjsafjasdksda");
 		return user.getName().toString();
 	}
 

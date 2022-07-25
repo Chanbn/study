@@ -23,21 +23,27 @@ update board set rnt = rnt + #{amount} where idx=#{idx}
 </update>
 
 
-<insert id="write">
-insert into board(idx,title,content,writer,reg_time,update_time,rnt,email) values(board_seq.nextval,#{title},#{content},#{writer},sysdate,sysdate,0,#{email})
+<insert id="write" parameterType="com.board.domain.BoardDTO">
+
+<selectKey keyProperty="idx" resultType="long" order="BEFORE">
+    select board_seq.nextval as idx FROM DUAL
+  </selectKey>
+
+
+insert into board(idx,title,content,writer,reg_time,update_time,rnt,email) values(#{idx},#{title},#{content},#{writer},sysdate,sysdate,0,#{email})
 </insert>
 
-<select id="get" resultType="com.board.domain.BoardVO">
+<select id="get" resultType="com.board.domain.BoardDTO">
 select * from board where idx = #{idx}
 </select>
 
-<select id="getList" resultType="com.board.domain.BoardVO">
+<select id="getList" resultType="com.board.domain.BoardDTO">
 <![CDATA[
 select idx,title,content,writer,reg_time,update_time,rnt,good,email from 
 (
 select /*+index_desc(board board_pk) */ rownum rn,idx,title,content,writer,reg_time,update_time,rnt,good,email from board 
 where
- 
+ delete_yn='N' and
 ]]>
 <include refid="criteria"></include>
 <![CDATA[
@@ -60,9 +66,9 @@ select count(*) from board where
 <include refid="criteria"></include> idx>0
 </select>
 
-<delete id="remove">
-delete from board where idx=#{idx}
-</delete>
+<update id="remove">
+update board set delete_yn='Y' where idx=#{idx}
+</update>
 
 <sql id="criteria">
 <trim prefix="(" suffix=") AND">

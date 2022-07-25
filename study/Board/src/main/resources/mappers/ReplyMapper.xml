@@ -23,6 +23,10 @@ where rn>(#{cri.pageNum}-1)*#{cri.amount}
 
 </select>
 
+<delete id="AllreplyDelete">
+update reply set avail=0 where idx=#{idx}
+</delete>
+
 <delete id="replydelete">
 update reply set avail=0 where idx=#{idx} and bno=#{bno}
 </delete>

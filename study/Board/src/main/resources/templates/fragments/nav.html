@@ -4,8 +4,8 @@
 <div class="collapse" id="navbarToggleExternalContent">
   <div class="bg-dark p-4">
     <div class="btn-group" role="group" aria-label="Basic outlined example">
-  <button type="button" class="btn btn-outline-primary">Left</button>
-  <button type="button" class="btn btn-outline-primary">Middle</button>
+  <button type="button" class="btn btn-outline-primary" onclick="location.href='/findMap/home'">map</button>
+  <button type="button" class="btn btn-outline-primary" onclick="location.href='/board/list'">board</button>
   <button type="button" class="btn btn-outline-primary" onclick="location.href='/myPage/myPage'">myPage</button>
 </div>
   </div>
@@ -25,7 +25,7 @@
 	</div>
 		<button sec:authorize="isAnonymous()" onclick="location.href='/view/login'" type="submit">Login</button>
         <button sec:authorize="isAnonymous()" onclick="location.href='/view/signup'" type="submit">회원가입</button>
-        <button sec:authorize="isAnonymous()" onclick="location.href='/oauth2/authorization/google'" type="submit">SocialLogin</button>
+        <!-- <button sec:authorize="isAnonymous()" onclick="location.href='/oauth2/authorization/google'" type="submit">SocialLogin</button> -->
     </div>
         <form th:action="@{/view/logoutProc}" method="post" sec:authorize="isAuthenticated()">
          <input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }">

@@ -11,5 +11,7 @@
 	<input type="password" name="pw" maxlength="32" >
 	<button type="submit">로그인</button>
 </form>
+
+<button sec:authorize="isAnonymous()" onclick="location.href='/oauth2/authorization/google'" type="submit">Google로그인</button>
 </body>
 </html>

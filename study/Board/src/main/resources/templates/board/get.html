@@ -29,6 +29,20 @@
   </td>
   </tr>
   
+  <tr>
+  <td colspan="3">
+  <div th:if="${not #lists.isEmpty(fileList)}" >
+  <label for="input-type-4">File</label>
+  <div class="col-sm-10">
+  <a th:each="row,status:${fileList}" th:href="@{/board/download(idx=${row.idx})}">
+  <i aria-hidden="true"></i>
+  [[${row.originalName}]]
+  </a>
+  </div>
+   	 </div>
+
+  </tr>
+     
     <tr height="200">
       <td><span th:text="${board.content}"></span></td>
     </tr>
@@ -42,8 +56,10 @@
 <a th:href="@{'/board/list?pageNum='+${cri.pageNum}}" type="button" class="btn btn-secondary">목록</a>
 </div>
 <div style="float:right">
-<a th:href="@{'/board/remove?idx='+${board.idx}}" type="button" class="btn btn-danger">삭제</a>
+<a  type="button" id="deleteBoard" class="btn btn-danger">삭제</a>
+<div sec:authorize="isAuthenticated()">
 <button type="button" id="modi" class="btn btn-success" >수정</button>
+</div>
 </div>
 </div>
 
@@ -64,7 +80,11 @@
 			<input name="pageNum" type="hidden" th:value="${cri.pageNum}">
 			<input name="amount" type="hidden" th:value="${cri.amount}">
 			</form>
-
+		
+			<form id="operForm2" role="form" method="get">
+			<input id="idx" name="idx" type="hidden" th:value="${board.idx}">
+			</form>
+			
 			<div style="margin:60px 0px 0px 400px">
 			<button id="goodb">up</button>
 			<button id="hateb">down</button>
@@ -84,14 +104,7 @@
 			<div class="pannel-footer">
 			</div>
 
-			
-            <script type="text/javascript">
 
-        	var openForm = $("#openForm");
-        	$("#modi").on("click",function(e){
-        		$("#operForm").attr("action","/board/modify?").submit();
-        	});
-            </script>
 </body>
 
 
@@ -110,12 +123,34 @@ $(function () {
     });
 });
 
+
+
 var loginUserName = null;
 /*[# sec:authorize="isAuthenticated()"]*/
 loginUserName = /*[[${#authentication.principal.username}]]*/
+loginUserEmail = /*[[${#authentication.principal.User.email}]]*/
 /*[/]*/
+var boardEmail = /*[[${board.email}]]*/
 
-$(document).ready(function(){
+$("#modi").on("click",function(e){
+
+	if(boardEmail==loginUserEmail){
+	$("#operForm").attr("action","/board/write?").submit();}
+	else{
+		alert("본인이 작성한 글만 수정 할 수 있습니다.")
+	}
+});
+
+$("#deleteBoard").on("click",function(e){
+	if(boardEmail==loginUserEmail){
+		$("#operForm2").attr("action","/board/remove?").submit();}
+		else{
+			alert("본인이 작성한 글만 삭제 할 수 있습니다.")
+		}
+});
+
+	
+	$(document).ready(function(){
 	var replyPageFooter = $(".pannel-footer");
 	var replyUl=$(".chat");
 	var idxValue=/*[[ ${board.idx} ]]*/;
