@@ -4,27 +4,28 @@
 
 
 <resultMap type="com.board.domain.user.User" id="memberMap">
-	<id property="username" column="username"/>
-	<result property="username" column="username"/>
+	<id property="userid" column="userid"/>
+	<result property="userid" column="userid"/>
 	<result property="name" column="name"/>
 	<result property="email" column="email"/>
 	<result property="password" column="password"/>	
+	<result property="nickname" column="nickname"></result>
 	<collection property="authList" resultMap="authMap">
 	</collection>		
 	</resultMap>
 	
 	<resultMap type="com.board.domain.AuthVO" id="authMap">
-	<result property="username" column="username"/>
+	<result property="userid" column="userid"/>
 	<result property="authority" column="authority"/>
 	</resultMap>
 
 	<select id="read" resultMap="memberMap">
 
 		SELECT
-	mem.username, name, email, password, enabled, authority 
+	mem.userid, name, email, password, enabled, authority,nickname 
 	FROM
-	uuuser mem LEFT OUTER JOIN authorities auth on mem.username = auth.username
-	WHERE mem.username= #{username}
+	uuuser mem LEFT OUTER JOIN authorities auth on mem.userid = auth.userid
+	WHERE mem.userid= #{userid}
 
 	</select>
 	
@@ -38,14 +39,14 @@
 	
 	
 	<insert id="Signup">
-	insert into uuuser(name,username,password,email,enabled) values(#{name},#{username},#{password},#{email},'1')
+	insert into uuuser(name,userid,password,email,enabled,nickname) values(#{name},#{userid},#{password},#{email},'1',#{nickname})
 	</insert>
 	<insert id="SignupAuth">
-	insert into authorities(username) values(#{username})
+	insert into authorities(userid) values(#{userid})
 	</insert>
 	
 	<insert id="save" >
-        INSERT INTO uuuser(username,name,password,email) VALUES(#{username},#{name},#{password}, #{email})
+        INSERT INTO uuuser(userid,name,password,email,nickname) VALUES(#{userid},#{name},#{password}, #{email},#{nickname})
     </insert>
     <select id="findByEmail" resultType="com.board.domain.user.User">
         SELECT * FROM uuuser WHERE email = #{email}

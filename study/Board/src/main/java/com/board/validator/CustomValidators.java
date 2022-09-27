@@ -39,8 +39,8 @@ public class CustomValidators {
 		@Override
 		public void doValidate(UserRequestDTO dto, Errors errors) {
 			// TODO Auto-generated method stub
-			if(service.nameValid(dto.getName())>0) {
-				errors.rejectValue("name", "닉네임 중복 오류", "이미 등록되어있는 닉네임 입니다.");			}
+			if(service.nameValid(dto.getNickname())>0) {
+				errors.rejectValue("nickname", "닉네임 중복 오류", "이미 등록되어있는 닉네임 입니다.");			}
 		}
 	}
 }

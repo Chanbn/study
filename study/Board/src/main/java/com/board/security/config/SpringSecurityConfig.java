@@ -34,7 +34,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		.formLogin()
 		.loginPage("/view/login")
 		.loginProcessingUrl("/loginProc")
-		.usernameParameter("username")
+		.usernameParameter("userid")
 		.passwordParameter("pw")
 		.defaultSuccessUrl("/board/list",true)
 		.permitAll()

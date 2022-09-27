@@ -13,31 +13,34 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class User {
-	private String username;
+	private String userid;
     private String name;
     private String password;
     private String email;
 	private List<AuthVO> authList;
 	private boolean enabled;
+	private String nickname;
 	
     @Builder
-    public User(String name, String email, List<AuthVO> authList, String username,String password) {
+    public User(String name, String email, List<AuthVO> authList, String userid,String password,String nickname) {
 
     	this.name = name;
     	this.email= email;
-    	this.username=username;
+    	this.userid=userid;
     	this.password=password;
     	this.authList = authList;
+    	this.nickname = nickname;
     }
     
     @Builder
-    public User(String name, String email, List<AuthVO> authList, String username,String password,boolean enabled) {
+    public User(String name, String email, List<AuthVO> authList, String userid,String password,boolean enabled,String nickname) {
     	this.name=name;
     	this.email= email;
-    	this.username=username;
+    	this.userid=userid;
     	this.password=password;
     	this.authList = authList;
     	this.enabled = enabled;    	
+    	this.nickname = nickname;
     }
     
  

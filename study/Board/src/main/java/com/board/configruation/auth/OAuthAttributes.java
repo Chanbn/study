@@ -15,49 +15,51 @@ import lombok.Getter;
 public class OAuthAttributes {
 
 	public Map<String,Object> attributes;
-	private String nameAttributeKey,username, name, email,password;
+	private String nameAttributeKey,userid, name, email,password,nickname;
 	private List<AuthVO> authList;
 	private AuthVO authVO;
 	
 	@Builder
 	public OAuthAttributes(Map<String,Object> attributes, String nameAttributeKey,
-			String name, String email,String username,String password,List<AuthVO> authList) {
+			String name, String email,String userid,String password,List<AuthVO> authList,String nickname) {
 		System.out.println("???"+authList);
 		this.attributes = attributes;
 		this.nameAttributeKey = nameAttributeKey;
 		this.name=name;
 		this.email=email;
-		this.username=username;
+		this.userid=userid;
 		this.password=password;
 		this.authList = authList;
+		this.nickname=nickname;
 	}
 	
-	public static OAuthAttributes of(String registrationId, String userNameAttributeName,
+	public static OAuthAttributes of(String registrationId, String useridAttributeName,
 			Map<String,Object> attributes) {
-		return ofGoogle(userNameAttributeName,attributes);
+		return ofGoogle(useridAttributeName,attributes);
 	}
 	
-	public static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String,Object> attributes) {
+	public static OAuthAttributes ofGoogle(String useridAttributeName, Map<String,Object> attributes) {
 
 		System.out.println("attri?? :: "+attributes.toString());
 		return OAuthAttributes.builder()
-				.username((String) attributes.get("sub"))
+				.userid((String) attributes.get("sub"))
 				.password((String) attributes.get("sub"))
 				.name((String) attributes.get("name"))
 				.email((String) attributes.get("email"))
 				.attributes(attributes)
-				.nameAttributeKey(userNameAttributeName)
+				.nameAttributeKey(useridAttributeName)
 				.build();
 	}
 	
 	public User toEntity() {
 
 		return User.builder()
-				.username(username)
+				.userid(userid)
 				.password(password)
 				.name(name)
 				.email(email)
 				.authList(authList)
+				.nickname(nickname)
 				.build();
 	}
 }

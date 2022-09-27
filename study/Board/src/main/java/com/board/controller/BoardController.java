@@ -88,7 +88,7 @@ public class BoardController {
 		
 		if(vo.getIdx()==null) {
 			vo.setEmail(user.getEmail());
-			vo.setWriter(user.getUsername());
+			vo.setWriter(user.getUserid());
 			model.addAttribute("vo",vo);
 		}else {
 			BoardDTO board = boardService.get(vo.getIdx());

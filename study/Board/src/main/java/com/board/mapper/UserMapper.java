@@ -7,9 +7,9 @@ import com.board.domain.UserRequestDTO;
 import com.board.domain.user.User;
 @Mapper
 public interface UserMapper {
-	public User read(String username);
+	public User read(String userid);
 	public int Signup(UserRequestDTO user);
-	public int SignupAuth(String username);
+	public int SignupAuth(String userid);
 	public User findByEmail(String email);
 	public void save(User ouser);
 	public BoardVO findMyPost(String email);

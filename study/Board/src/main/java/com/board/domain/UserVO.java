@@ -11,7 +11,9 @@ import lombok.ToString;
 @ToString
 public class UserVO {
 
-	private String username;
+	private String userid;
+	private String name;
+	private String nickname;
 	private String password;
 	private String email;
 	private List<AuthVO> authList;

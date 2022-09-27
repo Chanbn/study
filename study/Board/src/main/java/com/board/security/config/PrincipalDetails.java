@@ -73,7 +73,7 @@ System.out.println(user.getAuthList());
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return user.getUsername();
+		return user.getUserid();
 	}
 
 	@Override

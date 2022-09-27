@@ -19,14 +19,19 @@
 	      	      	      	      	      <br/>
 	<pre>
 	-------------------------------------------------------
-	이름  
+	아이디  
 		  <br/>
-	<input type="text" id="username" name="username">  
-	      <span id="valid" th:text="${valid_username}"></span> 
+	<input type="text" id="userid" name="userid">  
+	      <span id="valid" th:text="${valid_userid}"></span> 
 	-------------------------------------------------------
 	닉네임 
 			  <br/>
-	<input type="text" id="name" name="name">   <button type="button" onclick="checkNickName()">중복확인</button>
+	<input type="text" id="nickname" name="nickname">   <button type="button" onclick="checkNickName()">중복확인</button>
+	      	      <span id="valid" th:text="${valid_nickname}"></span>
+	-------------------------------------------------------
+	이름 
+			  <br/>
+	<input type="text" id="name" name="name">  
 	      	      <span id="valid" th:text="${valid_name}"></span>
 	-------------------------------------------------------
 	비밀번호 
@@ -62,7 +67,7 @@ $(function () {
 
 function checkNickName(){
 	var nickName = $('#name').val();
-	var data = {name:nickName} ;
+	var data = {nickname:nickName} ;
 	alert(nickName);
 	$.ajax({
 		url:"/view/chk",
@@ -88,14 +93,14 @@ function checkNickName(){
 }
 
 function joinform_check(){
-	var username = document.getElementById("username");
+	var userid = document.getElementById("userid");
 	var name = document.getElementById("name");
 	var email = document.getElementById("email");
 	var password = document.getElementById("password");
 	var repassword = document.getElementById("repassword");
 	
-	if(username.value == ""){
-		alert("이름을 입력하세요.");
+	if(userid.value == ""){
+		alert("아이디를 입력하세요.");
 		username.focus();
 		return false;
 	}

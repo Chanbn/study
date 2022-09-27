@@ -20,9 +20,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Override
-	public User read(String username) {
+	public User read(String userid) {
 		// TODO Auto-generated method stub
-		return mapper.read(username);
+		return mapper.read(userid);
 	}
 	@Override
 	public int Signup(UserRequestDTO user) {
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 		if(chk==0) {
 			return 0;
 		}
-		return mapper.SignupAuth(user.getUsername());
+		return mapper.SignupAuth(user.getUserid());
 	}
 	@Override
 	public Map<String, String> validatorHandling(Errors errors) {

@@ -49,14 +49,14 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService{
 	private User saveOrupdate(OAuthAttributes attributes,OAuth2User oAuth2User) {
 		User user;
 
-		if(userMapper.read(attributes.getUsername())!=null){
-			user = userMapper.read(attributes.getUsername());
+		if(userMapper.read(attributes.getUserid())!=null){
+			user = userMapper.read(attributes.getUserid());
 		}else {
 			user = attributes.toEntity();
 			userMapper.save(user);
-			userMapper.SignupAuth(user.getUsername());
-			System.out.println("username?"+user.getUsername());
-			user = userMapper.read(attributes.getUsername());
+			userMapper.SignupAuth(user.getUserid());
+			System.out.println("username?"+user.getUserid());
+			user = userMapper.read(attributes.getUserid());
 		}
 		return user;
 	}
