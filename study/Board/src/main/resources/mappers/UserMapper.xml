@@ -28,6 +28,14 @@
 
 	</select>
 	
+	<select id="emailValid" resultType="int"> 
+	select count(*) from uuuser where exists(select 1 from uuuser where email = #{email})
+	</select>
+	
+	<select id="nameValid" resultType="int"> 
+	select count(*) from uuuser where exists(select 1 from uuuser where name = #{name})
+	</select>
+	
 	
 	<insert id="Signup">
 	insert into uuuser(name,username,password,email,enabled) values(#{name},#{username},#{password},#{email},'1')

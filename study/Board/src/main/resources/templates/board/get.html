@@ -353,7 +353,7 @@ function pageButton(repCnt,page){
 
 	$(document).on('click','#writebtn',function(e){
 		var content = document.getElementById("replycontent").value;
-		var rep={idx: idxValue ,writer: loginUserName, content: content,parentBno: 0,groupnum:0};
+		var rep={idx: idxValue ,writer: loginUserName, content: content,parentBno: 0,groupnum:0, email: loginUserEmail};
 		makereply(rep);
 		document.getElementById("replycontent").value='';
 	});

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.standard.expression.Each;
 
 import com.board.domain.AttachDTO;
@@ -40,6 +42,8 @@ import com.board.domain.user.User;
 import com.board.mapper.BoardMapper;
 import com.board.service.BoardService;
 
+
+@EnableAspectJAutoProxy
 @Controller
 @RequestMapping("/board/*")
 public class BoardController {
@@ -49,7 +53,7 @@ public class BoardController {
 	@GetMapping(value = { "/list", "/myList" })
 	public void getList(Model model, @ModelAttribute("cri") Criteria cri) {
 		model.addAttribute("boardList", boardService.getList(cri));
-		System.out.println("keyword : " + cri.getKeyword() + " Email : " + cri.getEmail() + " Type : " + cri.getType());
+		System.out.println("keyword : " + cri.getKeyword() + " Email : " + " Type : " + cri.getType());
 		int total = boardService.getTotal(cri);
 		model.addAttribute("pageMaker", new PageDTO(cri, total));
 	}
@@ -142,11 +146,11 @@ public class BoardController {
 	 */
 	@PostMapping(value = "/write" )
 	public String writeWithimage(@ModelAttribute("vo") BoardDTO vo, final MultipartFile[] files, Model model) {
-		
-		boardService.write(vo, files);
+		boolean chk = false;
+		chk = boardService.write(vo, files);
 
 
-		return "redirect:/board/list?pageNum=1";
+		return "redirect:/board/get?pageNum=1";
 }
 	/*
 	 * @GetMapping(value="/modify") public void modify1(Model
@@ -167,8 +171,15 @@ public class BoardController {
 	 * 
 	 */
 	@GetMapping(value = "/remove")
-	public String remove(Model model, @RequestParam("idx") int idx) {
-		boardService.remove(idx);
+	public String remove(Model model, @RequestParam("idx") int idx,RedirectAttributes rttr) {
+		int chk = 0;
+		chk = boardService.remove(idx);
+		System.out.println("chk 값 ? "+chk);
+		if(chk==1) {
+			rttr.addFlashAttribute("msg", "삭제되었습니다.");			
+		}else {
+			rttr.addFlashAttribute("msg", "삭제오류");
+		}
 		return "redirect:/board/list?pageNum=1";
 	}
 	 

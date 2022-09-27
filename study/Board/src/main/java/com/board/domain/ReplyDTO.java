@@ -13,6 +13,7 @@ public class ReplyDTO {
 	private long bno;
 	private long idx;
 	private String writer;
+	private String email;
 	private LocalDateTime regTime;
 	private long parentBno;
 	private String content;

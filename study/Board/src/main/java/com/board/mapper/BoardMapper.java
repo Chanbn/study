@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.board.domain.BoardDTO;
 import com.board.domain.BoardVO;
 import com.board.domain.Criteria;
+import com.board.domain.ReplyDTO;
 
 @Mapper
 public interface BoardMapper {
@@ -24,4 +25,6 @@ public interface BoardMapper {
 	public int boardRatingGood(long idx);
 	public int boardRatingHate(long idx);
 	public int boardRatingCheck(@Param("idx") long idx, @Param("writer") String writer);
+	public List<ReplyDTO> getCommentList(Criteria cri);
+	public int getCommentCount(Criteria cri);
 }

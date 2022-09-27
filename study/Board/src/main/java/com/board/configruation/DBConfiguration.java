@@ -1,11 +1,15 @@
 package com.board.configruation;
 
+import java.time.LocalDateTime;
+
 import javax.sql.DataSource;
 
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.type.TypeHandler;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -40,7 +44,9 @@ public class DBConfiguration {
 		factoryBean.setDataSource(dataSource());
 		factoryBean.setMapperLocations(applicationContext.getResources("classpath:/mappers/**/*Mapper.xml"));
 		factoryBean.setTypeAliasesPackage("com.board.domain");
-		factoryBean.setConfiguration(mybatisConfg());
+//		factoryBean.setConfiguration(mybatisConfg());
+		factoryBean.setConfigLocation(applicationContext.getResource("classpath:/config/mybatis-config.xml"));
+		
 		return factoryBean.getObject();
 	}
 
@@ -52,6 +58,7 @@ public class DBConfiguration {
 	@Bean
 	@ConfigurationProperties(prefix = "mybatis.configuration")
 	public org.apache.ibatis.session.Configuration mybatisConfg() {
+		
 		return new org.apache.ibatis.session.Configuration();
 	}
  

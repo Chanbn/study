@@ -1,5 +1,8 @@
 package com.board;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,4 +50,22 @@ public class UserApplicationTests {
 		
 	
 	}
+	
+	@Autowired
+	UserService service;
+	
+	@Test
+	public void validEmailTest() {
+		String email = "nbc0603@gmail.co";
+		int result = service.emailValid(email);
+		System.out.println(result);
+	}
+	
+	@Test
+	public void validNameTest() {
+		String name = "s";
+		int result = service.emailValid(name);
+		System.out.println(result);
+	}
+
 }

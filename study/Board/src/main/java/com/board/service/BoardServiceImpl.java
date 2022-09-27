@@ -13,6 +13,7 @@ import com.board.domain.AttachDTO;
 import com.board.domain.BoardDTO;
 import com.board.domain.BoardVO;
 import com.board.domain.Criteria;
+import com.board.domain.ReplyDTO;
 import com.board.mapper.AttachMapper;
 import com.board.mapper.BoardMapper;
 import com.board.mapper.ReplyMapper;
@@ -135,6 +136,18 @@ public class BoardServiceImpl implements BoardService{
 	public AttachDTO getAttachDetail(Long idx) {
 		// TODO Auto-generated method stub
 		return attachMapper.selectAttachDetail(idx);
+	}
+
+	@Override
+	public List<ReplyDTO> getCommentList(Criteria cri) {
+		// TODO Auto-generated method stub
+		return boardMapper.getCommentList(cri);
+	}
+
+	@Override
+	public int getCommentCount(Criteria cri) {
+		// TODO Auto-generated method stub
+		return boardMapper.getCommentCount(cri);
 	}
 
 

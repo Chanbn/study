@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.board.mapper.ReplyMapper">
 <insert id="write">
-insert into Reply values(#{bno},#{idx},#{writer},sysdate,#{parentBno},#{content},1,#{groupnum})
+insert into Reply values(#{bno},#{idx},#{writer},sysdate,#{parentBno},#{content},1,#{groupnum},#{email})
 </insert>
 <select id="repList" resultType="com.board.domain.ReplyDTO">
 select writer,bno,idx,parent_bno,reg_time,content,groupnum from Reply where idx=#{idx}

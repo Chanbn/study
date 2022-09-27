@@ -8,6 +8,7 @@ import com.board.domain.AttachDTO;
 import com.board.domain.BoardDTO;
 import com.board.domain.BoardVO;
 import com.board.domain.Criteria;
+import com.board.domain.ReplyDTO;
 
 
 public interface BoardService {
@@ -21,4 +22,6 @@ public interface BoardService {
 	public int chooseRating(Long idx, String writer,char choose);
 	public List<AttachDTO> getAttachFileList(Long boardIdx);
 	public AttachDTO getAttachDetail(Long idx);
+	public List<ReplyDTO> getCommentList(Criteria cri);
+	public int getCommentCount(Criteria cri);
 }

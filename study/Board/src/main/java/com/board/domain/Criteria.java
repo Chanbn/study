@@ -1,5 +1,6 @@
 package com.board.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +13,6 @@ private int pageNum;
 private int amount;
 private String keyword;
 private String type;
-private String email;
 
 public Criteria() {
 	this(1,10);
@@ -21,6 +21,13 @@ public Criteria(int pageNum, int amount) {
 	this.pageNum = pageNum;
 	this.amount = amount;
 }
+
+@Builder
+public Criteria(String keyword, String type) {
+	this.keyword=keyword;
+	this.type=type;
+}
+
 
 public String[] getTypeArr() {
 	
