@@ -20,5 +20,8 @@
 		<input type="hidden" id="keyword" name="keyword" th:value="${session.user.email}" >
 		<button type="submit" >내 댓글보기</button>
 	</form>
+	<form th:action="@{/myPage/myInfo}" method="get">
+		<button type="submit">회원정보수정</button>
+	</form>
 </body>
 </html>

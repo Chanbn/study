@@ -4,8 +4,8 @@
 
 
 <resultMap type="com.board.domain.user.User" id="memberMap">
-	<id property="userid" column="userid"/>
-	<result property="userid" column="userid"/>
+	<id property="username" column="username"/>
+	<result property="username" column="username"/>
 	<result property="name" column="name"/>
 	<result property="email" column="email"/>
 	<result property="password" column="password"/>	
@@ -15,17 +15,17 @@
 	</resultMap>
 	
 	<resultMap type="com.board.domain.AuthVO" id="authMap">
-	<result property="userid" column="userid"/>
+	<result property="username" column="username"/>
 	<result property="authority" column="authority"/>
 	</resultMap>
 
 	<select id="read" resultMap="memberMap">
 
 		SELECT
-	mem.userid, name, email, password, enabled, authority,nickname 
+	mem.username, name, email, password, enabled, authority,nickname 
 	FROM
-	uuuser mem LEFT OUTER JOIN authorities auth on mem.userid = auth.userid
-	WHERE mem.userid= #{userid}
+	uuuser mem LEFT OUTER JOIN authorities auth on mem.username = auth.username
+	WHERE mem.username= #{username}
 
 	</select>
 	
@@ -33,28 +33,39 @@
 	select count(*) from uuuser where exists(select 1 from uuuser where email = #{email})
 	</select>
 	
-	<select id="nameValid" resultType="int"> 
-	select count(*) from uuuser where exists(select 1 from uuuser where name = #{name})
+	<select id="nickNameValid" resultType="int"> 
+	select count(*) from uuuser where exists(select 1 from uuuser where nickname = #{nickname})
+	</select>
+	
+	<select id="idValid" resultType="int"> 
+	select count(*) from uuuser where exists(select 1 from uuuser where username = #{username})
 	</select>
 	
 	
 	<insert id="Signup">
-	insert into uuuser(name,userid,password,email,enabled,nickname) values(#{name},#{userid},#{password},#{email},'1',#{nickname})
+	insert into uuuser(name,username,password,email,enabled,nickname) values(#{name},#{username},#{password},#{email},'1',#{nickname})
 	</insert>
 	<insert id="SignupAuth">
-	insert into authorities(userid) values(#{userid})
+	insert into authorities(username) values(#{username})
 	</insert>
 	
 	<insert id="save" >
-        INSERT INTO uuuser(userid,name,password,email,nickname) VALUES(#{userid},#{name},#{password}, #{email},#{nickname})
+        INSERT INTO uuuser(username,name,password,email,nickname) VALUES(#{username},#{name},#{password}, #{email},#{nickname})
     </insert>
     <select id="findByEmail" resultType="com.board.domain.user.User">
         SELECT * FROM uuuser WHERE email = #{email}
     </select>
     
-    
-    
     <select id="findMyPost">
     select * from board where email=#{email}
     </select>
+    
+    <update id="changeUserinfo">
+    update uuuser set nickname=#{nickname} , password=#{password} , modifieddate=sysdate where username=#{username}
+    </update>
+    
+    <select id="getUserinfo" resultType="com.board.domain.UserRequestDTO">
+    select username,name,email,nickname from uuuser where username=#{username}
+    </select>
+    
 </mapper>

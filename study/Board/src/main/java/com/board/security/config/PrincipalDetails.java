@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import com.board.domain.user.User;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Getter
@@ -25,11 +26,14 @@ public class PrincipalDetails implements UserDetails,OAuth2User{
 	private static final long serialVersionUID = 1L;
 
 	private User user;
+	
+	
 	private Map<String, Object> attributes;
 
 	public PrincipalDetails(User user) {
-		System.out.println("ASFASD"+user.getEmail());
+		System.out.println("principaldetails :: "+user.toString());
 		this.user = user;
+		System.out.println("principalDetails :: "+this.user.toString());
 	}
 	
 	public PrincipalDetails(User user,Map<String,Object> attributes) {
@@ -52,7 +56,7 @@ public class PrincipalDetails implements UserDetails,OAuth2User{
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return user.getName().toString();
+		return user.getName();
 	}
 
 	@Override
@@ -67,13 +71,13 @@ System.out.println(user.getAuthList());
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return user.getPassword().toString();
+		return user.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return user.getUserid();
+		return user.getUsername();
 	}
 
 	@Override

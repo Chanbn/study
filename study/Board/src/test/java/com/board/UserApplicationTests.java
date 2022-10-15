@@ -34,16 +34,16 @@ public class UserApplicationTests {
 		vo = userMapper.read("abc");
 		vo.getAuthList().forEach(authVO->System.out.println(authVO));
 	}
-	
-	@Test
-	public void inPutData() {
-		User vo=new User();
-		vo.setUsername("abc");
-		BCryptPasswordEncoder bcry = new BCryptPasswordEncoder();
-		vo.setPassword(bcry.encode("1234"));
-		System.out.println(userMapper.Signup(vo));
-		System.out.println(userMapper.SignupAuth(vo.getUsername()));
-	}
+//	
+//	@Test
+//	public void inPutData() {
+//		User vo=new User();
+//		vo.setUsername("abc");
+//		BCryptPasswordEncoder bcry = new BCryptPasswordEncoder();
+//		vo.setPassword(bcry.encode("1234"));
+//		System.out.println(userMapper.Signup(vo));
+//		System.out.println(userMapper.SignupAuth(vo.getUsername()));
+//	}
 	
 	@Test 
 	void userSearchOauth2() {

@@ -1,24 +1,39 @@
 package com.board.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.board.domain.Criteria;
 import com.board.domain.PageDTO;
+import com.board.domain.UserRequestDTO;
 import com.board.domain.user.User;
-import com.board.mapper.BoardMapper;
+
 import com.board.service.BoardService;
+import com.board.service.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/myPage/*")
 public class myPageController {
 	@Autowired
 	BoardService boardService;
+	@Autowired
+	UserService userService;
+
+	@Autowired
+	AuthenticationManager authenticationManager;
+	
 	
 	@GetMapping("/myPage")
 	public void home() {
@@ -43,4 +58,25 @@ public class myPageController {
 		int total = boardService.getCommentCount(cri);
 		model.addAttribute("pageMaker", new PageDTO(cri, total));
 	}
+	
+	@GetMapping("/myInfo")
+	public void getInfo(Model model,@SessionAttribute("user") User user) {
+		UserRequestDTO userInfo = userService.getUserinfo(user.getUsername());
+		model.addAttribute("user", userInfo);
+		System.out.println("?SDA?F?ASD?SAD?ASD??????????????");
+	}
+	
+	@PostMapping("/myInfo")
+	public String modifyInfo(Model model,UserRequestDTO user) {
+		String password = user.getPassword();
+		int chk = userService.changeUserinfo(user);
+		System.out.println("chk ?? chk ?? :: "+ chk);
+		System.out.println("modifyinfo password?? "+user.getPassword());
+		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), password));
+		System.out.println("GAJFSAD야이야앙");
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		System.out.println("user info?? id?? "+user.getUsername()+ "password???? : "+user.getPassword());
+		return "myPage/myPage";
+	}
+	
 }

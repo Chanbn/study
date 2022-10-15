@@ -24,10 +24,7 @@ import lombok.Setter;
 
 public class LoginIdPwValidator implements UserDetailsService{
 	
-	   @Bean
-	    public PasswordEncoder passwordEncoder() {
-	        return new BCryptPasswordEncoder();
-	    }
+	  
 
 	@Setter(onMethod_ = {@Autowired})
 	private UserMapper mapper;
@@ -35,13 +32,13 @@ public class LoginIdPwValidator implements UserDetailsService{
 	HttpSession session;
 	
 	@Override
-	public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		System.out.println(userid);
+		System.out.println(username);
 		User user;
 		
 
-		user = mapper.read(userid);
+		user = mapper.read(username);
 		System.out.println("여기까지는?");
 		if(user==null) {
 			System.out.println("user is null");
@@ -52,8 +49,9 @@ public class LoginIdPwValidator implements UserDetailsService{
 		System.out.println(user.getAuthList());
 		List<AuthVO> authVO = user.getAuthList();
 		
-		User us=new User(user.getName(), user.getEmail(), authVO, user.getUserid(), user.getPassword(),user.getNickname());
+		User us=new User(user.getName(), user.getEmail(), authVO, user.getUsername(), user.getPassword(),user.getNickname());
 		session.setAttribute("user", us);
+		System.out.println("LoginPwValidator :: "+us.toString());
 		return user==null?null:new PrincipalDetails(us);
 	}
 

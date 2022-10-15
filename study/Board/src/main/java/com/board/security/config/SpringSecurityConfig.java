@@ -1,13 +1,17 @@
 package com.board.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import com.board.service.PrincipalOauth2UserService;
 
@@ -16,11 +20,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
+//@EnableGlobalMethodSecurity(prePostEnabled = true) 
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 
 	private final LoginIdPwValidator loginidPwValidator;
 	private final PrincipalOauth2UserService principalOauth2UserService;
+	private final AuthenticationFailureHandler CustomFailureHandler;
+	
+	 @Bean
+	    public BCryptPasswordEncoder encoder() {
+	        return new BCryptPasswordEncoder();
+	    }
+	
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		// TODO Auto-generated method stub
+		System.out.println("here is authenticationManager!");
+		return super.authenticationManagerBean();
+	}
+	
+	
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// TODO Auto-generated method stub
@@ -34,10 +56,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		.formLogin()
 		.loginPage("/view/login")
 		.loginProcessingUrl("/loginProc")
-		.usernameParameter("userid")
+		.usernameParameter("username")
 		.passwordParameter("pw")
 		.defaultSuccessUrl("/board/list",true)
 		.permitAll()
+		.failureHandler(CustomFailureHandler)
 		.and()
 		.logout()
 		.logoutUrl("/view/logoutProc")
@@ -48,7 +71,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		.failureUrl("/view/SocialLogin")	
 		.userInfoEndpoint()
 		.userService(principalOauth2UserService)
-		;
+		; 
 	}
 
 	@Override
@@ -62,4 +85,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		// TODO Auto-generated method stub
 		auth.userDetailsService(loginidPwValidator);
 	}
+	
+
 }

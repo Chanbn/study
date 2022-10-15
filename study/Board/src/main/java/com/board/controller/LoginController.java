@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.domain.UserRequestDTO;
@@ -51,8 +52,9 @@ public class LoginController {
 		
 	}
 	@GetMapping("/login")
-	public void getLogin() {
-		
+	public void getLogin(@RequestParam(value = "error",required = false) String error, @RequestParam(value = "exception", required = false) String exception, Model model) {
+	model.addAttribute("error", error);
+	model.addAttribute("exception", exception);
 	}
 	
 	@GetMapping("/signup")
@@ -62,6 +64,7 @@ public class LoginController {
 	
 	@PostMapping("/signup")
 	public String doSignup(@Valid UserRequestDTO user, Errors errors, Model model) {
+		System.out.println("post. signup 진입/////");
 		if(errors.hasErrors()) {
 			System.out.println("에러 발생, 유효성 검사에서");
 			model.addAttribute("user",user);
@@ -73,18 +76,27 @@ public class LoginController {
 			}
 			return "/view/signup";
 		}
+		System.out.println("에러없음. 다음단계로.../");
 		service.Signup(user);
 		return "redirect:/board/list?pageNum=1";
 	}
 	
-	@RequestMapping(value = "/chk", method = RequestMethod.POST)
+	@RequestMapping(value = {"/chk","/myInfo"}, method = RequestMethod.POST)
 	@ResponseBody
-	public int NickNameCheck(String name) throws Exception{ 
-		System.out.println(name);
-		if(name=="") {
+	public int NickNameCheck(String word, int type) throws Exception{ 
+		System.out.println(word);
+		System.out.println(type);
+		if(word=="") {
 			return -1;
 		}
-		int chk = service.nameValid(name);
+		int chk =0;
+		if(type==1) {
+			chk = service.idValid(word);			
+		}else if(type==2) {
+			chk = service.nickNameValid(word);
+		}else if(type==3) {
+			chk = service.emailValid(word);
+		}
 		return chk;
 	}
 }

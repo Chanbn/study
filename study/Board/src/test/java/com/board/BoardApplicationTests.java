@@ -52,17 +52,17 @@ class BoardApplicationTests {
 	@Autowired
 	BoardMapper boardMapper;
 	
-	@Test
-	public void mapperTest() {
-		for(int i=1;i<=50;i++) {
-			BoardVO vo = new BoardVO();
-		vo.setTitle(i+"번 게시글 제목");
-		vo.setWriter(i+"번 작성자");
-		vo.setContent(i+"번 게시글 내용");
-			int result = boardMapper.write(vo);
-			System.out.println(result);
-		}
-	}
+//	@Test
+//	public void mapperTest() {
+//		for(int i=1;i<=50;i++) {
+//			BoardVO vo = new BoardVO();
+//		vo.setTitle(i+"번 게시글 제목");
+//		vo.setWriter(i+"번 작성자");
+//		vo.setContent(i+"번 게시글 내용");
+//			int result = boardMapper.write(vo);
+//			System.out.println(result);
+//		}
+//	}
 	
 //	@Test
 //	public void listmapperTest() {
@@ -77,20 +77,20 @@ class BoardApplicationTests {
 		vo.forEach(board->System.out.println(board));
 	}
 	
-	@Test
-	public void getgetget() {
-		BoardVO vo = boardMapper.get(2);
-		System.out.print(vo);
-	}
-	@Test
-	public void updateTest() {
-		BoardVO vo=new BoardVO();
-		vo.setIdx(74L);
-		vo.setTitle("제목변경");
-		vo.setContent("내용변경");
-		boardMapper.modify(vo);
-		
-	}
+//	@Test
+//	public void getgetget() {
+//		BoardVO vo = boardMapper.get(2);
+//		System.out.print(vo);
+//	}
+//	@Test
+//	public void updateTest() {
+//		BoardVO vo=new BoardVO();
+//		vo.setIdx(74L);
+//		vo.setTitle("제목변경");
+//		vo.setContent("내용변경");
+//		boardMapper.modify(vo);
+//		
+//	}
 	
 	@Test
 	public void removeTest() {

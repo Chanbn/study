@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="fragment-nav">
+
 <div class="collapse" id="navbarToggleExternalContent">
   <div class="bg-dark p-4">
     <div class="btn-group" role="group" aria-label="Basic outlined example">
@@ -19,7 +20,6 @@
     <div>
     	<span sec:authorize="isAuthenticated()" th:text="${session.user.email}">    </span>
     	<span sec:authorize="isAuthenticated()" sec:authentication="name"></span>님이 로그인 상태 
-    	<a href="/board/myList?cri.pageNum=1&cri.amount=10&cri.type=E&cri.keyword=nbc0603@gmail.com">내가 작성한 글</a> 
 	<div sec:authorize="isAuthenticated()">
 
 	</div>
@@ -35,4 +35,8 @@
   
 </nav>
 </div>
+
+
+</script>
+
 </html>

@@ -6,11 +6,11 @@ import lombok.Data;
 
 @Data
 public class AuthVO {
-	private String userid;
+	private String username;
 	private String authority;
 	
-	public AuthVO(String userid,String authority) {
-		this.userid = userid;
+	public AuthVO(String username,String authority) {
+		this.username = username;
 		this.authority = authority;
 	}
 }

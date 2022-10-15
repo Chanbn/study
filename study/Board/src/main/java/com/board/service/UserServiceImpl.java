@@ -3,7 +3,13 @@ package com.board.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -16,13 +22,14 @@ import com.board.mapper.UserMapper;
 public class UserServiceImpl implements UserService {
 	@Autowired
 	UserMapper mapper;
+
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Override
-	public User read(String userid) {
+	public User read(String username) {
 		// TODO Auto-generated method stub
-		return mapper.read(userid);
+		return mapper.read(username);
 	}
 	@Override
 	public int Signup(UserRequestDTO user) {
@@ -34,7 +41,7 @@ public class UserServiceImpl implements UserService {
 		if(chk==0) {
 			return 0;
 		}
-		return mapper.SignupAuth(user.getUserid());
+		return mapper.SignupAuth(user.getUsername());
 	}
 	@Override
 	public Map<String, String> validatorHandling(Errors errors) {
@@ -56,12 +63,37 @@ public class UserServiceImpl implements UserService {
 		return resultValue;
 	}
 	@Override
-	public int nameValid(String name) {
+	public int nickNameValid(String nickname) {
 		// TODO Auto-generated method stub
-		int resultValue = mapper.emailValid(name); 
+		int resultValue = mapper.nickNameValid(nickname);
 			
 		return resultValue;
 	}
+	@Override
+	public int idValid(String username) {
+		// TODO Auto-generated method stub
+		int resultValue = mapper.idValid(username);
+		return resultValue;
+	}
+	
+	@Transactional
+	@Override
+	public int changeUserinfo(UserRequestDTO user) {
+		// TODO Auto-generated method stub
+		String encodePassword = passwordEncoder.encode(user.getPassword());
+		user.setPassword(encodePassword);
+		int resultValue = mapper.changeUserinfo(user);
+
+
+		
+		return resultValue;
+	}
+	@Override
+	public UserRequestDTO getUserinfo(String username) {
+		// TODO Auto-generated method stub
+		return mapper.getUserinfo(username);
+	}
+
 
 
 }
