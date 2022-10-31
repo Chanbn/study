@@ -36,17 +36,7 @@ public class BoardServiceImpl implements BoardService{
 	public boolean write(BoardDTO vo) {
 		// TODO Auto-generated method stub
 		int queryResult=0;
-		if(vo.getIdx()==null) {
 			queryResult = boardMapper.write(vo);
-		}else {
-			queryResult = boardMapper.modify(vo);
-			if("Y".equals(vo.getChangeYn())) {
-				attachMapper.deleteAttach(vo.getIdx());
-				if(CollectionUtils.isEmpty(vo.getFileIdxs())==false) {
-					attachMapper.undeleteAttach(vo.getFileIdxs());
-				}
-			}
-		}
 		return queryResult==1?true:false;
 	}
 	
@@ -65,9 +55,10 @@ public class BoardServiceImpl implements BoardService{
 
 		if(CollectionUtils.isEmpty(fileList)==false) {
 			queryResult = attachMapper.insertAttach(fileList);
+			System.out.println("queryResukt :: "+queryResult);
 		}
 		
-		return queryResult==1?true:false;
+		return queryResult==0?false:true;
 	}
 	
 	
@@ -148,6 +139,54 @@ public class BoardServiceImpl implements BoardService{
 	public int getCommentCount(Criteria cri) {
 		// TODO Auto-generated method stub
 		return boardMapper.getCommentCount(cri);
+	}
+
+	@Override
+	public boolean modify(BoardDTO vo) {
+		// TODO Auto-generated method stub
+		int queryResult = 0;
+		queryResult = boardMapper.modify(vo);
+		
+		
+		int chk = attachMapper.selectAttachTotalCount(vo.getIdx());
+		
+		if(chk>0) {
+			attachMapper.deleteAttach(vo.getIdx());
+		}
+		
+//		if("Y".equals(vo.getChangeYn())) {
+//			attachMapper.deleteAttach(vo.getIdx());
+//			if(CollectionUtils.isEmpty(vo.getFileIdxs())==false) {
+//				attachMapper.undeleteAttach(vo.getFileIdxs());
+//			}
+//		}
+		return queryResult==1 ? true : false;
+	}
+
+	@Override
+	public boolean modify(BoardDTO vo, MultipartFile[] files) {
+		// TODO Auto-generated method stub
+		int queryResult = 1;
+		if(modify(vo)==false) {
+			return false;
+		}
+		System.out.println("file Service 들어옴");
+		
+		int chk = attachMapper.selectAttachTotalCount(vo.getIdx());
+		
+		if(chk>0) {
+			attachMapper.deleteAttach(vo.getIdx());
+		}
+
+		List<AttachDTO> fileList = fileUtils.uploadFiles(files, vo.getIdx());
+		System.out.println("파일갯수"+fileList.size());
+
+		if(CollectionUtils.isEmpty(fileList)==false) {
+			queryResult = attachMapper.insertAttach(fileList);
+			System.out.println("queryResukt :: "+queryResult);
+		}
+		
+		return queryResult==0?false:true;
 	}
 
 

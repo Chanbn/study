@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,21 +87,43 @@ public class BoardController {
 
 		System.out.println("idx ?? ?? ??"+vo.getIdx());
 		
+
+		
 		if(vo.getIdx()==null) {
 			vo.setEmail(user.getEmail());
 			vo.setWriter(user.getUsername());
 			model.addAttribute("vo",vo);
-		}else {
-			BoardDTO board = boardService.get(vo.getIdx());
-			if(board==null ||"Y".equals(board.getDeleteYn())) {
-				return "redirect:/board/list?pageNum=2";
-			}
-			model.addAttribute("vo",board);
-			
-			List<AttachDTO> fileList = boardService.getAttachFileList(vo.getIdx());
+			List<AttachDTO> fileList = new ArrayList<AttachDTO>();
 			model.addAttribute("fileList",fileList);
+			System.out.println("파일리스트 ? "+fileList.size());
+		}else {
+//			BoardDTO board = boardService.get(vo.getIdx());
+//			if(board==null ||"Y".equals(board.getDeleteYn())) {
+//				return "redirect:/board/list?pageNum=2";
+//			}
+//			model.addAttribute("vo",board);
+//			
+//			List<AttachDTO> fileList = boardService.getAttachFileList(vo.getIdx());
+//			model.addAttribute("fileList",fileList);
+
 		} 
 		return "board/write";
+	}
+	
+	@GetMapping(value = "/modify")
+	public String modify(Model model, @ModelAttribute("cri") Criteria cri, @ModelAttribute("vo") BoardDTO vo,
+			@SessionAttribute("user") User user)
+	{
+		BoardDTO board = boardService.get(vo.getIdx());
+		if(board==null ||"Y".equals(board.getDeleteYn())) {
+			return "redirect:/board/list?pageNum=2";
+		}
+		model.addAttribute("vo",board);
+		
+		List<AttachDTO> fileList = boardService.getAttachFileList(vo.getIdx());
+		model.addAttribute("fileList",fileList);
+		
+		return "board/modify";
 	}
 	
 	@GetMapping(value = "/download")

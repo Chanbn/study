@@ -3,6 +3,8 @@ package com.board.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,5 +26,6 @@ public class BoardDTO {
 	private String changeYn;
 	private List<Long> fileIdxs;
 	private String deleteYn;
+	public MultipartFile[] files; 
 	 
 }

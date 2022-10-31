@@ -14,6 +14,8 @@ import com.board.domain.ReplyDTO;
 public interface BoardService {
 	public boolean write(BoardDTO vo);
 	public boolean write(BoardDTO vo, MultipartFile[] files);
+	public boolean modify(BoardDTO vo);
+	public boolean modify(BoardDTO vo, MultipartFile[] files);
 	public List<BoardVO> getList(Criteria cri);
 	public int getTotal(Criteria cri);
 	public BoardDTO get(long idx);

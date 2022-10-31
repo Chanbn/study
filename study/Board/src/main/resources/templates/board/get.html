@@ -10,7 +10,7 @@
 <body>
 <div th:replace="/fragments/header.html :: fragment-header"></div>
   <div th:replace="/fragments/nav.html :: fragment-nav"></div>
-<span th:text="${cri.pageNum}"></span>
+
 <div class="col-lg-6" style="text-align:center">
 <table class="table">
   <thead>
@@ -22,9 +22,12 @@
   </thead>
   <tbody>
   <tr>
-  <td colspan="3">
+  <td colspan="1">
+        글번호 : <span class="boardIdx" th:id="${board.idx}" th:text="${board.idx}" style="text-align:left;" ></span>
+  </td>
+  <td colspan="2">
   <div style="text-align:right">
-  <span th:text="${board.writer}"></span>&nbsp;&nbsp;&nbsp; <span th:text="${board.regTime}"></span>
+ 작성자 : <span th:text="${board.writer}"></span>&nbsp;&nbsp;&nbsp; <span th:text="${board.regTime}"></span>
   </div>
   </td>
   </tr>
@@ -56,8 +59,8 @@
 <a th:href="@{'/board/list?pageNum='+${cri.pageNum}}" type="button" class="btn btn-secondary">목록</a>
 </div>
 <div style="float:right">
-<a  type="button" id="deleteBoard" class="btn btn-danger">삭제</a>
 <div sec:authorize="isAuthenticated()">
+<button type="button" id="deleteBoard" class="btn btn-danger" onclick="delete_button()">삭제</button>
 <button type="button" id="modi" class="btn btn-success" >수정</button>
 </div>
 </div>
@@ -135,19 +138,19 @@ var boardEmail = /*[[${board.email}]]*/
 $("#modi").on("click",function(e){
 
 	if(boardEmail==loginUserEmail){
-	$("#operForm").attr("action","/board/write?").submit();}
+	$("#operForm").attr("action","/board/modify?").submit();}
 	else{
 		alert("본인이 작성한 글만 수정 할 수 있습니다.")
 	}
 });
 
-$("#deleteBoard").on("click",function(e){
+/* $("#deleteBoard").on("click",function(e){
 	if(boardEmail==loginUserEmail){
 		$("#operForm2").attr("action","/board/remove?").submit();}
 		else{
 			alert("본인이 작성한 글만 삭제 할 수 있습니다.")
 		}
-});
+}); */
 
 	
 	$(document).ready(function(){
@@ -402,8 +405,29 @@ $(document).on('click','.btn_reply_write_all',function(e){
     
 });
 
+function delete_button(){
+	 
+	var boardIdx = $(".boardIdx").attr('id');  
+	var sendData = {"boardIdx" : boardIdx};
+ 	$.ajax({
+		type:"DELETE",
+		url:"/board/posts",
+	    data:  sendData,
+		success: function(data){
+			if(data){
+				alert("삭제되었습니다.");
+				window.location.href = '/board/list';
+			}
+		},
+		error : function(request,status,error){
 
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 
+			}
+	});	
+
+ 
+ }
 
 
 
