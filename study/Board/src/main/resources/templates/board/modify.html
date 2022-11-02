@@ -102,10 +102,13 @@ alert(fileIdx);
 if(is_action){
 $(window).load(function(){
 		is_action=false;	
-/* 		$(".fileIdxnum").each(function(index, item){
-			var currentIdx=$(this).attr('id');
-			fileArry[currentIdx]=false;
-		}); */
+ 		$(".fileIdxnum").each(function(index, item){
+ 			var currentIdx=$(this).attr('id');
+ 			let uploadname = $(".upload-name").val();
+ 			if(uploadname!="파일찾기"){
+ 			fileArry[currentIdx]=false;  				
+ 			}
+		}); 
 });
 }
 
@@ -198,7 +201,7 @@ function submit_button(){
 	
 	$.ajax({
 		type:"PUT",
-		url:"/board/posts",
+		url:"/board/posts/"+idx,
 		processData: false,  // 데이터 객체를 문자열로 바꿀지에 대한 값이다. true면 일반문자...
 	    contentType: false,  // 해당 타입을 true로 하면 일반 text로 구분되어 진다.
 	    data: sendingData,  //위에서 선언한 fromdata

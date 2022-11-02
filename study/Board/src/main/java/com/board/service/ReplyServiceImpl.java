@@ -51,6 +51,8 @@ public class ReplyServiceImpl implements ReplyService{
 	@Override
 	public replyPageDTO getrepListpage(Criteria cri, long idx) {
 		// TODO Auto-generated method stub
+		List<ReplyDTO> list = mapper.repListWithpage(cri, idx);
+		System.out.println("list 길이 "+list.size());
 		return new replyPageDTO(mapper.repCount(idx),mapper.repListWithpage(cri, idx));
 	}
 

@@ -27,38 +27,32 @@ public class PostsApiController {
 	@Autowired
 	BoardService service;
 	
-	//  MultipartHttpServletRequest filelist
-	// final MultipartFile[] files
-	//@RequestParam HashMap<Object, Object> param, final MultipartFile[] files
+
 	@PostMapping(value = "/posts")
 	public ResponseEntity<String> add(BoardDTO board) {
 		boolean chk = false;
-		if(board.getFiles()==null) {
-			System.out.println("here is write method.... no File...");
+		if(board.getFiles()==null) {		//파일이 없는경우.
 			chk = service.write(board);
-		}else {
-			System.out.println("here is write method.... write File...");
+		}else {			//파일이 있는경우.
 			chk = service.write(board, board.getFiles());			
 		}
 		return chk==true? new ResponseEntity<>("success",HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@PutMapping(value = "/posts", consumes = "multipart/form-data")
+	@PutMapping(value = "/posts/{idx}", consumes = "multipart/form-data")
 	public ResponseEntity<String> modify(BoardDTO board){
 		boolean chk = false;
 		System.out.println(board.getIdx());
 		
-		if(board.getFiles()==null) {
-			System.out.println("file 없다");
+		if(board.getFiles()==null) {	//파일이 없는 경우.
 			chk = service.modify(board);			
-		}else {
-			System.out.println("files length ? "+ board.getFiles().length);
+		}else {		//파일이 있는 경우.
 			chk = service.modify(board, board.getFiles());
 		}
 		return chk==true? new ResponseEntity<>("success",HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@DeleteMapping(value="/posts")
+	@DeleteMapping(value="/posts/{idx}")
 	public ResponseEntity<String> delete(@RequestParam(value = "boardIdx") Long boardIdx){
 	int chk = 0;
 	chk = service.remove(boardIdx);

@@ -85,28 +85,12 @@ public class BoardController {
 	public String write(Model model, @ModelAttribute("cri") Criteria cri, @ModelAttribute("vo") BoardDTO vo,
 			@SessionAttribute("user") User user) {
 
-		System.out.println("idx ?? ?? ??"+vo.getIdx());
-		
-
-		
-		if(vo.getIdx()==null) {
 			vo.setEmail(user.getEmail());
 			vo.setWriter(user.getUsername());
 			model.addAttribute("vo",vo);
 			List<AttachDTO> fileList = new ArrayList<AttachDTO>();
 			model.addAttribute("fileList",fileList);
-			System.out.println("파일리스트 ? "+fileList.size());
-		}else {
-//			BoardDTO board = boardService.get(vo.getIdx());
-//			if(board==null ||"Y".equals(board.getDeleteYn())) {
-//				return "redirect:/board/list?pageNum=2";
-//			}
-//			model.addAttribute("vo",board);
-//			
-//			List<AttachDTO> fileList = boardService.getAttachFileList(vo.getIdx());
-//			model.addAttribute("fileList",fileList);
 
-		} 
 		return "board/write";
 	}
 	

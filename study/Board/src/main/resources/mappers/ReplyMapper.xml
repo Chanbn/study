@@ -10,18 +10,22 @@ select writer,bno,idx,parent_bno,reg_time,content,groupnum from Reply where idx=
 
 <select id="repListWithpage" resultType="com.board.domain.ReplyDTO">
 <![CDATA[
-select writer,bno,idx,parent_bno,reg_time,content,avail,groupnum from 
-(select /*+index_desc(reply reply_pk)*/ rownum rn, writer, bno, idx, parent_bno, reg_time,content,avail,groupnum from reply 
 
-where idx=#{idx} and 
-rownum<=#{cri.pageNum}*#{cri.amount}
-start with groupnum=0
-connect by prior bno=groupnum 
-) 
-where rn>(#{cri.pageNum}-1)*#{cri.amount}
+select writer,bno,idx,parent_bno,reg_time,content,avail,groupnum 
+from (
+select rownum rn, writer, bno, idx, parent_bno, reg_time, content, avail, groupnum from reply 
+where idx=#{idx} and rownum<=#{cri.pageNum}*#{cri.amount}
+) where rn>(#{cri.pageNum}-1)*#{cri.amount}
+ 
+start with parent_bno = 0
+
+connect by prior bno = parent_bno
+
+order siblings by parent_bno asc, bno asc
 ]]>
 
 </select>
+
 
 <delete id="AllreplyDelete">
 update reply set avail=0 where idx=#{idx}

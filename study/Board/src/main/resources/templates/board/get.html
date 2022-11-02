@@ -243,10 +243,10 @@ function removereply(param,callbackFunc){
 }
 
 function insertReply(param,callbackFunc){
-
+	idx = param.idx;
 	$.ajax({
 		type:"POST",
-		url:"/board/new/",
+		url:"/board/"+idx,
 		data: JSON.stringify(param),
         contentType : "application/json; charset=UTF-8",
 		success: function(data){
@@ -270,6 +270,7 @@ function makereply(param){
 function showList(page){
 	getList( {idx:idxValue,page:page||1},function(repCnt,list){
 		var str='';
+		alert(list.length);
 		for(var i = 0, len = list.length || 0 ; i<len;i++){
 			str +="<p>";
 			str +="<div id=comment"+list[i].bno+">";
@@ -277,14 +278,18 @@ function showList(page){
 				str += "<span style='padding-left:20px'>";
 				str += "</span>";
 			}
-			str +="<button type='button' class='btn_reply_write_all'"+"data-no='"+list[i].bno+"'data-gp='"+list[i].groupnum+"'>";
+			str +="<button type='button' class='btn_reply_write_all'"+"data-no='"+list[i].bno+"'data-gp='"+list[i].groupnum+"'data-pbno='"+list[i].parentBno+"'>";
 	        str +="<li class='left clearfix' data-rno='"+list[i].bno+"'>";
 	        str +=" <div ><div class='header'><strong class='primary-font'>"+list[i].writer+"</strong>";
 	        str +="		<small class='pull-right text-muted'>"+list[i].regTime+"</small></div>";
+	        
+	        if(list[i].avail=="0"){ 
+		        str +="     <p> 삭제된 댓글입니다. </p></div></li>";       	        
+	        }else{
 	        str +="     <p> "+list[i].content+"</p></div></li>";       
-	        str +="</button>";
+	        }str +="</button>";
 	        if(loginUserName==list[i].writer){
-	        str +="<button id='replyRemove' data-no="+list[i].bno+">x";
+	        str +="<button id='replyRemove' "+" data-no="+list[i].bno+">x";
 	        str +="</button>";
 	        }
 	        str +="</div>";
@@ -357,29 +362,31 @@ function pageButton(repCnt,page){
 	$(document).on('click','#writebtn',function(e){
 		var content = document.getElementById("replycontent").value;
 		var rep={idx: idxValue ,writer: loginUserName, content: content,parentBno: 0,groupnum:0, email: loginUserEmail};
+
 		makereply(rep);
 		document.getElementById("replycontent").value='';
 	});
 	
 	$(document).on('click','#repaddBtn',function(e){
 		var no =$(this).attr('data-no');
-		var gpnum = $(this).attr('data-gp');
-		
-		var content = document.getElementById("fffg").value;
-		var parentreply = no;
-		var rep={idx: idxValue, writer: loginUserName, content: content, parentBno: parentreply,groupnum:gpnum};
+		var pbno = $(this).attr('data-pbno');
+		if(pbno==0){
+			pbno = no;
+		}
+		var content = document.getElementById("reply_content").value;
+
+		var rep={idx: idxValue, writer: loginUserName, content: content, parentBno: pbno,groupnum:1 ,email: loginUserName};
+		alert("idx :"+rep.idx+ " writer :" + loginUserName +" content :"+ rep.content+" email :" + loginUserName)
 		makereply(rep);
 
 	});
 });
 
 $(document).on('click','.btn_reply_write_all',function(e){
-
+	alert($(this).attr('data-pbno'));
 	var no =$(this).attr('data-no');
-	var gpnum = $(this).attr('data-gp');
-	if(gpnum==0){
-		gpnum=no;
-	}
+	var pbno =$(this).attr('data-pbno'); 
+
 	
 	if($("#reply_empty_last_li_"+no).length){
 		$("#reply_empty_last_li_" + no).remove();
@@ -391,11 +398,11 @@ $(document).on('click','.btn_reply_write_all',function(e){
 	replyDiv += "<div class=\"reply show\" id=\"reply_empty_"+no+"\">";
 	replyDiv += "<div class=\"reply_box\">";
 	replyDiv += "<input type='text' value="+loginUserName+">";
-	replyDiv +="<textarea id='fffg'>"; 
+	replyDiv +="<textarea id='reply_content'>"; 
 	replyDiv +="</textarea>";
     replyDiv += "</div>";
     replyDiv += "</div>"
-    replyDiv += "<button id='repaddBtn' data-no='"+no+"' data-gp='"+gpnum+"'>등록";
+    replyDiv += "<button id='repaddBtn' data-no='"+no+"' data-pbno='"+pbno+"' >등록";
     replyDiv += "</button>";
     replyDiv += "</li>";
     $("#comment"+no).after(replyDiv);
@@ -407,11 +414,11 @@ $(document).on('click','.btn_reply_write_all',function(e){
 
 function delete_button(){
 	 
-	var boardIdx = $(".boardIdx").attr('id');  
-	var sendData = {"boardIdx" : boardIdx};
+	var idx = $(".boardIdx").attr('id');  
+	var sendData = {"boardIdx" : idx};
  	$.ajax({
 		type:"DELETE",
-		url:"/board/posts",
+		url:"/board/posts/"+idx,
 	    data:  sendData,
 		success: function(data){
 			if(data){

@@ -35,25 +35,20 @@ public class myPageController {
 	AuthenticationManager authenticationManager;
 	
 	
-	@GetMapping("/myPage")
+	@GetMapping("/home")
 	public void home() {
 		
 	}
 	
 	@GetMapping("/myContentList")
 	public void getList(Model model, @ModelAttribute("cri") Criteria cri) {
-
 		model.addAttribute("boardList", boardService.getList(cri));
-		System.out.println("keyword : " + cri.getKeyword() + " Email : " +  " Type : " + cri.getType());
 		int total = boardService.getTotal(cri);
 		model.addAttribute("pageMaker", new PageDTO(cri, total));
 	}
 	
 	@GetMapping("/myCommentList")
 	public void getCommentList(Model model, @ModelAttribute("cri") Criteria cri) {
-
-		String writer = cri.getKeyword();
-		System.out.println("writer ? :: "+writer+"type ??? "+cri.getType());
 		model.addAttribute("commentList", boardService.getCommentList(cri));
 		int total = boardService.getCommentCount(cri);
 		model.addAttribute("pageMaker", new PageDTO(cri, total));
@@ -63,20 +58,15 @@ public class myPageController {
 	public void getInfo(Model model,@SessionAttribute("user") User user) {
 		UserRequestDTO userInfo = userService.getUserinfo(user.getUsername());
 		model.addAttribute("user", userInfo);
-		System.out.println("?SDA?F?ASD?SAD?ASD??????????????");
 	}
 	
 	@PostMapping("/myInfo")
 	public String modifyInfo(Model model,UserRequestDTO user) {
 		String password = user.getPassword();
 		int chk = userService.changeUserinfo(user);
-		System.out.println("chk ?? chk ?? :: "+ chk);
-		System.out.println("modifyinfo password?? "+user.getPassword());
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), password));
-		System.out.println("GAJFSAD야이야앙");
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		System.out.println("user info?? id?? "+user.getUsername()+ "password???? : "+user.getPassword());
-		return "myPage/myPage";
+		return "myPage/home";
 	}
 	
 }

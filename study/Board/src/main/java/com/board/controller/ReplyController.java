@@ -47,7 +47,7 @@ public class ReplyController {
 	  return ResponseEntity.ok(service.getrepListpage(cri,idx)); }
 	  
 	 
-	@PostMapping(value = "/new/", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
+	@PostMapping(value = "/{idx}", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> add(@RequestBody ReplyDTO rep) {
 		System.out.println("here?");
 		int nextBno = service.repCount(rep.getIdx())+1;
