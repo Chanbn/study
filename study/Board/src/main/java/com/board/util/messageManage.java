@@ -12,5 +12,6 @@ public messageManage(String message,String url) {
 	this.message = message;
 	this.url = url;
 	
+} 
 }
-}
+ 

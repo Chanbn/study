@@ -2,21 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.board.mapper.BoardMapper">
 
-<select id="boardRatingCheck" resultType="int">
-select count(*) from rating where idx=#{idx} and writer=#{writer}
-</select>
 
-<insert id="chooseRating">
-insert into rating values(#{idx},#{writer},#{choose})
-</insert>
-
-<update id="boardRatingGood">
-update board set good = good + 1 where idx=#{idx}
-</update>
-
-<update id="boardRatingHate">
-update board set hate = hate + 1 where idx=#{idx} 
-</update>
 
 <update id="updateReplyCnt">
 update board set rnt = rnt + #{amount} where idx=#{idx}

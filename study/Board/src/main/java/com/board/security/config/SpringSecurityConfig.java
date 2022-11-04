@@ -48,7 +48,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		// TODO Auto-generated method stub
 		http 
 		.authorizeRequests()
-		.antMatchers("/myPage/myPage").authenticated()
+		.antMatchers("/myPage/home").authenticated()
 		.antMatchers("/board/write").authenticated()
 		.antMatchers("/board/list").permitAll()
 		.antMatchers("/view/signup").permitAll()

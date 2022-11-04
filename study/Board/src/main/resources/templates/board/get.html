@@ -89,8 +89,7 @@
 			</form>
 			
 			<div style="margin:60px 0px 0px 400px">
-			<button id="goodb">up</button>
-			<button id="hateb">down</button>
+
 			</div>
 			
 
@@ -159,34 +158,6 @@ $("#modi").on("click",function(e){
 	var idxValue=/*[[ ${board.idx} ]]*/;
 	showList(1);
 	var writeSpace=$(".add-space");
-
-	$(document).on("click","#goodb",function(){
-		var rvo = {idx:idxValue,writer:loginUserName,choose:"1"};
-		submitRating(rvo,function(data){
-			
-		});
-	});
-	$(document).on("click","#hateb",function(){
-		var rvo = {idx:idxValue,writer:loginUserName,choose:"0"};
-		submitRating(rvo,function(data){
-		});
-	});
-	
-	function submitRating(param,callbackFunc){
-		$.ajax({
-			type:"POST",
-			url:"/board/get",
-			data:JSON.stringify(param),
-	        contentType : "application/json; charset=UTF-8",
-			success : function(data){
-				alert(data);
-			},
-			error : function(request,status,error){
-				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-				}
-			
-		});
-	}
 	
 	
 	if(loginUserName!=null)

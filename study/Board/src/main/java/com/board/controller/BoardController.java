@@ -69,17 +69,6 @@ public class BoardController {
 		model.addAttribute("fileList",fileList);
 	}
 
-	@ResponseBody
-	@PostMapping(value = "/get", consumes = "application/json", produces = { MediaType.TEXT_PLAIN_VALUE })
-	public ResponseEntity<String> getRating(Model model, @RequestBody RatingVO rvo) {
-		System.out.println(rvo.getIdx());
-		int chk = boardService.chooseRating(rvo.getIdx(), rvo.getWriter(), rvo.getChoose());
-		if (chk == 3) {
-			return new ResponseEntity<>("이미 추천/비추천을 누른 게시글입니다.", HttpStatus.OK);
-		}
-		return chk == 1 ? new ResponseEntity<>("success", HttpStatus.OK)
-				: new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	}
 
 	@GetMapping(value = "/write")
 	public String write(Model model, @ModelAttribute("cri") Criteria cri, @ModelAttribute("vo") BoardDTO vo,

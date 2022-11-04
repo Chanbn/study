@@ -21,10 +21,6 @@ public interface BoardMapper {
 	public int remove(long idx);
 	public int rntcal(@Param("amount") long amount, @Param("idx") long idx);
 	public int updateReplyCnt(@Param("idx") long idx,@Param("amount") int amount);
-	public int chooseRating(@Param("idx") long idx, @Param("writer") String writer,@Param("choose") char choose);
-	public int boardRatingGood(long idx);
-	public int boardRatingHate(long idx);
-	public int boardRatingCheck(@Param("idx") long idx, @Param("writer") String writer);
 	public List<ReplyDTO> getCommentList(Criteria cri);
 	public int getCommentCount(Criteria cri);
 }

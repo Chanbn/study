@@ -21,7 +21,6 @@ public interface BoardService {
 	public BoardDTO get(long idx);
 	public int remove(long idx);
 	public int rntcal(long rnt,long idx);
-	public int chooseRating(Long idx, String writer,char choose);
 	public List<AttachDTO> getAttachFileList(Long boardIdx);
 	public AttachDTO getAttachDetail(Long idx);
 	public List<ReplyDTO> getCommentList(Criteria cri);
