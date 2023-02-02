@@ -92,9 +92,9 @@ public class BoardController {
 		
 		if(oldCookie != null)
 		{
-			log.info("old cookie not Null");
+			log.info("old cookie not Null!");
 			if(!oldCookie.getValue().contains(request.getParameter("idx"))) 
-			{
+			{ 
 				oldCookie.setValue(oldCookie.getValue()+"_"+request.getParameter("idx"));
 				oldCookie.setMaxAge(60*60);
 			response.addCookie(oldCookie);
