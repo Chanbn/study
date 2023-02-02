@@ -27,5 +27,6 @@ public class BoardDTO {
 	private List<Long> fileIdxs;
 	private String deleteYn;
 	public MultipartFile[] files; 
+	private Long viewcount;
 	 
 }

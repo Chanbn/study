@@ -171,6 +171,12 @@ public class BoardServiceImpl implements BoardService{
 		return queryResult==0?false:true;
 	}
 
+	@Override
+	public Long updateViewcount(BoardDTO vo) {
+		// TODO Auto-generated method stub
+		return boardMapper.updateViewcount(vo);
+	}
+
 
 
 }

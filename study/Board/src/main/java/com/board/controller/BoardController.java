@@ -8,11 +8,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
@@ -43,10 +46,17 @@ import com.board.domain.user.User;
 import com.board.mapper.BoardMapper;
 import com.board.service.BoardService;
 
+import lombok.extern.slf4j.Slf4j;
+
+
+
+
+
 
 @EnableAspectJAutoProxy
 @Controller
 @RequestMapping("/board/*")
+@Slf4j
 public class BoardController {
 	@Autowired
 	BoardService boardService;
@@ -60,13 +70,51 @@ public class BoardController {
 	}
 
 	@GetMapping(value = "/get")
-	public void get(Model model, @ModelAttribute("cri") Criteria cri, @RequestParam("idx") int idx,
-			@RequestParam("pageNum") int pageNum) {
+	public String get(Model model, @ModelAttribute("cri") Criteria cri, @RequestParam("idx") int idx,
+			@RequestParam("pageNum") int pageNum, HttpServletResponse response, HttpServletRequest request) {
 		cri.setPageNum(pageNum);
 		BoardDTO board = boardService.get(idx);
+		System.out.println(request.getParameter("idx"));
+		
+		Cookie[] cookies = request.getCookies();
+		Cookie oldCookie=null;
+		if(cookies != null) {
+			for(Cookie cookie:cookies) {
+				log.info("cookie name : "+cookie.getName());
+				log.info("cooker value : "+cookie.getValue());
+				log.info("cookie Idx Info : "+cookie.getValue().contains(request.getParameter("idx")));
+				if(cookie.getValue().contains(request.getParameter("idx"))) {
+					oldCookie = cookie;
+				}
+			}
+
+		}
+		
+		if(oldCookie != null)
+		{
+			log.info("old cookie not Null");
+			if(!oldCookie.getValue().contains(request.getParameter("idx"))) 
+			{
+				oldCookie.setValue(oldCookie.getValue()+"_"+request.getParameter("idx"));
+				oldCookie.setMaxAge(60*60);
+			response.addCookie(oldCookie);
+			boardService.updateViewcount(board);
+			}
+
+		}
+		else {
+			Cookie newCookie = new Cookie("visit_code",request.getParameter("idx"));
+			newCookie.setMaxAge(60*60);
+			response.addCookie(newCookie);
+			boardService.updateViewcount(board);			
+		}
+
 		model.addAttribute("board", board);
 		List<AttachDTO> fileList = boardService.getAttachFileList(board.getIdx());
 		model.addAttribute("fileList",fileList);
+		System.out.println(fileList.toString());
+		
+		return "board/get";
 	}
 
 

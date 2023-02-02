@@ -2,7 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.board.mapper.BoardMapper">
 
-
+<update id="updateViewcount">
+update board set viewcount = viewcount + 1 where idx = #{idx}
+</update>
 
 <update id="updateReplyCnt">
 update board set rnt = rnt + #{amount} where idx=#{idx}
@@ -56,9 +58,9 @@ select count(*) from reply where
 
 <select id="getList" resultType="com.board.domain.BoardDTO">
 <![CDATA[
-select idx,title,content,writer,reg_time,update_time,rnt,good,email from 
+select idx,title,content,writer,reg_time,update_time,rnt,email,viewcount from 
 (
-select /*+index_desc(board board_pk) */ rownum rn,idx,title,content,writer,reg_time,update_time,rnt,good,email from board 
+select /*+index_desc(board board_pk) */ rownum rn,idx,title,content,writer,reg_time,update_time,rnt,email,viewcount from board 
 where
  delete_yn='N' and
 ]]>

@@ -17,5 +17,6 @@ public class BoardVO {
 	private Long good;
 	private Long hate;
 	private String email;
+	private Long viewcount;
 	 
 }

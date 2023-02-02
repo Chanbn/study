@@ -13,6 +13,7 @@
 	<th scope="col">제목</th>
 	<th scope="col">작성자</th>
 	<th scope="col">작성일자</th>
+	<th scope="col">조회수</th>
 	</tr>
   </thead>
   <tbody>
@@ -25,8 +26,9 @@
 
 	<td th:text="${row.writer}"></td>
 	<td th:text="${row.regTime}">	</td>
+	<td th:text="${row.viewcount}"></td>
 	</tr>
-	<tr th:unless="${not #lists.isEmpty(boardList)}">없습</tr>
+	<tr th:unless="${not #lists.isEmpty(boardList)}">데이터가 없습니다.</tr>
   </tbody>
 </table>
 

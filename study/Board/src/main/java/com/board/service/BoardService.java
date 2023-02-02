@@ -25,4 +25,5 @@ public interface BoardService {
 	public AttachDTO getAttachDetail(Long idx);
 	public List<ReplyDTO> getCommentList(Criteria cri);
 	public int getCommentCount(Criteria cri);
+	public Long updateViewcount(BoardDTO vo);
 }

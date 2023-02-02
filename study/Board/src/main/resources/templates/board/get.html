@@ -241,7 +241,6 @@ function makereply(param){
 function showList(page){
 	getList( {idx:idxValue,page:page||1},function(repCnt,list){
 		var str='';
-		alert(list.length);
 		for(var i = 0, len = list.length || 0 ; i<len;i++){
 			str +="<p>";
 			str +="<div id=comment"+list[i].bno+">";
@@ -354,7 +353,6 @@ function pageButton(repCnt,page){
 });
 
 $(document).on('click','.btn_reply_write_all',function(e){
-	alert($(this).attr('data-pbno'));
 	var no =$(this).attr('data-no');
 	var pbno =$(this).attr('data-pbno'); 
 

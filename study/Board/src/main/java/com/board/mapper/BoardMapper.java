@@ -23,4 +23,5 @@ public interface BoardMapper {
 	public int updateReplyCnt(@Param("idx") long idx,@Param("amount") int amount);
 	public List<ReplyDTO> getCommentList(Criteria cri);
 	public int getCommentCount(Criteria cri);
+	public Long updateViewcount(BoardDTO vo);
 }
