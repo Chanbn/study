@@ -22,8 +22,8 @@
 	<div sec:authorize="isAuthenticated()">
 
 	</div>
-		<button sec:authorize="isAnonymous()" onclick="location.href='/view/login'" type="submit">Login</button>
-        <button sec:authorize="isAnonymous()" onclick="location.href='/view/signup'" type="submit">회원가입</button>
+		<button sec:authorize="isAnonymous()" onclick="location.href='/member/login'" type="submit">Login</button>
+        <button sec:authorize="isAnonymous()" onclick="location.href='/member/signup'" type="submit">회원가입</button>
         <!-- <button sec:authorize="isAnonymous()" onclick="location.href='/oauth2/authorization/google'" type="submit">SocialLogin</button> -->
     </div>
         <form th:action="@{/view/logoutProc}" method="post" sec:authorize="isAuthenticated()">
