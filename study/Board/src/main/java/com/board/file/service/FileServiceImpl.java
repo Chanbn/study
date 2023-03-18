@@ -10,13 +10,16 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.board.exception.AttachFileException;
+import com.board.file.boardFile;
 import com.board.file.dto.FileDto;
 import com.board.file.exception.FileException;
 import com.board.file.exception.FileExceptionType;
 
+@Service
 public class FileServiceImpl implements FileService {
 	
 	private final String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
@@ -27,9 +30,9 @@ public class FileServiceImpl implements FileService {
 	}
 	
 	@Override
-public List<FileDto> save(MultipartFile[] multipartFile,Long boardIdx) {
+public List<boardFile> save(MultipartFile[] multipartFile,Long boardIdx) {
 	// TODO Auto-generated method stub
-List<FileDto> attachList = new ArrayList<>();
+List<boardFile> attachList = new ArrayList<>();
 		
 		File dir = new File(uploadPath);
 		if(dir.exists()==false) {
@@ -47,8 +50,7 @@ List<FileDto> attachList = new ArrayList<>();
 				File target = new File(uploadPath,saveName);
 				file.transferTo(target);
 				
-				FileDto attach = new FileDto();
-				attach.setBoardIdx(boardIdx);
+				boardFile attach = null;
 				attach.setOriginalName(file.getOriginalFilename());
 				attach.setSaveName(saveName);
 				attach.setImageSize(file.getSize());

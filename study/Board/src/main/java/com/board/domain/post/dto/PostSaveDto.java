@@ -18,13 +18,9 @@ public class PostSaveDto {
 	private String writer;
 	private String content;
 	private String title;
-	private LocalDateTime regTime;
-	private LocalDateTime updateTime;
 	private String email;
-	private String changeYn;
-//	private List<Long> fileIdxs;
-	private String deleteYn;
-//	public MultipartFile[] files; 
+	private String username;
+	public List<MultipartFile> files; 
 	
 	public PostSaveDto(String title, String content) {
 		// TODO Auto-generated constructor stub

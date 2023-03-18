@@ -17,8 +17,8 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div>
-    	<span sec:authorize="isAuthenticated()" th:text="${session.user.email}">    </span>
-    	<span sec:authorize="isAuthenticated()" sec:authentication="name"></span>님이 로그인 상태 
+<!--     	<span sec:authorize="isAuthenticated()" th:text="${session.user.email}">    </span>
+ -->    	<span sec:authorize="isAuthenticated()" sec:authentication="name"></span>님이 로그인 상태 
 	<div sec:authorize="isAuthenticated()">
 
 	</div>

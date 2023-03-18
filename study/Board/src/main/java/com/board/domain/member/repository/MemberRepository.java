@@ -3,6 +3,7 @@ package com.board.domain.member.repository;
 import java.util.Optional;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.board.domain.member.Member;

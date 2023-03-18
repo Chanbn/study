@@ -25,5 +25,5 @@ public class FileDto {
 	private String deleteYn;
 	
 	private LocalDateTime insertTime;
-	private LocalDateTime deleteTime;
+	private LocalDateTime deleteTime; 
 }

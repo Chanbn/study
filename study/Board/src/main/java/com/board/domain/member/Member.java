@@ -1,5 +1,6 @@
 package com.board.domain.member;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -47,7 +48,7 @@ import lombok.ToString;
 	name = "BOARD_SEQ_GENERATOR",
     sequenceName = "BOARD_SEQ",	//매핑할 데이터 베이스 스퀀스 이름
     initialValue = 1, allocationSize=1)
-public class Member{
+public class Member implements Serializable{
 
 	@Id
 	@Column(name = "userid")
@@ -75,7 +76,8 @@ public class Member{
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	
-	@OneToMany(mappedBy = "writer" ,cascade = CascadeType.ALL)
+	@Builder.Default
+	@OneToMany(mappedBy = "writer" ,cascade = CascadeType.ALL,orphanRemoval = true)
 	private List<Post> postList = new ArrayList<>();
 	
 	public void addPost(Post post) {

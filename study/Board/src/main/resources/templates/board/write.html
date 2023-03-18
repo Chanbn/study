@@ -8,7 +8,7 @@
 </head>
 <body>
         <div sec:authorize="isAuthenticated()">
-        <span th:text="${session.user.email}">    </span>
+        <span th:text="${session.user.username}">    </span> 
     <span sec:authentication="name"></span>님이 로그인 상태 
     </div>
   <div th:replace="/fragments/nav.html :: fragment-nav"></div>
@@ -19,9 +19,9 @@
            th:name="${_csrf.parameterName}" 
            th:value="${_csrf.token}" />
     <input type="hidden" th:if="*{idx != null and idx > 0}" th:field="*{idx}" />
-	<input type="hidden" th:field="*{changeYn}" value="N">
+<!-- 	<input type="hidden" th:field="*{changeYn}" value="N"> -->
 <table class="table">
-  <thead>
+  <thead> 
     <tr>
       <th colspan="3" scope="col">
       <label for="title" style="font-weight:bolder;">제목</label>
@@ -35,13 +35,9 @@
   <div style="text-align:right">
   <span>작성자</span>&nbsp; 
 <!--   <input th:value="${#authentication.name}" th:name="*{writer}"> -->
-	<input th:field="*{email}" id="email"> 
-  <input th:field="*{writer}" id="writer" readonly="readonly">&nbsp;&nbsp; <span>등록시간</span>
-
+  <input th:field="*{writer}" id="writer" readonly="readonly">&nbsp;&nbsp; 
+  <input th:field="*{username}" id="username" readonly="readonly" hidden="true">
   </div>
-          <div sec:authorize="isAuthenticated()">
-    <span sec:authentication="name"></span>님이 로그인 상태
-    </div>
   </td>
   </tr>
 
@@ -92,7 +88,7 @@
 <div id="btnDiv" class="col-lg-6">
 
 <div style="float:left">
-<a th:href="@{'/board/list?pageNum='+${cri.pageNum}}" type="button" class="btn btn-secondary">목록</a>
+<a th:href="@{'/board/list?pageNum=0'}" type="button" class="btn btn-secondary">목록</a>
 </div>
 <div style="float:right">
 <button type="button" class="btn btn-success" onclick="submit_button()">등록</button>
@@ -117,6 +113,7 @@
 	let fileArry = [];
 
 	function addFile(){
+		alert("@#");
 		const fileDivs = $('div[data-name="fileDiv"]');
 		if (fileDivs.length > 2) {
 			alert('파일은 최대 세 개까지 업로드 할 수 있습니다.');
@@ -180,22 +177,22 @@
 	function submit_button(){
 		
 		const title = document.getElementById("title").value;
-		const email = document.getElementById("email").value;
 		const writer = document.getElementById("writer").value;
 		const content = document.getElementById("content").value;
+		const username = document.getElementById("username").value;
 		const fileDivs = $('div[data-name="fileDiv"]');
 		const sendingData = new FormData();
 		const files=[];
 		
 		sendingData.append('title',title);
-		sendingData.append('email',email);
 		sendingData.append('writer',writer);
 		sendingData.append('content',content);
+		sendingData.append('username',username)
 		alert($('#file_0').val()+"!!!!");
 		for(let i=0;i<fileArry.length;i++){
 			if(fileArry[i]===false){
 				console.log("here is file... sendingData boxing..."+$('#file_'+i)[0].files[0].name);
-				sendingData.append('files',$('#file_'+i)[0].files[0]);
+				/* sendingData.append('files',$('#file_'+i)[0].files[0]); */
 			}
 		}
 		$.ajax({

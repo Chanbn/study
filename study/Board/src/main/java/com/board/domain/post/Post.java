@@ -1,6 +1,7 @@
 package com.board.domain.post;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -18,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.board.domain.BaseTimeEntity;
 import com.board.domain.member.Member;
-import com.board.file.File;
+import com.board.file.boardFile;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -49,12 +51,21 @@ public class Post extends BaseTimeEntity {
 	private String email;
 	private String deleteYn;
 	private Long viewcount;
-	
+	 
 	  @Builder
 	    public Post(String title, String content) {
 	        this.title = title;
 	        this.content = content;
 	    }
+	  
+	  @OneToMany(mappedBy = "postFiles")
+	  private List<boardFile> fileLists = new ArrayList<>();
+	  
+	  public void addFile(boardFile files)
+	  {
+		  this.fileLists.add(files);
+	  }
+	  
     public void updateTitle(String title) {
         this.title = title;
     }

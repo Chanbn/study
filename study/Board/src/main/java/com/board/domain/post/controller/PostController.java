@@ -1,6 +1,6 @@
 package com.board.domain.post.controller;
 
-import java.io.File;
+
 import java.net.URLEncoder;
 import java.nio.file.Paths;
 import java.security.Principal;
@@ -43,11 +43,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.standard.expression.Each;
 
+import com.board.domain.member.dto.MemberInfoDto;
+import com.board.domain.member.dto.MemberSessionDto;
 import com.board.domain.post.Post;
 import com.board.domain.post.dto.Criteria;
+import com.board.domain.post.dto.LastPageDto;
 import com.board.domain.post.dto.PostSaveDto;
 import com.board.domain.post.service.PostService;
 
+import com.board.file.dto.FileDto;
+import com.board.file.service.FileService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,11 +65,15 @@ import lombok.extern.slf4j.Slf4j;
 public class PostController {
 	
 	private final PostService postService;
-
+	private final FileService fileService;
+	LastPageDto lastPage = new LastPageDto();
+	
+	
 	@GetMapping(value = { "/list", "/myList" })
 	public void getList(Model model, @PageableDefault(page = 0, size=10, direction = Sort.Direction.DESC)Pageable pageable,@RequestParam(value = "type", defaultValue = "all") String type,@RequestParam(value = "", defaultValue = "") String word) {
 		System.out.println("welcome!!");
 		Page<Post> pageList =postService.SearchPost(type, word, pageable);
+		lastPage.recentPageSet(pageable.getPageNumber());
 
 		int startpage = 1;
 		if(pageList.getNumber()!=1) {
@@ -85,34 +94,34 @@ public class PostController {
 		model.addAttribute("endpage",endpage);
 	}
 
-	@PostMapping(value = { "/list", "/myList" })
-	public void getList2(Model model, @PageableDefault(page = 0, size=10, direction = Sort.Direction.DESC)Pageable pageable,@RequestParam(value = "type", defaultValue = "all") String type,@RequestParam(value = "", defaultValue = "") String word) {
-		System.out.println("welcome!!");
-		Page<Post> pageList =postService.SearchPost(type, word, pageable);
 
-		int startpage = 1;
-		if(pageList.getNumber()!=1) {
-			startpage = pageList.getNumber()-pageList.getNumber()%10+1;
-		}
-		System.out.println("currentPAge : "+pageList.getNumber());
-		int endpage = pageList.getNumber()+(10-pageList.getNumber()%10);
-		if(endpage>pageList.getTotalPages()) {
-			endpage = pageList.getTotalPages();
-		}
-		boolean nextPage = endpage%10==0?true:false;
-		
-		model.addAttribute("boardList",pageList);
-		model.addAttribute("prev",pageList.hasPrevious());
-		model.addAttribute("next",nextPage);
-		model.addAttribute("page",pageList.getNumber());
-		model.addAttribute("startpage",startpage);
-		model.addAttribute("endpage",endpage);
+	
+	@GetMapping("/write")
+	public void writeGet(Model model,@ModelAttribute("vo") PostSaveDto vo,Pageable pageable,@SessionAttribute("user") MemberSessionDto member) {
+		vo.setEmail(member.getEmail());
+		vo.setWriter(member.getNickname());
+		vo.setUsername(member.getUsername());
+		model.addAttribute("vo", vo);
+		model.addAttribute("cri",lastPage);
+
+		List<FileDto> fileList = new ArrayList<>(); 
+		model.addAttribute("fileList",fileList);
+	}
+
+	
+	
+//	@PostMapping("/write")
+//	public void writePost(Model model,@ModelAttribute("vo") PostSaveDto vo) {
+////		List<boardFile> fileList = fileService.save(files, vo.getIdx());
+//		postService.save(vo,vo.getUsername());
+//	}
+//	
+	@ResponseBody
+	@PostMapping(value = "/posts")
+	public ResponseEntity<String> add(PostSaveDto board) {
+		Long number = postService.save(board);
+
+		return number>=0? new ResponseEntity<>("success",HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	public void save(Model model, Authentication authentication,PostSaveDto postSaveDto) {
-		
-		String username = authentication.getName();
-		
-		postService.save(username,postSaveDto);
-	}
 }

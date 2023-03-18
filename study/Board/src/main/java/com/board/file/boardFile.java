@@ -19,19 +19,20 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Table(name = "board_attach")
+
 @Data
 //@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "attach")
 @Entity
-public class File {
+public class boardFile {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long idx;
 
-	/** 게시글 번호 (FK) */
-	private Long boardIdx;
-
+//	/** 게시글 번호 (FK) */
+//	private Long boardIdx;
+ 
 	/** 원본 파일명 */
 	private String originalName;
 
@@ -45,8 +46,13 @@ public class File {
 	
 	private LocalDateTime insertTime;
 	private LocalDateTime deleteTime;
+	 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "file_id")
+	private Post postFiles;
 	
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "boardIdx")
-//	private Post post;
+	public void addFilese(Post postFiles) {
+		this.postFiles = postFiles;
+		postFiles.addFile(this);
+	}
 }

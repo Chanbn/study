@@ -2,15 +2,22 @@ package com.board.domain.post.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.catalina.authenticator.SpnegoAuthenticator.AuthenticateAction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.board.domain.post.dto.PostSaveDto;
 import com.board.domain.post.repository.PostRepository;
 import com.board.exception.BaseExceptionType;
+import com.board.file.dto.FileDto;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+import com.board.domain.member.Member;
+import com.board.domain.member.dto.MemberInfoDto;
 import com.board.domain.member.exception.MemberException;
 import com.board.domain.member.exception.MemberExceptionType;
 import com.board.domain.member.repository.MemberRepository;
@@ -20,16 +27,20 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostServiceImpl implements PostService {
 	private final PostRepository postRepository;
 	private final MemberRepository memberRepository;
+	private final HttpSession session;
 @Override
-public void save(String username,PostSaveDto postSaveDto) {
+public Long save(PostSaveDto postSaveDto) {
 	// TODO Auto-generated method stub
 	
 	Post post = postSaveDto.toEntity();
-	post.confirmWriter(memberRepository.findByUsername(username).orElseThrow(()-> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER)));
-	postRepository.save(post);
+
+	post.confirmWriter(memberRepository.findByUsername(postSaveDto.getUsername()).orElseThrow(()-> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER)));
+
+	return postRepository.save(post).getIdx();
 }
 @Override
 public List<Post> getPageList(Pageable pageable) {
