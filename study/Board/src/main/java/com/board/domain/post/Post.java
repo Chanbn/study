@@ -58,12 +58,13 @@ public class Post extends BaseTimeEntity {
 	        this.content = content;
 	    }
 	  
-	  @OneToMany(mappedBy = "postFiles")
+	  @OneToMany(mappedBy = "post")
 	  private List<boardFile> fileLists = new ArrayList<>();
 	  
 	  public void addFile(boardFile files)
 	  {
-		  this.fileLists.add(files);
+		  fileLists.add(files);
+		  files.setPost(this);
 	  }
 	  
     public void updateTitle(String title) {

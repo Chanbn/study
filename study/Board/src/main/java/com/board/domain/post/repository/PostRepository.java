@@ -1,6 +1,7 @@
 package com.board.domain.post.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Page;
@@ -15,4 +16,6 @@ public interface PostRepository extends JpaRepository<Post, Long>{
 	Page<Post> findByTitleContaining(String title,Pageable pageable);
 	Page<Post> findByTitleContainingOrContentContaining(String word, String word2, Pageable pageable);
 	Page<Post> findByWriterContaining(String writer,Pageable pageable);
+	
+	Optional<Post> findByIdx(Long idx);
 }

@@ -1,6 +1,7 @@
 package com.board.domain.post.controller;
 
 
+import java.io.File;
 import java.net.URLEncoder;
 import java.nio.file.Paths;
 import java.security.Principal;
@@ -48,11 +49,13 @@ import com.board.domain.member.dto.MemberSessionDto;
 import com.board.domain.post.Post;
 import com.board.domain.post.dto.Criteria;
 import com.board.domain.post.dto.LastPageDto;
+import com.board.domain.post.dto.PostInfoDto;
 import com.board.domain.post.dto.PostSaveDto;
 import com.board.domain.post.service.PostService;
-
+import com.board.file.boardFile;
 import com.board.file.dto.FileDto;
 import com.board.file.service.FileService;
+import com.board.file.service.FileServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -108,20 +111,43 @@ public class PostController {
 		model.addAttribute("fileList",fileList);
 	}
 
-	
-	
-//	@PostMapping("/write")
-//	public void writePost(Model model,@ModelAttribute("vo") PostSaveDto vo) {
-////		List<boardFile> fileList = fileService.save(files, vo.getIdx());
-//		postService.save(vo,vo.getUsername());
-//	}
-//	
 	@ResponseBody
-	@PostMapping(value = "/posts")
+	@PostMapping(value = "/posts",consumes = "multipart/form-data")
 	public ResponseEntity<String> add(PostSaveDto board) {
 		Long number = postService.save(board);
-
 		return number>=0? new ResponseEntity<>("success",HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@GetMapping("/get")
+	public void getPost(Model model, @RequestParam("idx") long idx) {
+		PostInfoDto post = postService.getPost(idx);
+		model.addAttribute("post", post);
+		System.out.println(		"파일갯수"+post.getFileList().size());
+
+	}
+	
+	@GetMapping(value = "/download")
+	public void downloadAttachFile(@RequestParam("idx") Long idx,Model model,HttpServletResponse response) {
+		boardFile fileInfo = fileService.getFileDetails(idx);
+		String uploadDate = fileInfo.getCreatedDate().format(DateTimeFormatter.ofPattern("yyMMdd"));
+		String uploadPath = Paths.get("D:","SpringBootProject","upload",uploadDate).toString();
+		String filename = fileInfo.getOriginalName();
+		File file = new File(uploadPath,fileInfo.getSaveName());
+		
+		try {
+			byte[] data = FileUtils.readFileToByteArray(file);
+			response.setContentType("application/octet-stream");
+			response.setContentLength(data.length);
+			response.setHeader("Content-Transfer-Encoding", "binary");
+			response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(filename, "UTF-8") + "\";");
+			
+			response.getOutputStream().write(data);
+			response.getOutputStream().flush();
+			response.getOutputStream().close();
+		}catch (Exception e) {
+			// TODO: handle exception
+			
+		}
 	}
 	
 }

@@ -20,7 +20,7 @@
 	<tr th:if="${not #lists.isEmpty(boardList)}" th:each="row : ${boardList}">
 	<td th:text="${row.idx}">	</td>
 	<td> 
- 	<a th:href="@{'/board/get?page='+${pageNum}+'&idx='+${idx}}"> 
+ 	<a th:href="@{'/board/get?page='+${page}+'&idx='+${row.idx}}"> 
 	<span th:text="${row.title}"></span></a>
 	</td>
 

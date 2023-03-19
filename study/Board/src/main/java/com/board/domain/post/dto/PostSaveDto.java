@@ -20,7 +20,7 @@ public class PostSaveDto {
 	private String title;
 	private String email;
 	private String username;
-	public List<MultipartFile> files; 
+	private MultipartFile[] files; 
 	
 	public PostSaveDto(String title, String content) {
 		// TODO Auto-generated constructor stub

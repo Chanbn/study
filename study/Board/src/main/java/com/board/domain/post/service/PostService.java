@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.board.domain.post.Post;
+import com.board.domain.post.dto.PostInfoDto;
 import com.board.domain.post.dto.PostSaveDto;
 import com.board.file.dto.FileDto;
 
@@ -17,5 +18,5 @@ public interface PostService {
 	List<Post> getPageList(Pageable pageable);
 //	Page<Post> findByTitleContaining(String title,Pageable pageable);
 	Page<Post> SearchPost(String type, String word, Pageable pageable);
-
+	PostInfoDto getPost(Long idx);
 }

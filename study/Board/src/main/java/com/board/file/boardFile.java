@@ -13,9 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.board.domain.BaseTimeEntity;
 import com.board.domain.post.Post;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,9 +27,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "attach")
 @Entity
-public class boardFile {
+public class boardFile extends BaseTimeEntity{
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "board_file_seq")
+	@SequenceGenerator(name = "board_file_seq", sequenceName = "board_file_seq", allocationSize = 1)
 	private Long idx;
 
 //	/** 게시글 번호 (FK) */
@@ -44,15 +47,19 @@ public class boardFile {
 	
 	private String deleteYn;
 	
-	private LocalDateTime insertTime;
-	private LocalDateTime deleteTime;
-	 
+	
+	@Builder
+	public boardFile(String originalName,String saveName, long imageSize) {
+	this.originalName = originalName;
+	this.saveName = saveName;
+	this.imageSize = imageSize;
+	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "file_id")
-	private Post postFiles;
+	private Post post;
 	
-	public void addFilese(Post postFiles) {
-		this.postFiles = postFiles;
-		postFiles.addFile(this);
+	public void setPost(Post post) {
+		this.post = post;
 	}
 }
