@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.board.domain.BaseTimeEntity;
+import com.board.domain.comment.Comment;
 import com.board.domain.member.Member;
 import com.board.file.boardFile;
 
@@ -65,6 +66,14 @@ public class Post extends BaseTimeEntity {
 	  {
 		  fileLists.add(files);
 		  files.setPost(this);
+	  }
+	  
+	  @OneToMany(mappedBy = "post")
+	  private List<Comment> comments = new ArrayList<>();
+	  
+	  public void addComment(Comment comment) {
+		  comments.add(comment);
+		  comment.setPost(this);		  
 	  }
 	  
     public void updateTitle(String title) {

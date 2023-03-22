@@ -2,8 +2,11 @@ package com.board.domain.post.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.board.domain.BaseTimeEntity;
+import com.board.domain.comment.Comment;
+import com.board.domain.comment.dto.CommentInfoDto;
 import com.board.domain.member.dto.MemberInfoDto;
 import com.board.domain.post.Post;
 import com.board.file.boardFile;
@@ -20,6 +23,7 @@ public class PostInfoDto {
 	private LocalDateTime createdDate;
 	private List<boardFile> fileList;
 	private MemberInfoDto writer;
+	private List<CommentInfoDto> comments;
 	
 	public PostInfoDto(Post post){
 		
@@ -29,6 +33,9 @@ public class PostInfoDto {
 		this.fileList = post.getFileLists();
 		this.writer = new MemberInfoDto(post.getWriter()); 
 		//post.getWriter -> Member object를 불러옴. Member object에서 MemberInfoDto에서 선언한 필드의 데이터들만 뽑아옴.
+		this.comments = post.getComments().stream()
+				.map(comment -> new CommentInfoDto(comment))
+				.collect(Collectors.toList());
 		
 		
 	}

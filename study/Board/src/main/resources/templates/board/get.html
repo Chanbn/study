@@ -105,308 +105,103 @@
 			
 			<div class="pannel-footer">
 			</div>
+			
+			
+			<!-- Comment Section -->
+<div id="comment-section">
+  <h2>댓글</h2>
+  <div th:if="${#lists.isEmpty(post.comments)}">
+    <p>등록된 댓글이 없습니다.</p>
+  </div>
+  <div th:unless="${#lists.isEmpty(post.comments)}">
+    <div th:each="comment : ${post.comments}">
+      <!-- <div th:replace="/fragments/comment :: comment-block(${comment})"></div> --> 
+    </div>
+  </div>
 
+  <div id="comment-form">
+    <form id="comment-form" method="post">
+      <input type="hidden" id="post-id" value="${post.idx}" />
+      <input type="hidden" id="parent-id" value="" />
+      <div class="form-group">
+        <textarea class="form-control" id="content" name="content" placeholder="댓글을 입력하세요" rows="3"></textarea>
+      </div>
+      <button id="comment-submit" type="submit" class="btn btn-primary">등록</button>
+    </form>
+  </div>
+</div>
 
+ 
 </body>
 
 
-<script>
 
-</script>
-
-<script  th:inline="javascript">
-
-
+<script th:inline="javascript">
 $(function () {
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
-    $(document).ajaxSend(function(e, xhr, options) {
-        xhr.setRequestHeader(header, token);
-    });
-});
-
-
-
-var loginUserName = null;
-/*[# sec:authorize="isAuthenticated()"]*/
-loginUserName = /*[[${#authentication.principal.username}]]*/
-loginUserEmail = /*[[${#authentication.principal.User.email}]]*/
-/*[/]*/
-var boardEmail = /*[[${post.writer.email}]]*/
-
-$("#modi").on("click",function(e){
-
-	if(boardEmail==loginUserEmail){
-	$("#operForm").attr("action","/board/modify?").submit();}
-	else{
-		alert("본인이 작성한 글만 수정 할 수 있습니다.")
-	}
-});
-
-/* $("#deleteBoard").on("click",function(e){
-	if(boardEmail==loginUserEmail){
-		$("#operForm2").attr("action","/board/remove?").submit();}
-		else{
-			alert("본인이 작성한 글만 삭제 할 수 있습니다.")
-		}
-}); */
-
-	
-	$(document).ready(function(){
-	var replyPageFooter = $(".pannel-footer");
-	var replyUl=$(".chat");
-	var idxValue=/*[[ ${post.idx} ]]*/;
-	showList(1);
-	var writeSpace=$(".add-space");
-	
-	
-	if(loginUserName!=null)
-{
-	var str='';
-	str += "<input readonly='readonly'  value='"+loginUserName+"''>";
-	str += "<p>";
-	str += "<textarea id='replycontent'>";
-	str += "</textarea>";
-	str += "<button id='writebtn'>등록";
-	str += "</button>";
-	writeSpace.html(str);
-		}	
-	
-function getList(param,callbackFunc){
-	idx =param.idx;
-	page=param.page;
-	$.ajax({ 
-		type: "GET", 
-		url: "/board/"+idx+"/"+page, 
-		success: function(data) 
-		{
-		if(data){
-
-			callbackFunc(data.repCnt,data.list);
-		}
-		} 
-		,
-		error : function(request,status,error){
-			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-			}
-		});
-
-}
-
-function removereply(param,callbackFunc){
-	idx=param.idx;
-	bno=param.bno;
+  var token = $("meta[name='_csrf']").attr("content");
+  var header = $("meta[name='_csrf_header']").attr("content");
+  $(document).ajaxSend(function(e, xhr, options) {
+      xhr.setRequestHeader(header, token);
+  });
+	var loginUserName = null;
+	var loginUserEmail = null;
+ 
 	$.ajax({
-		type: "DELETE",
-		url: "/board/"+idx+"/"+bno,
-		data:JSON.stringify(param), 
-        contentType : "application/json; charset=UTF-8",
-		success: function(data){
-			if(data){
-				alert("댓글이 삭제되었습니다.");
-				showList(1);
-			}
+		url: '/member/current',
+		type: 'GET',
+		success: function(user){
+			loginUserName = user.username;
+			loginUserEmail = user.email;
+			console.log(loginUserName);
+			console.log(loginUserEmail);
 		},
-		error : function(request,status,error){
-			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-			}
-	});
-}
-
-function insertReply(param,callbackFunc){
-	idx = param.idx;
-	$.ajax({
-		type:"POST",
-		url:"/board/"+idx,
-		data: JSON.stringify(param),
-        contentType : "application/json; charset=UTF-8",
-		success: function(data){
-			if(data){
-				alert("댓글작성완료");
-				showList(1);
-			}
-		},
-		error : function(request,status,error){
-
-			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-
-			}
-	});
-}
-function makereply(param){
-	insertReply(param,function(data){
-	});
-}
-
-function showList(page){
-	getList( {idx:idxValue,page:page||1},function(repCnt,list){
-		var str='';
-		for(var i = 0, len = list.length || 0 ; i<len;i++){
-			str +="<p>";
-			str +="<div id=comment"+list[i].bno+">";
-			if(list[i].parentBno!=0){
-				str += "<span style='padding-left:20px'>";
-				str += "</span>";
-			}
-			str +="<button type='button' class='btn_reply_write_all'"+"data-no='"+list[i].bno+"'data-gp='"+list[i].groupnum+"'data-pbno='"+list[i].parentBno+"'>";
-	        str +="<li class='left clearfix' data-rno='"+list[i].bno+"'>";
-	        str +=" <div ><div class='header'><strong class='primary-font'>"+list[i].writer+"</strong>";
-	        str +="		<small class='pull-right text-muted'>"+list[i].regTime+"</small></div>";
-	        
-	        if(list[i].avail=="0"){ 
-		        str +="     <p> 삭제된 댓글입니다. </p></div></li>";       	        
-	        }else{
-	        str +="     <p> "+list[i].content+"</p></div></li>";       
-	        }str +="</button>";
-	        if(loginUserName==list[i].writer){
-	        str +="<button id='replyRemove' "+" data-no="+list[i].bno+">x";
-	        str +="</button>";
-	        }
-	        str +="</div>";
-	        str +="</p>"
-	    }
-		replyUl.html(str);
-		pageButton(repCnt,page);
-	});
-}
-
-$(document).on("click","#replyRemove",function(){
-	var bno =$(this).attr('data-no');
-	var param={idx:idxValue,bno:bno};
-	removereply(param);
-});
-
-function pageButton(repCnt,page){
-
-	var endNum = Math.ceil(page/10.0)*10;
-	var startNum = endNum-9;
-
-	var prev = startNum!=1;
-	var next = false;
-	
-	if(endNum*10>=repCnt){
-		endNum=Math.ceil(repCnt/10.0);
-	}
-	if(endNum*10<repCnt){
-		next = true;
-	}
-	
-	var str = "<u1 class='pagination pull-right'>";
-	
-	if(prev){
-		 str+= "<li class='page-item'><a class='page-link' href='"+(startNum -1)+"'>Previous</a></li>";
-		 }
-
-		 for(var i = startNum; i <= endNum; i++){
-			console.log("showReplyPage 에서의 : "+page);
-		 var active = page == i? "active":"";
-
-		 str+= "<li class='page-item "+active+" '><a class='page-link' href='"+i+"'>"+i+"</a></li>";
-		 }
-		 
-		 if(next){
-
-		 str+= "<li class='page-item'><a class='page-link' href='"+(endNum + 1) +"'>Next</a></li>";
-		 }
-
-		 str += "</ul></div>";
-
-		 console.log(str);
-
-		 replyPageFooter.html(str);
-	
+		error: function(){
+			console.log('로그인 상태가 아닙니다.');
 		}
-		
-	replyPageFooter.on("click","li a",function(e){
-		e.preventDefault();
-		console.log("page click");
-	
-		var targetPageNum=$(this).attr("href");
-	
-		console.log("targetPageNum : " + targetPageNum);
-	
-		page = targetPageNum;
-		showList(page);
-		});
-
-	$(document).on('click','#writebtn',function(e){
-		var content = document.getElementById("replycontent").value;
-		var rep={idx: idxValue ,writer: loginUserName, content: content,parentBno: 0,groupnum:0, email: loginUserEmail};
-
-		makereply(rep);
-		document.getElementById("replycontent").value='';
 	});
 	
-	$(document).on('click','#repaddBtn',function(e){
-		var no =$(this).attr('data-no');
-		var pbno = $(this).attr('data-pbno');
-		if(pbno==0){
-			pbno = no;
-		}
-		var content = document.getElementById("reply_content").value;
-
-		var rep={idx: idxValue, writer: loginUserName, content: content, parentBno: pbno,groupnum:1 ,email: loginUserName};
-		alert("idx :"+rep.idx+ " writer :" + loginUserName +" content :"+ rep.content+" email :" + loginUserName)
-		makereply(rep);
-
-	});
-});
-
-$(document).on('click','.btn_reply_write_all',function(e){
-	var no =$(this).attr('data-no');
-	var pbno =$(this).attr('data-pbno'); 
-
 	
-	if($("#reply_empty_last_li_"+no).length){
-		$("#reply_empty_last_li_" + no).remove();
-		return false;
-		}
-	var replyDiv ='';
-	if(loginUserName!=null)
-	{replyDiv = "<li id=\"reply_empty_last_li_"+no+"\">";
-	replyDiv += "<div class=\"reply show\" id=\"reply_empty_"+no+"\">";
-	replyDiv += "<div class=\"reply_box\">";
-	replyDiv += "<input type='text' value="+loginUserName+">";
-	replyDiv +="<textarea id='reply_content'>"; 
-	replyDiv +="</textarea>";
-    replyDiv += "</div>";
-    replyDiv += "</div>"
-    replyDiv += "<button id='repaddBtn' data-no='"+no+"' data-pbno='"+pbno+"' >등록";
-    replyDiv += "</button>";
-    replyDiv += "</li>";
-    $("#comment"+no).after(replyDiv);
-	}else{
-		alert("로그인 후 댓굴 달아주세요");
-	}
-    
-});
-
-function delete_button(){
-	 
-	var idx = $(".boardIdx").attr('id');  
-	var sendData = {"boardIdx" : idx};
- 	$.ajax({
-		type:"DELETE",
-		url:"/board/posts/"+idx,
-	    data:  sendData,
-		success: function(data){
-			if(data){
-				alert("삭제되었습니다.");
-				window.location.href = '/board/list';
-			}
-		},
-		error : function(request,status,error){
-
-			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-
-			}
-	});	
+  var boardEmail = /*[[${post.writer.email}]]*/
 
  
- }
 
+/*   $("#modi").on("click",function(e){
+    if(boardEmail==loginUserEmail){
+      $("#operForm").attr("action","/board/modify?").submit();
+    } else {
+      alert("본인이 작성한 글만 수정 할 수 있습니다.")
+    }
+  });
+ */
 
+ $(document).on("click", "#comment-submit", function(e){
+	e.preventDefault();
+	 console.log(loginUserName);
+	 var postId = /*[[ ${post.idx} ]]*/ 0;
+	    var parentId = $('#parent-id').val();
+	    var content = $('#content').val();
+	    var username = loginUserName ? loginUserName : 'anonymous';
+	    $.ajax({
+	      url: '/comment/add',
+	      type: 'POST',
+	      data: {
+	        postId: postId,
+	        parentId: parentId,
+	        content: content,
+	        username: username
+	      },
+	      success: function(response){
+	        location.reload();
+	      },
+	      error: function(xhr, status, error){
+	        alert("댓글 등록에 실패하였습니다.");
+	      }
+	    });
 
+	 
+ });
+  
+});
 </script>
 
 </html>

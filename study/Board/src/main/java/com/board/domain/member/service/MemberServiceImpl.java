@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.board.domain.member.Member;
+import com.board.domain.member.dto.MemberInfoDto;
 import com.board.domain.member.dto.MemberSignUpDto;
 import com.board.domain.member.exception.MemberException;
 import com.board.domain.member.exception.MemberExceptionType;
@@ -49,6 +50,13 @@ public class MemberServiceImpl implements MemberService {
 			break;
 		}
 		return check;
+	}
+
+	@Override
+	public MemberInfoDto currentMember(String username) {
+		// TODO Auto-generated method stub
+		MemberInfoDto member = new MemberInfoDto(memberRepository.findByUsername(username).orElseThrow(()-> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER)));
+		return member;
 	}
 
 }

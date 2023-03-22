@@ -28,6 +28,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.board.domain.comment.Comment;
 import com.board.domain.post.Post;
 
 import lombok.AccessLevel;
@@ -82,6 +83,14 @@ public class Member implements Serializable{
 	
 	public void addPost(Post post) {
 		postList.add(post);
+	}
+	
+	@OneToMany(mappedBy = "writer")
+	private List<Comment> comments = new ArrayList<>();
+	
+	public void addComment(Comment comment) {
+		comments.add(comment);
+		comment.setMember(this);
 	}
 	
 	public void encodePassword(PasswordEncoder passwordEncoder){

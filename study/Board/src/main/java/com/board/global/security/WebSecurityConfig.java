@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		// TODO Auto-generated method stub
 		http.authorizeRequests()
 		.antMatchers("/member/**","/board/list").permitAll()
-		.antMatchers("/myPage/myinfo","/myPage/myContentList","/myPage/myCommentList","/myPage/home").authenticated()
+		.antMatchers("/myPage/myinfo","/myPage/myContentList","/myPage/myCommentList","/myPage/home","/board/write").authenticated()
 		.and()
 		.formLogin()
 		.loginPage("/member/login")

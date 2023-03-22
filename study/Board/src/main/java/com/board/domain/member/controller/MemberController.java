@@ -5,6 +5,8 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.domain.member.Member;
+import com.board.domain.member.dto.MemberInfoDto;
 import com.board.domain.member.dto.MemberSignUpDto;
 import com.board.domain.member.exception.MemberException;
 import com.board.domain.member.service.MemberService;
@@ -58,5 +61,12 @@ public class MemberController {
 		int chk = memberService.existCheck(word, type);
 		
 		return chk;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/current", method = RequestMethod.GET)
+	public ResponseEntity<MemberInfoDto> currentUser(@AuthenticationPrincipal UserDetails userDetails){
+		MemberInfoDto member = memberService.currentMember(userDetails.getUsername());
+		return ResponseEntity.ok(member);
 	}
 }
