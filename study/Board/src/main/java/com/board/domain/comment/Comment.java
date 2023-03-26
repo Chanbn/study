@@ -11,9 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.board.domain.BaseTimeEntity;
+import com.board.domain.comment.dto.CommentSaveDto;
 import com.board.domain.member.Member;
 import com.board.domain.member.Role;
 import com.board.domain.post.Post;
@@ -34,9 +36,10 @@ import lombok.ToString;
 @Builder
 public class Comment extends BaseTimeEntity {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "board_comment_seq")
+	@SequenceGenerator(allocationSize = 1,name = "board_comment_seq",sequenceName = "board_comment_seq" )
 	private Long idx;
-	
+
 	private String content;
 	
 	@ManyToOne
@@ -62,6 +65,7 @@ public class Comment extends BaseTimeEntity {
 		this.post = post;
 		this.parentComment = parentComment;
 	}
+	
 	
 	public void setParentComment(Comment parentComment) {
 		this.parentComment = parentComment;

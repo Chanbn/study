@@ -29,12 +29,14 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 
 @Table(name = "board")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@ToString
 public class Post extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,11 +49,9 @@ public class Post extends BaseTimeEntity {
 	private Member writer;
 	
 	private String content;
-	private Long rnt;
 	@Column(nullable = false)
 	private String email;
 	private String deleteYn;
-	private Long viewcount;
 	 
 	  @Builder
 	    public Post(String title, String content) {

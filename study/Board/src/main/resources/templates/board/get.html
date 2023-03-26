@@ -115,7 +115,17 @@
   </div>
   <div th:unless="${#lists.isEmpty(post.comments)}">
     <div th:each="comment : ${post.comments}">
-      <!-- <div th:replace="/fragments/comment :: comment-block(${comment})"></div> --> 
+      <div th:text="${comment.writer.username}"></div>
+      <div th:text="${comment.content}"></div>
+
+ <!-- 댓글의 댓글 목록 -->
+      <ul>
+        <li th:each="childComment : ${comment.childComments}">
+            <div th:text="${comment.writer.username}"></div>
+            <div th:text="${comment.content}"></div>
+        </li>
+      </ul>
+      
     </div>
   </div>
 
@@ -177,24 +187,26 @@ $(function () {
  $(document).on("click", "#comment-submit", function(e){
 	e.preventDefault();
 	 console.log(loginUserName);
-	 var postId = /*[[ ${post.idx} ]]*/ 0;
+	 var postId = /*[[ ${post.idx} ]]*/;
 	    var parentId = $('#parent-id').val();
 	    var content = $('#content').val();
 	    var username = loginUserName ? loginUserName : 'anonymous';
 	    $.ajax({
 	      url: '/comment/add',
 	      type: 'POST',
-	      data: {
+	      contentType: 'application/json; charset=UTF-8',
+	      data: JSON.stringify({
 	        postId: postId,
 	        parentId: parentId,
 	        content: content,
 	        username: username
-	      },
+	      }),
 	      success: function(response){
 	        location.reload();
 	      },
-	      error: function(xhr, status, error){
-	        alert("댓글 등록에 실패하였습니다.");
+	      error: function(request,status,error){
+	    	  alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	    	  console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 	      }
 	    });
 
