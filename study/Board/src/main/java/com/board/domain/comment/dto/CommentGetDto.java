@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.board.domain.comment.Comment;
+import com.board.domain.member.Member;
 import com.board.domain.member.dto.MemberInfoDto;
+import com.board.domain.post.Post;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,7 @@ public class CommentGetDto {
 
 	private Long idx;
 	private String content;
+	private Long groupNum;
 	private LocalDateTime createDate;
 	private MemberInfoDto writer;
 	private List<CommentGetDto> childComments;
@@ -30,5 +33,25 @@ public class CommentGetDto {
 				.map(childComment -> new CommentGetDto(childComment))
 				.collect(Collectors.toList());
 		this.parentCommentDto = comment.getParentComment() !=null? new CommentGetDto(comment.getParentComment()) : null;
+		this.groupNum = comment.getGroupNum();
+	}
+	
+	public Comment toEntity() {
+		Comment comment = Comment.builder()
+				.content(content)
+				.writer(this.writer.toEntity())
+				.post(this.parentCommentDto != null ? this.parentCommentDto.toEntity().getPost() : null)
+				.parentComment(this.parentCommentDto != null ? this.parentCommentDto.toEntity() : null)
+				.groupNum(groupNum)
+				.build();
+		
+		List<Comment> childComments = this.childComments.stream()
+				.map(commentGetDto -> commentGetDto.toEntity())
+				.collect(Collectors.toList());
+		for(Comment childComment : childComments) {
+			comment.addChildComment(childComment);
+		}
+		
+		return comment;
 	}
 }

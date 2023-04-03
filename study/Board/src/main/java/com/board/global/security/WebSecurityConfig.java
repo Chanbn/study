@@ -20,7 +20,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		// TODO Auto-generated method stub
 		web
 		.ignoring()
-		.antMatchers("/resources/**");
+		.antMatchers("/resources/**","/css/**");
 	}
 	 
 	@Override

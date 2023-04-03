@@ -104,6 +104,7 @@ public class PostController {
 		vo.setEmail(member.getEmail());
 		vo.setWriter(member.getNickname());
 		vo.setUsername(member.getUsername());
+		vo.setUserId(member.getId());
 		model.addAttribute("vo", vo);
 		model.addAttribute("cri",lastPage);
 

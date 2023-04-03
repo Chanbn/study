@@ -15,6 +15,7 @@ import lombok.Setter;
 public class PostSaveDto {
 
 	private Long idx;
+	private Long userId;
 	private String writer;
 	private String content;
 	private String title;

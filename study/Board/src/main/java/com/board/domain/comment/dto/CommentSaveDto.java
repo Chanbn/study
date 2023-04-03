@@ -15,6 +15,7 @@ import lombok.Setter;
 public class CommentSaveDto {
 	Long postId;
 	Long parentId;
+	Long userId;
 	String username;
 	String content;
 	
@@ -24,6 +25,7 @@ public class CommentSaveDto {
 		this.content = comment.getContent();
 		this.postId = comment.getPost().getIdx();
 		this.parentId = comment.getParentComment() != null ? comment.getParentComment().getIdx() : null;
+		this.userId = comment.getWriter().getId();
 	}
 	
 	public Comment toEntity(Member member, Post post) {	

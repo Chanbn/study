@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,15 +26,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Table(name = "board_comment")
 @ToString 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@Setter
 @Entity
 @Builder
+@Slf4j
 public class Comment extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "board_comment_seq")
@@ -42,11 +47,13 @@ public class Comment extends BaseTimeEntity {
 
 	private String content;
 	
-	@ManyToOne
+	private Long groupNum;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member writer;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "post_id")
 	private Post post;
 	
@@ -72,6 +79,19 @@ public class Comment extends BaseTimeEntity {
 	}
 	
 	public void addChildComment(Comment childComment) {
+		
+		if(childComment.getParentComment() == null) {
+			childComment.setGroupNum(childComment.getIdx());
+			log.info("getParentComment()==null : groupNum->", childComment.getGroupNum());
+		}else {
+			if(childComment.getParentComment().getGroupNum()==null) {
+				childComment.setGroupNum(childComment.getParentComment().getIdx());
+			}else {
+				childComment.setGroupNum(childComment.getParentComment().getGroupNum());				
+			}
+			log.info("getParentComment()!=null : groupNum ->", childComment.getGroupNum());
+		}
+		
 		this.childComments.add(childComment);
 		childComment.setParentComment(this); 
 	}
@@ -83,4 +103,6 @@ public class Comment extends BaseTimeEntity {
 	public void setPost(Post post) {
 		this.post = post;
 	}
+	
+
 }

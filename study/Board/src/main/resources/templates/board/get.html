@@ -6,6 +6,7 @@
 	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 	<!-- ... -->
 <script src="https://code.jquery.com/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
 <div th:replace="/fragments/header.html :: fragment-header"></div>
@@ -107,27 +108,38 @@
 			</div>
 			
 			
-			<!-- Comment Section -->
+<!-- 			Comment Section
 <div id="comment-section">
   <h2>댓글</h2>
   <div th:if="${#lists.isEmpty(post.comments)}">
     <p>등록된 댓글이 없습니다.</p>
   </div>
   <div th:unless="${#lists.isEmpty(post.comments)}">
-    <div th:each="comment : ${post.comments}">
+    <div th:each="comment : ${post.comments}" class="comment-box">
       <div th:text="${comment.writer.username}"></div>
-      <div th:text="${comment.content}"></div>
+      <div>
+      <span th:text="${comment.content}"></span>				
+      <button th:id="${comment.idx}" class="comment-button">작성</button>      
+      </div>
 
- <!-- 댓글의 댓글 목록 -->
+  댓글의 댓글 목록 
       <ul>
-        <li th:each="childComment : ${comment.childComments}">
+        <li th:each="childComment : ${comment.childComments}" class="comment-box">
             <div th:text="${comment.writer.username}"></div>
             <div th:text="${comment.content}"></div>
+	      <button th:id="${comment.idx}" class="comment-button">작성</button>   
         </li>
       </ul>
+      <div id="re-comment-form">
       
+      </div>
     </div>
-  </div>
+  </div> -->
+
+<div id ="commentList">
+
+</div>
+
 
   <div id="comment-form">
     <form id="comment-form" method="post">
@@ -136,25 +148,34 @@
       <div class="form-group">
         <textarea class="form-control" id="content" name="content" placeholder="댓글을 입력하세요" rows="3"></textarea>
       </div>
-      <button id="comment-submit" type="submit" class="btn btn-primary">등록</button>
+      <button id="comment-submit" type="submit" class="btn btn-primary" data-no="-1" >등록</button>
     </form>
   </div>
-</div>
 
- 
+
+
 </body>
 
 
 
 <script th:inline="javascript">
+
+
+
+
 $(function () {
+	 var postId = /*[[ ${post.idx} ]]*/;
   var token = $("meta[name='_csrf']").attr("content");
   var header = $("meta[name='_csrf_header']").attr("content");
   $(document).ajaxSend(function(e, xhr, options) {
       xhr.setRequestHeader(header, token);
   });
+  
+ 
+  
 	var loginUserName = null;
 	var loginUserEmail = null;
+	var loginUserLongid = null;
  
 	$.ajax({
 		url: '/member/current',
@@ -162,8 +183,10 @@ $(function () {
 		success: function(user){
 			loginUserName = user.username;
 			loginUserEmail = user.email;
+			loginUserLongid = user.id;
 			console.log(loginUserName);
 			console.log(loginUserEmail);
+			console.log(loginUserLongid);
 		},
 		error: function(){
 			console.log('로그인 상태가 아닙니다.');
@@ -183,13 +206,20 @@ $(function () {
     }
   });
  */
+ 
 
  $(document).on("click", "#comment-submit", function(e){
 	e.preventDefault();
 	 console.log(loginUserName);
-	 var postId = /*[[ ${post.idx} ]]*/;
-	    var parentId = $('#parent-id').val();
-	    var content = $('#content').val();
+	 var no =$(this).attr('data-no');
+	 var parentId = null;
+	 var content = null;
+	 	if(no==-1){
+		    content = $('#content').val();
+	 	}else{
+		    parentId = no;
+		    content = $('#content'+no).val();	 		
+	 	}
 	    var username = loginUserName ? loginUserName : 'anonymous';
 	    $.ajax({
 	      url: '/comment/add',
@@ -199,7 +229,8 @@ $(function () {
 	        postId: postId,
 	        parentId: parentId,
 	        content: content,
-	        username: username
+	        username: username,
+	        userId: loginUserLongid
 	      }),
 	      success: function(response){
 	        location.reload();
@@ -212,8 +243,81 @@ $(function () {
 
 	 
  });
-  
-});
+   
+	  // GET 방식으로 댓글 목록을 받아오는 함수
+	  function getComments() {
+	    $.ajax({
+	      type: "GET",
+	      url: "/comment/"+postId,
+	      data: {
+	        postId: postId
+	      },
+	      success: function(data) {
+	        // 댓글 목록을 출력하는 함수를 호출하여 데이터를 가공한 뒤 출력
+	        printComments(data);
+	      },
+	      error: function(request,status,error) {
+	    	  alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	    	  console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	      }
+	    });
+	  }
+
+	  function makeCommentHtml(comment) {
+		    // 댓글 작성자와 내용을 출력
+		    var html = "<div class='comment-box'>"
+		    html += "<div>" + comment.writer.username + "</div>";
+		    html += "<span>" + comment.content + "</span>"
+		    html += "<button type='button' class='comment-button reply_add' data-no='"+ comment.idx +"'>작성</button>";
+		    html += "<div class='comment-form' data-parent-id='"+ comment.idx +"' style='display:none;'>";
+		    html += "<form method='post'>";
+		    html += "<div class='form-group'>";
+		    html += "<textarea id='content"+comment.idx+"'class='form-control' name='content' placeholder='댓글을 입력하세요' rows='3'></textarea>";
+		    html += "</div>";
+		    html += "<button id='comment-submit' data-no='"+comment.idx+"' type='submit' class='btn btn-primary'>등록</button>";
+		    html += "</form></div>";
+		    // 댓글의 댓글이 있으면 재귀적으로 호출하여 출력
+		    if (comment.childComments && comment.childComments.length > 0) {
+		        html += "<ul>";
+		        $.each(comment.childComments, function(index, childComment) {
+		            html += "<li>" + makeCommentHtml(childComment) + "</li>";
+		        });
+		        html += "</ul>";
+		    }
+		    html += "</div>";
+		    return html;
+		}
+
+		// 댓글 목록을 출력하는 함수
+		function printComments(comments) {
+		    var html = "";
+		    $.each(comments, function(index, comment) {
+		        html += makeCommentHtml(comment);
+		    });
+		    $("#commentList").html(html);
+		}
+
+		$(document).on('click', '.reply_add', function(e) {
+		    e.preventDefault();
+		    var no = $(this).attr('data-no');
+		    var form = $(this).siblings('.comment-form');
+		    if (form.is(':visible')) {
+		        form.hide();
+		    } else {
+		        $('.comment-form').hide();
+		        form.show();
+		        form.find('[name="parent_id"]').val(no);
+		    }
+		});
+	  
+	  
+	  // 페이지가 로드되면 댓글 목록을 받아와서 출력
+	  getComments();
+	});
+
+
+
+
 </script>
 
 </html>

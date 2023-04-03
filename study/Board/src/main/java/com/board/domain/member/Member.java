@@ -30,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.board.domain.comment.Comment;
 import com.board.domain.post.Post;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -83,8 +84,10 @@ public class Member implements Serializable{
 	
 	public void addPost(Post post) {
 		postList.add(post);
+		post.setWriter(this);
 	}
 	
+	@JsonIgnoreProperties({"member", "parentComment"})
 	@OneToMany(mappedBy = "writer")
 	private List<Comment> comments = new ArrayList<>();
 	

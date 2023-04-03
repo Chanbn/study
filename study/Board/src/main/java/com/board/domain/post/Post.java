@@ -34,6 +34,7 @@ import lombok.ToString;
 
 @Table(name = "board")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @ToString
