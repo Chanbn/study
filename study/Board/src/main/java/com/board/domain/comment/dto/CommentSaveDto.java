@@ -19,20 +19,22 @@ public class CommentSaveDto {
 	String username;
 	String content;
 	
-	@Builder
-	public CommentSaveDto(Comment comment) {
-		this.username = comment.getWriter().getUsername();
-		this.content = comment.getContent();
-		this.postId = comment.getPost().getIdx();
-		this.parentId = comment.getParentComment() != null ? comment.getParentComment().getIdx() : null;
-		this.userId = comment.getWriter().getId();
-	}
+//	@Builder
+//	public CommentSaveDto(Comment comment) {
+//		this.username = comment.getWriter().getUsername();
+//		this.content = comment.getContent();
+//		this.postId = comment.getPost().getIdx();
+//		this.parentId = comment.getParentComment() != null ? comment.getParentComment().getIdx() : null;
+//		this.userId = comment.getWriter().getId();
+//	}
 	
-	public Comment toEntity(Member member, Post post) {	
+	public Comment toEntity(Member member, Post post,Comment comment) {	
 		return Comment.builder().
-				content(content).parentComment(parentId != null ? Comment.builder().idx(parentId).build():null).
+				content(content).
+				parentComment(comment).
 				writer(member).
 				post(post).
+				groupNum(parentId==null? null : (comment.getGroupNum() == null ? comment.getIdx() : comment.getGroupNum())).
 				build();
 	}
 }

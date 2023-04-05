@@ -21,7 +21,6 @@ public class CommentGetDto {
 	private Long groupNum;
 	private LocalDateTime createDate;
 	private MemberInfoDto writer;
-	private List<CommentGetDto> childComments;
 	private CommentGetDto parentCommentDto;
 	
 	public CommentGetDto(Comment comment) {
@@ -29,9 +28,7 @@ public class CommentGetDto {
 		this.content = comment.getContent();
 		this.createDate = comment.getCreatedDate();
 		this.writer = new MemberInfoDto(comment.getWriter());
-		this.childComments = comment.getChildComments().stream()
-				.map(childComment -> new CommentGetDto(childComment))
-				.collect(Collectors.toList());
+
 		this.parentCommentDto = comment.getParentComment() !=null? new CommentGetDto(comment.getParentComment()) : null;
 		this.groupNum = comment.getGroupNum();
 	}
@@ -44,14 +41,7 @@ public class CommentGetDto {
 				.parentComment(this.parentCommentDto != null ? this.parentCommentDto.toEntity() : null)
 				.groupNum(groupNum)
 				.build();
-		
-		List<Comment> childComments = this.childComments.stream()
-				.map(commentGetDto -> commentGetDto.toEntity())
-				.collect(Collectors.toList());
-		for(Comment childComment : childComments) {
-			comment.addChildComment(childComment);
-		}
-		
+
 		return comment;
 	}
 }

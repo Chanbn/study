@@ -141,7 +141,7 @@
 </div>
 
 
-  <div id="comment-form">
+  <div id="comment-form" >
     <form id="comment-form" method="post">
       <input type="hidden" id="post-id" value="${post.idx}" />
       <input type="hidden" id="parent-id" value="" />
@@ -265,8 +265,18 @@ $(function () {
 
 	  function makeCommentHtml(comment) {
 		    // 댓글 작성자와 내용을 출력
-		    var html = "<div class='comment-box'>"
-		    html += "<div>" + comment.writer.username + "</div>";
+		    var html;
+		    if(comment.groupNum!=null){
+		    html = "<div class='comment-box comment-reply'>";
+		    }else{
+		    html = "<div class='comment-box'>";
+		    }
+		    html += "<div>"; 
+		    html += "<span>" + comment.writer.username + "<span>"; 
+		    html += "<span class='comment-date'>"; 
+		    html += "<time datetime='" + comment.createDate + "'>" + new Date(comment.createDate).toLocaleString() + "</time>";  
+		    html += "<span>";
+		    html += "</div>";
 		    html += "<span>" + comment.content + "</span>"
 		    html += "<button type='button' class='comment-button reply_add' data-no='"+ comment.idx +"'>작성</button>";
 		    html += "<div class='comment-form' data-parent-id='"+ comment.idx +"' style='display:none;'>";
@@ -276,14 +286,6 @@ $(function () {
 		    html += "</div>";
 		    html += "<button id='comment-submit' data-no='"+comment.idx+"' type='submit' class='btn btn-primary'>등록</button>";
 		    html += "</form></div>";
-		    // 댓글의 댓글이 있으면 재귀적으로 호출하여 출력
-		    if (comment.childComments && comment.childComments.length > 0) {
-		        html += "<ul>";
-		        $.each(comment.childComments, function(index, childComment) {
-		            html += "<li>" + makeCommentHtml(childComment) + "</li>";
-		        });
-		        html += "</ul>";
-		    }
 		    html += "</div>";
 		    return html;
 		}

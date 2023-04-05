@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.board.domain.comment.Comment;
 import com.board.domain.post.Post;
@@ -12,4 +13,7 @@ import com.board.domain.post.Post;
 public interface CommentRepository extends JpaRepository<Comment, Long>{
 	
 	public List<Comment> findByPost(Post post);
+	
+	@Query(value = "SELECT * FROM board_comment WHERE post_id = :postId  START WITH group_num IS NULL CONNECT BY PRIOR idx=group_num ORDER SIBLINGS BY created_date ASC", nativeQuery = true)
+	List<Comment> findTopLevelCommentsOrderByCreatedAtDesc(@Param("postId") Long postId);
 }

@@ -25,6 +25,14 @@ padding: 10px;
 background-color: #f9f9f9;
 }
 
+.comment-reply {
+  margin-left: 50px; /* 대댓글 여백 */
+}
+
+.comment-date {
+	float: right;
+}
+
 .child-comment-writer {
 font-weight: bold;
 }
@@ -32,3 +40,4 @@ font-weight: bold;
 .child-comment-button {
 margin-left: 10px;
 }
+

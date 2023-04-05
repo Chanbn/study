@@ -20,6 +20,7 @@ import com.board.domain.comment.dto.CommentSaveDto;
 import com.board.domain.member.Member;
 import com.board.domain.member.Role;
 import com.board.domain.post.Post;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -57,44 +58,31 @@ public class Comment extends BaseTimeEntity {
 	@JoinColumn(name = "post_id")
 	private Post post;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id")
 	private Comment parentComment;
-	
-	@OneToMany(mappedBy = "parentComment")
-	@OrderBy("createdDate ASC")
-	private List<Comment> childComments = new ArrayList<>();
+
 	
 	@Builder 
-	public Comment(String content,Member writer, Post post, Comment parentComment) {
+	public Comment(String content,Member writer, Post post, Comment parentComment, Long groupNum) {
 		this.content = content;
 		this.writer = writer;
 		this.post = post;
 		this.parentComment = parentComment;
+		if(groupNum == null) {
+			log.info("groupNum=null -> this.idx ='"+this.idx+"'");
+			this.groupNum = this.idx;
+		}else {
+			this.groupNum = groupNum;			
+		}
 	}
 	
 	
 	public void setParentComment(Comment parentComment) {
 		this.parentComment = parentComment;
+		this.groupNum = parentComment.getGroupNum() == null ? this.idx : parentComment.getGroupNum();
 	}
 	
-	public void addChildComment(Comment childComment) {
-		
-		if(childComment.getParentComment() == null) {
-			childComment.setGroupNum(childComment.getIdx());
-			log.info("getParentComment()==null : groupNum->", childComment.getGroupNum());
-		}else {
-			if(childComment.getParentComment().getGroupNum()==null) {
-				childComment.setGroupNum(childComment.getParentComment().getIdx());
-			}else {
-				childComment.setGroupNum(childComment.getParentComment().getGroupNum());				
-			}
-			log.info("getParentComment()!=null : groupNum ->", childComment.getGroupNum());
-		}
-		
-		this.childComments.add(childComment);
-		childComment.setParentComment(this); 
-	}
 	
 	public void setMember(Member writer) {
 		this.writer= writer;
