@@ -76,6 +76,23 @@ Next</a>
 
 </body>
 <script th:inline="javascript">
+var jwtToken = response.headers.get('Authorization');
+alert(jwtToken);
+
+$.ajax({
+	  url: '/api/data',
+	  type: 'GET',
+	  headers: { 'Authorization': 'Bearer ' + jwtToken },
+	  success: function(data) {
+	    console.log('Success:', data);
+	  },
+	  error: function(xhr, status, error) {
+	    console.log('Error:', error);
+	  }
+	});
+
+
+
     var msg = /*[[${msg}]]*/;
     
     if(msg === '삭제되었습니다.') {

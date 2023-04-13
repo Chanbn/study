@@ -3,6 +3,7 @@ package com.board.domain.comment;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,8 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import com.board.domain.BaseTimeEntity;
 import com.board.domain.comment.dto.CommentSaveDto;
@@ -48,7 +53,8 @@ public class Comment extends BaseTimeEntity {
 
 	private String content;
 	
-	private Long groupNum;
+	@Column(name = "delete_yn")
+	private String delete_yn;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
@@ -64,23 +70,22 @@ public class Comment extends BaseTimeEntity {
 
 	
 	@Builder 
-	public Comment(String content,Member writer, Post post, Comment parentComment, Long groupNum) {
+	public Comment(String content,Member writer, Post post, Comment parentComment) {
 		this.content = content;
 		this.writer = writer;
 		this.post = post;
 		this.parentComment = parentComment;
-		if(groupNum == null) {
-			log.info("groupNum=null -> this.idx ='"+this.idx+"'");
-			this.groupNum = this.idx;
-		}else {
-			this.groupNum = groupNum;			
-		}
 	}
 	
+	@PrePersist
+	public void prePersist() {
+	    if (delete_yn == null) {
+	        delete_yn = "N";
+	    }
+	}
 	
 	public void setParentComment(Comment parentComment) {
 		this.parentComment = parentComment;
-		this.groupNum = parentComment.getGroupNum() == null ? this.idx : parentComment.getGroupNum();
 	}
 	
 	

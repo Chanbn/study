@@ -13,12 +13,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CommentSaveDto {
-	Long postId;
-	Long parentId;
-	Long userId;
-	String username;
-	String content;
-	
+	private Long postId;
+	private Long parentId;
+	private Long userId;
+	private String username;
+	private String content;
 //	@Builder
 //	public CommentSaveDto(Comment comment) {
 //		this.username = comment.getWriter().getUsername();
@@ -34,7 +33,6 @@ public class CommentSaveDto {
 				parentComment(comment).
 				writer(member).
 				post(post).
-				groupNum(parentId==null? null : (comment.getGroupNum() == null ? comment.getIdx() : comment.getGroupNum())).
 				build();
 	}
 }

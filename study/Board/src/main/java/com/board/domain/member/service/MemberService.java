@@ -7,4 +7,5 @@ public interface MemberService {
 	void signup(MemberSignUpDto memberSignUpDto);
 	int existCheck(String word,int type);
 	MemberInfoDto currentMember(String username);
+	
 }

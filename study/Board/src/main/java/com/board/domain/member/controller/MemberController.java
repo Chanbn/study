@@ -1,37 +1,41 @@
 package com.board.domain.member.controller;
 
-import javax.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.board.domain.member.Member;
 import com.board.domain.member.dto.MemberInfoDto;
 import com.board.domain.member.dto.MemberSignUpDto;
 import com.board.domain.member.exception.MemberException;
 import com.board.domain.member.service.MemberService;
-import com.board.domain.post.service.PostService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/member/*")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 	private final MemberService memberService;
 	
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	@GetMapping(value = "/login1")
 	public void login() {
-		
+		log.info("get login ---------");
+	}
+	
+	@PostMapping(value = "/login")
+	public void login(@RequestParam("username") String username, @RequestParam("password") String password) {
+		log.info("post login....-------"+username+"'"+password);
 	}
 	
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
@@ -39,8 +43,9 @@ public class MemberController {
 		
 	}
 	
-	@RequestMapping(value = "/signup", method = RequestMethod.POST, consumes="application/json;")
+	@RequestMapping(value = "/signup", method = RequestMethod.POST, consumes="application/json")
 	public ResponseEntity<String> signup2(@RequestBody MemberSignUpDto memberSignUpDto) throws Exception {
+		log.info("member"+memberSignUpDto.getUsername());
 		try {
 			memberService.signup(memberSignUpDto);
 			return ResponseEntity.ok("redirect:/member/login");

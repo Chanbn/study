@@ -18,7 +18,7 @@ public class CommentGetDto {
 
 	private Long idx;
 	private String content;
-	private Long groupNum;
+	private String delete_yn;
 	private LocalDateTime createDate;
 	private MemberInfoDto writer;
 	private CommentGetDto parentCommentDto;
@@ -30,7 +30,6 @@ public class CommentGetDto {
 		this.writer = new MemberInfoDto(comment.getWriter());
 
 		this.parentCommentDto = comment.getParentComment() !=null? new CommentGetDto(comment.getParentComment()) : null;
-		this.groupNum = comment.getGroupNum();
 	}
 	
 	public Comment toEntity() {
@@ -39,7 +38,7 @@ public class CommentGetDto {
 				.writer(this.writer.toEntity())
 				.post(this.parentCommentDto != null ? this.parentCommentDto.toEntity().getPost() : null)
 				.parentComment(this.parentCommentDto != null ? this.parentCommentDto.toEntity() : null)
-				.groupNum(groupNum)
+				.delete_yn(delete_yn)
 				.build();
 
 		return comment;

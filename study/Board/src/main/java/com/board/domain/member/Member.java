@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -75,8 +76,16 @@ public class Member implements Serializable{
 	@Column
 	private String nickname;
 	
-	@Enumerated(EnumType.STRING)
-	private Role role;
+//	@Enumerated(EnumType.STRING)
+//	private Role role;
+	
+	@ElementCollection(fetch = FetchType.EAGER)
+	@Builder.Default
+	private List<String> roles = new ArrayList<>();
+
+	public void addRoles_USER() {
+		roles.add("USER");
+	}
 	
 	@Builder.Default
 	@OneToMany(mappedBy = "writer" ,cascade = CascadeType.ALL,orphanRemoval = true)
@@ -100,8 +109,5 @@ public class Member implements Serializable{
         this.password = passwordEncoder.encode(password);
     }
 
-	public void addUserAuthority() {
-        this.role = Role.USER;
-    }
 	
 }

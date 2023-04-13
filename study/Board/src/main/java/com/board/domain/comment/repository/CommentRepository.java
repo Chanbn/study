@@ -14,6 +14,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	
 	public List<Comment> findByPost(Post post);
 	
-	@Query(value = "SELECT * FROM board_comment WHERE post_id = :postId  START WITH group_num IS NULL CONNECT BY PRIOR idx=group_num ORDER SIBLINGS BY created_date ASC", nativeQuery = true)
+	@Query(value = "SELECT * FROM board_comment WHERE post_id = :postId  START WITH parent_id IS NULL CONNECT BY PRIOR idx=parent_id ORDER BY created_date ASC", nativeQuery = true)
 	List<Comment> findTopLevelCommentsOrderByCreatedAtDesc(@Param("postId") Long postId);
 }

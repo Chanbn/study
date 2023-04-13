@@ -1,5 +1,6 @@
 package com.board.domain.member.service;
 
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -9,28 +10,32 @@ import com.board.domain.member.dto.MemberSignUpDto;
 import com.board.domain.member.exception.MemberException;
 import com.board.domain.member.exception.MemberExceptionType;
 import com.board.domain.member.repository.MemberRepository;
-import com.board.domain.post.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberServiceImpl implements MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
 	@Override
 	public void signup(MemberSignUpDto memberSignUpDto) {
 		// TODO Auto-generated method stub
 		Member member = memberSignUpDto.toEntity();
-		member.addUserAuthority();
+		log.info("here");
+		member.addRoles_USER();
+		log.info("why");
 		member.encodePassword(passwordEncoder);
 
 		if (memberRepository.existsByUsername(member.getUsername())) {
 			throw new MemberException(MemberExceptionType.ALREADY_EXIST_USERNAME);
 		}
 		memberRepository.save(member);
-	}
+	} 
 
 	@Override
 	public int existCheck(String word,int type) {
@@ -58,5 +63,7 @@ public class MemberServiceImpl implements MemberService {
 		MemberInfoDto member = new MemberInfoDto(memberRepository.findByUsername(username).orElseThrow(()-> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER)));
 		return member;
 	}
+
+
 
 }

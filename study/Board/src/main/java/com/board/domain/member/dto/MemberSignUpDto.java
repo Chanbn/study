@@ -10,11 +10,13 @@ import com.board.domain.member.Member;
 import com.board.domain.member.Role;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class MemberSignUpDto {
 
 	@NotBlank(message = "아이디는 필수 입력 값입니다.")

@@ -45,28 +45,30 @@ public class CommentServiceImpl implements CommentService {
 		log.info("save class...'"+"'"); 
 		Comment comment = commentData.toEntity(member, post,parentComment);
 		commentRepository.save(comment);
-		if(comment.getGroupNum()==null) {
-			comment.setGroupNum(comment.getIdx());
-		}
+
 	}
 
 	@Override
 	public List<CommentGetDto> get(Long postId) {
 		// TODO Auto-generated method stub
-		log.info("PostId :"+postId);
-		Post post = postRepository.getById(postId);
-//		List<Comment> comments = commentRepository.findByPost(post);
-
 		List<Comment> comments = commentRepository.findTopLevelCommentsOrderByCreatedAtDesc(postId);
-		
+		 
 		List<CommentGetDto> lists = comments.stream()
+		.peek(comment -> {if (comment.getDelete_yn().equals("Y")) {
+                comment.setContent("삭제된 댓글입니다.");
+            }})
 		.map(comment -> new CommentGetDto(comment))
 		.collect(Collectors.toList()); 
-		for(CommentGetDto idx : lists) {
-			log.info("groupnum :'"+idx.getGroupNum()+"'");
-		}
-		
+
 		return lists;
+	}
+
+	@Override
+	public void delete(Long idx) {
+		// TODO Auto-generated method stub
+		Comment c = commentRepository.findById(idx).orElseThrow();
+		c.setDelete_yn("Y");
+		commentRepository.save(c);		
 	}
 
 }

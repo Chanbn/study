@@ -12,7 +12,7 @@
 <div th:replace="/fragments/header.html :: fragment-header"></div>
   <div th:replace="/fragments/nav.html :: fragment-nav"></div>
 
-<div class="col-lg-6" style="text-align:center">
+<div style="text-align:center">
 <table class="table">
   <thead>
     <tr>
@@ -53,7 +53,7 @@
   </tbody>
 </table>
 </div>
-<div class="col-lg-6">
+<div >
 
 
 <div style="float:left">
@@ -266,20 +266,20 @@ $(function () {
 	  function makeCommentHtml(comment) {
 		    // 댓글 작성자와 내용을 출력
 		    var html;
-		    if(comment.groupNum!=null){
-		    html = "<div class='comment-box comment-reply'>";
+		    if(comment.parentCommentDto!=null){
+		    html = "<div class='comment-box comment-reply '>";
 		    }else{
-		    html = "<div class='comment-box'>";
+		    html = "<div class='comment-box my-button reply_add' data-no='"+comment.idx+"' >";
 		    }
 		    html += "<div>"; 
 		    html += "<span>" + comment.writer.username + "<span>"; 
 		    html += "<span class='comment-date'>"; 
 		    html += "<time datetime='" + comment.createDate + "'>" + new Date(comment.createDate).toLocaleString() + "</time>";  
+		    html += "<button class='delete-button' data-no='"+comment.idx+"'> </button>";
 		    html += "<span>";
 		    html += "</div>";
 		    html += "<span>" + comment.content + "</span>"
-		    html += "<button type='button' class='comment-button reply_add' data-no='"+ comment.idx +"'>작성</button>";
-		    html += "<div class='comment-form' data-parent-id='"+ comment.idx +"' style='display:none;'>";
+			html += "<div class='comment-form' data-parent-id='"+ comment.idx +"' style='display:none;'>";
 		    html += "<form method='post'>";
 		    html += "<div class='form-group'>";
 		    html += "<textarea id='content"+comment.idx+"'class='form-control' name='content' placeholder='댓글을 입력하세요' rows='3'></textarea>";
@@ -302,7 +302,7 @@ $(function () {
 		$(document).on('click', '.reply_add', function(e) {
 		    e.preventDefault();
 		    var no = $(this).attr('data-no');
-		    var form = $(this).siblings('.comment-form');
+		    var form = $(this).find('.comment-form');
 		    if (form.is(':visible')) {
 		        form.hide();
 		    } else {
@@ -312,6 +312,28 @@ $(function () {
 		    }
 		});
 	  
+		$(document).on('click','.delete-button',function(e){
+			e.stopPropagation();
+		    var idx = $(this).attr('data-no');
+		    if (confirm("정말로 삭제하시겠습니까?")) {
+		        // 삭제 처리
+ 			$.ajax({
+				type: "DELETE",
+				url: "/comment/"+idx,
+				data: {
+					commentIdx: idx
+				},
+			      success: function(data) {
+				        // 댓글 목록을 출력하는 함수를 호출하여 데이터를 가공한 뒤 출력
+				        getComments();
+				      },
+				      error: function(request,status,error) {
+				    	  alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				    	  console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				      }
+			}); 
+		    }
+		});
 	  
 	  // 페이지가 로드되면 댓글 목록을 받아와서 출력
 	  getComments();

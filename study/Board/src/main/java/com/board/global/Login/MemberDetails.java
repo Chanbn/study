@@ -1,7 +1,7 @@
 package com.board.global.Login;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,6 +14,10 @@ import lombok.Data;
 @Data
 public class MemberDetails implements UserDetails {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final Member member;
 	
 	public MemberDetails(Member member) {
@@ -24,10 +28,12 @@ public class MemberDetails implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		
-		Collection<GrantedAuthority> collect = new ArrayList<>();
-		collect.add(new SimpleGrantedAuthority(member.getRole().toString()));
-		return collect;
+		return member.getRoles().stream()
+				.map(SimpleGrantedAuthority::new)
+				.collect(Collectors.toList());
+//		Collection<GrantedAuthority> collect = new ArrayList<>();
+//		collect.add(new SimpleGrantedAuthority(member.getRole().toString()));
+//		return collect;
 	}
 
 	@Override
