@@ -10,5 +10,6 @@ import com.board.file.dto.FileDto;
 public interface FileService {
 	List<boardFile> save(MultipartFile[] multipartFile,Long boardIdx);
 	void delete(String filePath);
-	boardFile getFileDetails(Long idx);
+	FileDto getFileDetails(Long idx);
+	List<FileDto> getFileList(Long idx);
 }

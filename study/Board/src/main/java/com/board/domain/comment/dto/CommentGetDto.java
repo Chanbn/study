@@ -28,7 +28,7 @@ public class CommentGetDto {
 		this.content = comment.getContent();
 		this.createDate = comment.getCreatedDate();
 		this.writer = new MemberInfoDto(comment.getWriter());
-
+		this.delete_yn = comment.getDelete_yn();
 		this.parentCommentDto = comment.getParentComment() !=null? new CommentGetDto(comment.getParentComment()) : null;
 	}
 	

@@ -7,13 +7,13 @@
 <title>Insert title here</title>
 </head>
 <body>
-        <div sec:authorize="isAuthenticated()">
+<!--         <div sec:authorize="isAuthenticated()">
         <span th:text="${session.user.username}">    </span> 
-    <span sec:authentication="name"></span>님이 로그인 상태 
-    </div>
+    <span sec:authentication="name"></span>님이 로그인 상태  
+    </div>-->
   <div th:replace="/fragments/nav.html :: fragment-nav"></div>
 <div class="col-lg-6" style="text-align:center">
-<form role="form" th:object=${vo} enctype="multipart/form-data" >
+<form role="form" th:object=${post} enctype="multipart/form-data" >
 <!-- th:action="@{/board/write}" method="post" enctype="multipart/form-data" -->
     <input type="hidden" 
            th:name="${_csrf.parameterName}" 
@@ -35,8 +35,7 @@
   <div style="text-align:right">
   <span>작성자</span>&nbsp; 
 <!--   <input th:value="${#authentication.name}" th:name="*{writer}"> -->
-  <input th:field="*{writer}" id="writer" readonly="readonly">&nbsp;&nbsp; 
-  <input th:field="*{username}" id="username" readonly="readonly" hidden="true">
+  <input th:field="*{writer}" id="nickname" readonly="readonly">&nbsp;&nbsp; 
   </div>
   </td>
   </tr>
@@ -51,7 +50,7 @@
 </table>
 
 <div th:if="${#lists.isEmpty(fileList)}" data-name="fileDiv">
-<label for="file_0" class="col-sm-2 control-label">파일1</label>
+<label for="file_0" class="col-sm-2 control-label">파일!</label>
 	<div class="col-sm-10" id="imgfileList0">
 	<input type="text"  class="upload-name" value="파일찾기" id="filename0" readonly/>
 	<label for="file_0" class="control-label">찾아보기</label>
@@ -109,9 +108,15 @@
 	/*<![CDATA[*/
 	const fileList = /*[[ ${fileList} ]]*/; 
 	/*]]>*/
+	
+	
+
+	
 	let fileIdx = fileList.length; 
 	let fileArry = [];
 
+	
+	
 	function addFile(){
 		const fileDivs = $('div[data-name="fileDiv"]');
 		if (fileDivs.length > 2) {
@@ -124,11 +129,11 @@
 		fileArry[fileIdx] = false;
 		const fileHtml = `
 			<div data-name="fileDiv"> 
-			<label for="file_${fileIdx}" class="col-sm-2 control-label">파일1</label>
+			<label for="file_${fileIdx}" class="col-sm-2 control-label">파일${fileList.length+1}</label>
 				<div class="col-sm-10" id="imgfileList${fileIdx}">
 				<input type="text" class="upload-name" value="파일찾기" id="filename${fileIdx}" readonly/>
 				<label for="file_${fileIdx}" class="control-label">찾아보기</label>
-			<input type="hidden" id="${fileIdx}"}>
+			<input type="hidden" id="${fileIdx}">
 				<input type="file" name="files" id="file_${fileIdx}"  style="display:none;" onchange="changeFilename(this)"> 
 				<button type="button" onclick="removeFile(this)">-
 				<i class="fa fa-minus" aria-hidden="true"></i>
@@ -178,7 +183,6 @@
 		const title = document.getElementById("title").value;
 		const writer = document.getElementById("writer").value;
 		const content = document.getElementById("content").value;
-		const username = document.getElementById("username").value;
 		const fileDivs = $('div[data-name="fileDiv"]');
 		const sendingData = new FormData();
 		const files=[];
@@ -186,7 +190,6 @@
 		sendingData.append('title',title);
 		sendingData.append('writer',writer);
 		sendingData.append('content',content);
-		sendingData.append('username',username)
 		alert($('#file_0').val()+"!!!!");
 		for(let i=0;i<fileArry.length;i++){
 			if(fileArry[i]===false){

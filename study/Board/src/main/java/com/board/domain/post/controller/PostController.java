@@ -30,10 +30,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,6 +67,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/board/*")
+@Slf4j
 public class PostController {
 	
 	private final PostService postService;
@@ -75,7 +78,7 @@ public class PostController {
 	@GetMapping(value = { "/list", "/myList" })
 	public void getList(Model model, @PageableDefault(page = 0, size=10, direction = Sort.Direction.DESC)Pageable pageable,@RequestParam(value = "type", defaultValue = "all") String type,@RequestParam(value = "", defaultValue = "") String word) {
 		System.out.println("welcome!!");
-		Page<Post> pageList =postService.SearchPost(type, word, pageable);
+		Page<PostInfoDto> pageList =postService.SearchPost(type, word, pageable);
 		lastPage.recentPageSet(pageable.getPageNumber());
 
 		int startpage = 1;
@@ -122,14 +125,14 @@ public class PostController {
 	@GetMapping("/get")
 	public void getPost(Model model, @RequestParam("idx") long idx) {
 		PostInfoDto post = postService.getPost(idx);
+		List<FileDto> fileList = fileService.getFileList(idx);
 		model.addAttribute("post", post);
-		System.out.println(		"파일갯수"+post.getFileList().size());
-
+		model.addAttribute("fileList",fileList);
 	}
 	
 	@GetMapping(value = "/download")
 	public void downloadAttachFile(@RequestParam("idx") Long idx,Model model,HttpServletResponse response) {
-		boardFile fileInfo = fileService.getFileDetails(idx);
+		FileDto fileInfo = fileService.getFileDetails(idx);
 		String uploadDate = fileInfo.getCreatedDate().format(DateTimeFormatter.ofPattern("yyMMdd"));
 		String uploadPath = Paths.get("D:","SpringBootProject","upload",uploadDate).toString();
 		String filename = fileInfo.getOriginalName();
@@ -151,4 +154,22 @@ public class PostController {
 		}
 	}
 	
+	@ResponseBody
+	@DeleteMapping(value="/{boardIdx}")
+	public ResponseEntity<String> deletePost(@RequestParam("boardIdx") Long boardIdx) {
+		log.info("boardIdx :'"+boardIdx+"'");
+		postService.deletePost(boardIdx);
+		return ResponseEntity.status(HttpStatus.OK).body("삭제가 완료되었습니다.");		
+	}
+	
+	@PostMapping(value = "/edit")
+	public void editPost(Model model, @RequestParam("boardIdx") Long boardIdx) {
+		log.info("post idx:'"+boardIdx+"'");
+		PostInfoDto post = postService.getPost(boardIdx);
+		log.info("username :'"+post.getWriter().getUsername()+"'");
+		List<FileDto> fileList = fileService.getFileList(boardIdx);
+		model.addAttribute("post", post);
+		model.addAttribute("fileList",fileList);
+		
+	}
 }

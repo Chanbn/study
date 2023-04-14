@@ -59,7 +59,10 @@ public class CommentServiceImpl implements CommentService {
             }})
 		.map(comment -> new CommentGetDto(comment))
 		.collect(Collectors.toList()); 
-
+		
+		for(CommentGetDto list : lists) {
+			log.info("comment :'"+list.getDelete_yn()+"'");			
+		}
 		return lists;
 	}
 

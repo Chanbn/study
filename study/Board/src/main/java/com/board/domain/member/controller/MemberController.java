@@ -28,14 +28,9 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberController {
 	private final MemberService memberService;
 	
-	@GetMapping(value = "/login1")
+	@GetMapping(value = "/login")
 	public void login() {
 		log.info("get login ---------");
-	}
-	
-	@PostMapping(value = "/login")
-	public void login(@RequestParam("username") String username, @RequestParam("password") String password) {
-		log.info("post login....-------"+username+"'"+password);
 	}
 	
 	@RequestMapping(value = "/signup", method = RequestMethod.GET)
@@ -57,9 +52,8 @@ public class MemberController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/chk", method = RequestMethod.POST)
-	public int NickNameCheck(String word, int type) throws Exception{ 
-		System.out.println(word);
-		System.out.println(type);
+	public int NickNameCheck(@RequestParam("word") String word, @RequestParam("type") int type) throws Exception{ 
+		log.info("type :'"+type+"  word:'"+word+"'");
 		if(word=="") {
 			return -1;
 		}

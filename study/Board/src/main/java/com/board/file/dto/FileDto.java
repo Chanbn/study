@@ -2,6 +2,8 @@ package com.board.file.dto;
 
 import java.time.LocalDateTime;
 
+import com.board.file.boardFile;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +27,16 @@ public class FileDto {
 	private String deleteYn;
 	
 	private LocalDateTime createdDate; 
+	
+	public FileDto(boardFile file) {
+		this.idx = file.getIdx();
+		this.boardIdx = file.getPost().getIdx();
+		this.originalName = file.getOriginalName();
+		this.saveName = file.getSaveName();
+		this.imageSize = file.getImageSize();
+		this.deleteYn = file.getDeleteYn();
+		this.createdDate = file.getCreatedDate();
+	}
+	
+	
 }

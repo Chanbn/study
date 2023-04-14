@@ -1,9 +1,9 @@
 package com.board.domain.post;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,19 +13,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
 
 import com.board.domain.BaseTimeEntity;
 import com.board.domain.comment.Comment;
 import com.board.domain.member.Member;
+import com.board.domain.post.dto.PostInfoDto;
 import com.board.file.boardFile;
 
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -60,7 +59,7 @@ public class Post extends BaseTimeEntity {
 	        this.content = content;
 	    }
 	  
-	  @OneToMany(mappedBy = "post")
+	  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
 	  private List<boardFile> fileLists = new ArrayList<>();
 	  
 	  public void addFile(boardFile files)
@@ -69,7 +68,7 @@ public class Post extends BaseTimeEntity {
 		  files.setPost(this);
 	  }
 	  
-	  @OneToMany(mappedBy = "post")
+	  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
 	  private List<Comment> comments = new ArrayList<>();
 	  
 	  public void addComment(Comment comment) {
@@ -90,6 +89,5 @@ public class Post extends BaseTimeEntity {
     	writer.addPost(this);
     }
 
-  
 	 
 }

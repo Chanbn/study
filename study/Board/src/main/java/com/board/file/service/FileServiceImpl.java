@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
@@ -26,9 +28,11 @@ import com.board.file.exception.FileExceptionType;
 import com.board.file.repository.FileRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class FileServiceImpl implements FileService {
 	
 	private final FileRepository fileRepository;
@@ -85,8 +89,19 @@ List<boardFile> attachList = new ArrayList<>();
 	}
 
 	@Override
-	public boardFile getFileDetails(Long idx) {
+	public FileDto getFileDetails(Long idx) {
 		// TODO Auto-generated method stub 
-		return fileRepository.findById(idx).orElseThrow(()->new FileException(FileExceptionType.File_NOT_EXIST));
+		return new FileDto(fileRepository.findById(idx).orElseThrow(()->new FileException(FileExceptionType.File_NOT_EXIST)));
 	}
+
+	@Override
+	public List<FileDto> getFileList(Long idx) {
+		// TODO Auto-generated method stub
+		List<FileDto> list = fileRepository.findByPostIdx(idx).stream()
+											.map(file -> new FileDto(file))
+											.collect(Collectors.toList())
+											;
+		return list;
+	}
+
 }

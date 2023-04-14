@@ -15,8 +15,10 @@ import com.board.file.dto.FileDto;
 
 public interface PostService {
 	Long save(PostSaveDto postSaveDto);
-	List<Post> getPageList(Pageable pageable);
+	List<PostInfoDto> getPageList(Pageable pageable);
 //	Page<Post> findByTitleContaining(String title,Pageable pageable);
-	Page<Post> SearchPost(String type, String word, Pageable pageable);
+	Page<PostInfoDto> SearchPost(String type, String word, Pageable pageable);
 	PostInfoDto getPost(Long idx);
+	
+	void deletePost(Long boardIdx);
 }

@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-
+	<meta name="_csrf" th:content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+	<!-- ... -->
 
 <div th:replace="/fragments/header.html :: fragment-header"></div>
 <script src="//code.jquery.com/jquery.min.js"></script>
@@ -54,6 +57,13 @@
 
 <script th:inline="javascript">
 
+$(function () {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+});
 
 
 $(function(){
@@ -65,7 +75,7 @@ $(function(){
 	});
 	$("#email").blur(function(){
 		checkemail();
-	})
+	});
 });
 
 
@@ -78,16 +88,15 @@ function checkId(){
 		data:data,
 		success:function(data){
 			if(data==0){
-				$("#valid_username").text('사용 가능한 아이디입니다.');
-			}else if(data==-1){
-				alert("아이디를 입력해주세요..")
+				$("#valid_username").css("color", "black").text('사용 가능한 아이디입니다.');
 			}
-			else{
-				$("#valid_username").text('이미 존재하는 아이디입니다.');
+			else if(data==1){
+				$("#valid_username").css("color", "red").text('이미 존재하는 아이디입니다.');
 			}
 		}		,
 		error : function(request,status,error){
 			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 			}
 	});
 }
@@ -102,12 +111,10 @@ function checkNickName(){
 		data:data,
 		success:function(data){
 			if(data==0){
-				$("#valid_nickname").text('사용 가능한 닉네임입니다.');
-			}else if(data==-1){
-				alert("닉네임을 입력해주세요.")
+				$("#valid_nickname").css("color", "black").text('사용 가능한 닉네임입니다.');
 			}
-			else{
-				$("#valid_nickname").text('이미 존재하는 닉네임입니다.');
+			else if(data==1){
+				$("#valid_nickname").css("color", "red").text('이미 존재하는 닉네임입니다.');
 			}
 		}		,
 		error : function(request,status,error){
@@ -126,12 +133,10 @@ function checkemail(){
 		success:function(data){
 			
 			if(data==0){
-				$("#valid_email").text('사용 가능한 이메일입니다.');
-			}else if(data==-1){
-				alert("이메일을 입력해주세요.")
+				$("#valid_email").css("color", "black").text('사용 가능한 이메일입니다.');
 			}
-			else{
-				$("#valid_email").text('이미 가입한 이메일입니다.');
+			else if(data==1){
+				$("#valid_email").css("color", "red").text('이미 가입한 이메일입니다.');
 			}
 		}		,
 		error : function(request,status,error){

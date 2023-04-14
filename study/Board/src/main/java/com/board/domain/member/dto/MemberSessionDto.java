@@ -1,5 +1,7 @@
 package com.board.domain.member.dto;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -7,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.board.domain.member.Member;
 import com.board.domain.member.Role;
 
 import lombok.Builder;
@@ -22,16 +25,16 @@ public class MemberSessionDto {
 	private String name;
 	private String email;
 	private String nickname;
-	private Role role;
+	private List<String> roles;
 	
 	@Builder
-	public MemberSessionDto(Long id, String username, String name, String email,String nickname,Role role)
+	public MemberSessionDto(Member member)
 	{
-		this.id = id;
-		this.username = username;
-		this.name = name;
-		this.email = email;
-		this.nickname = nickname;
-		this.role = role;
+		this.id = member.getId();
+		this.username = member.getUsername();
+		this.name = member.getName();
+		this.email = member.getEmail();
+		this.nickname = member.getNickname();
+		this.roles = member.getRoles();
 	}
 }

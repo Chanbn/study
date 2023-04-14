@@ -35,10 +35,10 @@
   
   <tr>
   <td colspan="3">
-  <div th:if="${not #lists.isEmpty(post.fileList)}" >
+  <div th:if="${not #lists.isEmpty(fileList)}" >
   <label for="input-type-4">File</label>
   <div class="col-sm-10"> 
-  <a th:each="row,status:${post.fileList}" th:href="@{/board/download(idx=${row.idx})}">
+  <a th:each="row,status:${fileList}" th:href="@{/board/download(idx=${row.idx})}">
   <i aria-hidden="true"></i>
   [[${row.originalName}]]
   </a>
@@ -61,23 +61,17 @@
 </div>
 <div style="float:right">
 <div sec:authorize="isAuthenticated()">
-<button type="button" id="deleteBoard" class="btn btn-danger" onclick="delete_button()">삭제</button>
-<button type="button" id="modi" class="btn btn-success" >수정</button>
+<button type="button" id="deletePost" class="btn btn-danger" onclick="delete_button()">삭제</button>
+<form th:action="@{'/board/edit'}" method="POST">
+  <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+  <input type="hidden" name="_csrf_header" th:value="${_csrf.headerName}">
+<input type="hidden" name="boardIdx" th:value="${post.idx}">
+<button type="submit" id="editPost" class="btn btn-success" >수정</button>
+</form>
 </div>
 </div>
 </div>
 
-<!-- 			<form id="operForm" role="form" th:object="${cri}" method="get" >
-                         
-                  <input th:field="*{pageNum}" type="hidden" class="form-control" th:value="${cri.pageNum}">
-                  <input th:field="*{amount}" type="hidden" class="form-control" th:value="${cri.amount}">
-
-            </form>
-            
-            <form id="operForm2" role="form" th:object="${board}" method="get">
-                  <input th:field="*{idx}" type="hidden" class="form-control" th:value="${board.idx}">            	
-            </form>
-             -->
 
 			<form id="operForm" role="form" method="get">
 			<input id="idx" name="idx" type="hidden" th:value="${post.idx}">
@@ -107,34 +101,6 @@
 			<div class="pannel-footer">
 			</div>
 			
-			
-<!-- 			Comment Section
-<div id="comment-section">
-  <h2>댓글</h2>
-  <div th:if="${#lists.isEmpty(post.comments)}">
-    <p>등록된 댓글이 없습니다.</p>
-  </div>
-  <div th:unless="${#lists.isEmpty(post.comments)}">
-    <div th:each="comment : ${post.comments}" class="comment-box">
-      <div th:text="${comment.writer.username}"></div>
-      <div>
-      <span th:text="${comment.content}"></span>				
-      <button th:id="${comment.idx}" class="comment-button">작성</button>      
-      </div>
-
-  댓글의 댓글 목록 
-      <ul>
-        <li th:each="childComment : ${comment.childComments}" class="comment-box">
-            <div th:text="${comment.writer.username}"></div>
-            <div th:text="${comment.content}"></div>
-	      <button th:id="${comment.idx}" class="comment-button">작성</button>   
-        </li>
-      </ul>
-      <div id="re-comment-form">
-      
-      </div>
-    </div>
-  </div> -->
 
 <div id ="commentList">
 
@@ -275,7 +241,8 @@ $(function () {
 		    html += "<span>" + comment.writer.username + "<span>"; 
 		    html += "<span class='comment-date'>"; 
 		    html += "<time datetime='" + comment.createDate + "'>" + new Date(comment.createDate).toLocaleString() + "</time>";  
-		    html += "<button class='delete-button' data-no='"+comment.idx+"'> </button>";
+		    if(comment.delete_yn=='N' && loginUserName == comment.writer.username){
+		    html += "<button class='delete-button' data-no='"+comment.idx+"'> </button>";}
 		    html += "<span>";
 		    html += "</div>";
 		    html += "<span>" + comment.content + "</span>"
@@ -304,7 +271,7 @@ $(function () {
 		    var no = $(this).attr('data-no');
 		    var form = $(this).find('.comment-form');
 		    if (form.is(':visible')) {
-		        form.hide();
+		        /* form.hide(); */
 		    } else {
 		        $('.comment-form').hide();
 		        form.show();
@@ -325,6 +292,7 @@ $(function () {
 				},
 			      success: function(data) {
 				        // 댓글 목록을 출력하는 함수를 호출하여 데이터를 가공한 뒤 출력
+				        alert("댓글을 삭제하였습니다.");
 				        getComments();
 				      },
 				      error: function(request,status,error) {
@@ -338,6 +306,27 @@ $(function () {
 	  // 페이지가 로드되면 댓글 목록을 받아와서 출력
 	  getComments();
 	});
+
+	function delete_button(){
+		var boardIdx = parseInt([[${post.idx}]]);
+	$.ajax({
+		method: "DELETE",
+		url: "/board/"+boardIdx,
+		data: {
+			boardIdx : boardIdx
+		},
+		success: function(data){
+			alert(data);
+			window.location.replace("http://14.47.220.34:8081/board/list");
+		},
+		error: function(request,status,error) {
+	    	  alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	    	  console.log("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+	      }
+	});	
+}
+	
+	
 
 
 

@@ -34,12 +34,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		.loginPage("/member/login")
 		.loginProcessingUrl("/member/loginProc") // 추가
 		.usernameParameter("username")
-		.passwordParameter("pw")
+		.passwordParameter("password")
 		.defaultSuccessUrl("/board/list")
 		.failureForwardUrl("/board/list") 
 		.and()
 		.logout()
-		.logoutUrl("/logout")
+		.logoutUrl("/view/logoutProc")
 		.logoutSuccessUrl("/board/list")
 		.and().csrf();
 	}
