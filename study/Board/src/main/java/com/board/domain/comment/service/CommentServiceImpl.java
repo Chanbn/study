@@ -3,12 +3,15 @@ package com.board.domain.comment.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.events.Event.ID;
 
 import com.board.domain.comment.Comment;
 import com.board.domain.comment.dto.CommentGetDto;
+import com.board.domain.comment.dto.CommentInfoDto;
 import com.board.domain.comment.dto.CommentSaveDto;
 import com.board.domain.comment.repository.CommentRepository;
 import com.board.domain.member.Member;
@@ -72,6 +75,13 @@ public class CommentServiceImpl implements CommentService {
 		Comment c = commentRepository.findById(idx).orElseThrow();
 		c.setDelete_yn("Y");
 		commentRepository.save(c);		
+	}
+
+	@Override
+	public Page<CommentInfoDto> getCommentList(String username, Pageable pageable) {
+		// TODO Auto-generated method stub
+		Member writer = memberRepository.findByUsername(username).orElseThrow();
+		return 	commentRepository.findByWriterUsername(writer.getUsername(), pageable);
 	}
 
 }

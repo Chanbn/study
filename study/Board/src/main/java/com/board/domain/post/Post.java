@@ -88,6 +88,10 @@ public class Post extends BaseTimeEntity {
     	this.writer = writer;
     	writer.addPost(this);
     }
+    
+    public void setWriter(Member writer) {
+    	this.writer = writer;
+    }
 
 	 
 }

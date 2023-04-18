@@ -6,7 +6,6 @@
   <div class="bg-dark p-4">
     <div class="btn-group" role="group" aria-label="Basic outlined example">
   <button type="button" class="btn btn-outline-primary" onclick="location.href='/board/list'">board</button>
-  <button type="button" class="btn btn-outline-primary" onclick="location.href='/myPage/home'">myPage</button>
 </div>
   </div>
 </div>    	
@@ -26,11 +25,19 @@
         <button sec:authorize="isAnonymous()" onclick="location.href='/member/signup'" type="submit">회원가입</button>
         <!-- <button sec:authorize="isAnonymous()" onclick="location.href='/oauth2/authorization/google'" type="submit">SocialLogin</button> -->
     </div>
+<div style="float: right;">
+    <div style="float: left;">
+        <a href="/member/info" sec:authorize="isAuthenticated()">
+            <img src="/images/스프링프로필.png" onClick="" alt="프로필 이미지" width="50" height="50">
+        </a>
+    </div>
+    <div style="float: left;">
         <form th:action="@{/view/logoutProc}" method="post" sec:authorize="isAuthenticated()">
-        <!--  <input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }"> -->
-        <button sec:authorize="isAuthenticated()" type="submit">Logout</button>
+            <!--  <input type="hidden" name="${ _csrf.parameterName }" value="${ _csrf.token }"> -->
+            <button sec:authorize="isAuthenticated()" type="submit">Logout</button>
         </form>
     </div>
+</div>
   
 </nav>
 </div>

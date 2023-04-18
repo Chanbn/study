@@ -19,6 +19,8 @@ public interface PostService {
 //	Page<Post> findByTitleContaining(String title,Pageable pageable);
 	Page<PostInfoDto> SearchPost(String type, String word, Pageable pageable);
 	PostInfoDto getPost(Long idx);
+	Page<PostInfoDto> getPostList(String username,Pageable pageable);
+	
 	
 	void deletePost(Long boardIdx);
 }

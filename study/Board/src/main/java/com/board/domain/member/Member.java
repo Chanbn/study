@@ -108,6 +108,15 @@ public class Member implements Serializable{
 	public void encodePassword(PasswordEncoder passwordEncoder){
         this.password = passwordEncoder.encode(password);
     }
+	
+	public void updateMember(String nickname, String password) {
+		this.nickname = nickname;
+		this.password=password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	
 }

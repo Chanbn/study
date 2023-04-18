@@ -57,7 +57,7 @@
 
 
 <div style="float:left">
-<a th:href="@{'/board/list?pageNum=0'}" type="button" class="btn btn-secondary">목록</a>
+<button type="button" onclick="goBack()" class="btn btn-secondary">목록</button>
 </div>
 <div style="float:right">
 <div sec:authorize="isAuthenticated()">
@@ -327,7 +327,9 @@ $(function () {
 }
 	
 	
-
+function goBack(){
+	window.history.back();
+}
 
 
 

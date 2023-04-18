@@ -32,19 +32,22 @@ public class CommentController {
 	
 	@PostMapping(value = "/add", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> writeComment(@RequestBody CommentSaveDto comment) {
-		log.info("comment : "+comment.getPostId() + comment.getUserId() + comment.getContent() + "parentNo : "+comment.getParentId());
+		log.info("CommentController - writeComment method--------------------------------------------------");
+		log.info("content :'"+comment.getContent()+"' username :'"+comment.getUsername());
 		commentService.save(comment);
 		return new ResponseEntity<>("success",HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{postId}")
 	public ResponseEntity<List<CommentGetDto>> getComment(@RequestParam("postId") Long postId){
+		log.info("CommentController - getComment method--------------------------------------------------");
 		log.info("postId : "+postId);
 		return ResponseEntity.status(HttpStatus.OK).body(commentService.get(postId));
 	}
 	
 	@DeleteMapping(value = "/{commentIdx}")
 	public ResponseEntity<String> deleteComment(@RequestParam("commentIdx") Long Idx){
+		log.info("CommentController - deleteComment method--------------------------------------------------");
 		commentService.delete(Idx);
 		return ResponseEntity.ok("success");
 	}

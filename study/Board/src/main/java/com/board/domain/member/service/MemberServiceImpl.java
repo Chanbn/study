@@ -1,12 +1,15 @@
 package com.board.domain.member.service;
 
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.board.domain.member.Member;
 import com.board.domain.member.dto.MemberInfoDto;
+import com.board.domain.member.dto.MemberProfileDto;
 import com.board.domain.member.dto.MemberSignUpDto;
+import com.board.domain.member.dto.MemberUpdateDto;
 import com.board.domain.member.exception.MemberException;
 import com.board.domain.member.exception.MemberExceptionType;
 import com.board.domain.member.repository.MemberRepository;
@@ -21,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Override
 	public void signup(MemberSignUpDto memberSignUpDto) {
 		// TODO Auto-generated method stub
@@ -62,6 +65,23 @@ public class MemberServiceImpl implements MemberService {
 		// TODO Auto-generated method stub
 		MemberInfoDto member = new MemberInfoDto(memberRepository.findByUsername(username).orElseThrow(()-> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER)));
 		return member;
+	}
+
+	@Override
+	public MemberProfileDto getProfile(String username) {
+		// TODO Auto-generated method stub
+		MemberProfileDto member = new MemberProfileDto(memberRepository.findByUsername(username).orElseThrow(()->new MemberException(MemberExceptionType.NOT_FOUND_MEMBER)));
+		return member;
+	}
+
+	@Override
+	public void updateProfile(MemberUpdateDto memberUpdateDto) {
+		// TODO Auto-generated method stub
+		Member member = memberRepository.findByUsername(memberUpdateDto.getUsername()).orElseThrow(()->new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+		String encodePassword = bCryptPasswordEncoder.encode(memberUpdateDto.getPassword());
+		member.updateMember(memberUpdateDto.getNickname(), encodePassword);
+		memberRepository.save(member);
+
 	}
 
 

@@ -27,13 +27,16 @@ import com.board.domain.member.dto.MemberInfoDto;
 import com.board.domain.member.exception.MemberException;
 import com.board.domain.member.exception.MemberExceptionType;
 import com.board.domain.member.repository.MemberRepository;
+import com.board.domain.member.service.MemberService;
 import com.board.domain.post.Post;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class PostServiceImpl implements PostService {
 	private final PostRepository postRepository;
 	private final MemberRepository memberRepository;
@@ -45,7 +48,7 @@ public Long save(PostSaveDto postSaveDto) {
 	// TODO Auto-generated method stub
 	
 	Post post = postSaveDto.toEntity();
-	Member writer = memberRepository.findByUsername(postSaveDto.getUsername()).orElseThrow(()-> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+	Member writer = memberRepository.findByUsername(postSaveDto.getWriter().getUsername()).orElseThrow(()-> new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
 	post.confirmWriter(writer);
 	
     Post savedPost = postRepository.save(post); // Post 엔티티를 먼저 저장하고 반환받은 Post 엔티티
@@ -71,7 +74,7 @@ public Page<PostInfoDto> SearchPost(String type, String word, Pageable pageable)
 	Page<PostInfoDto> pageList = null;
 	switch (type) {
 	case "W":
-		pageList = postRepository.findByWriterContaining(word, pageable).map(PostInfoDto::new);
+		pageList = postRepository.findByWriterUsernameContaining(word, pageable).map(PostInfoDto::new);
 		break;
 	case "T":
 		pageList = postRepository.findByTitleContaining(word, pageable).map(PostInfoDto::new);
@@ -95,6 +98,12 @@ public PostInfoDto getPost(Long idx) {
 public void deletePost(Long boardIdx) {
 	// TODO Auto-generated method stub
 	postRepository.deleteById(boardIdx);
+}
+@Override
+public Page<PostInfoDto> getPostList(String username,Pageable pageable) {
+	// TODO Auto-generated method stub
+	Member writer = memberRepository.findByUsername(username).orElseThrow(()->new MemberException(MemberExceptionType.NOT_FOUND_MEMBER));
+	return postRepository.findByWriterUsername(writer.getUsername(), pageable);
 }
 
 

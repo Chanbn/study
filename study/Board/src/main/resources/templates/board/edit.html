@@ -35,7 +35,8 @@
   <div style="text-align:right">
   <span>작성자</span>&nbsp; 
 <!--   <input th:value="${#authentication.name}" th:name="*{writer}"> -->
-  <input th:field="*{writer}" id="nickname" readonly="readonly">&nbsp;&nbsp; 
+  <input th:field="*{writer.nickname}" id="nickname" readonly="readonly">&nbsp;&nbsp; 
+  <input th:field="*{writer}" id="writer" readonly="readonly" hidden="true">
   </div>
   </td>
   </tr>
@@ -181,14 +182,12 @@
 	function submit_button(){
 		
 		const title = document.getElementById("title").value;
-		const writer = document.getElementById("writer").value;
 		const content = document.getElementById("content").value;
 		const fileDivs = $('div[data-name="fileDiv"]');
 		const sendingData = new FormData();
 		const files=[];
 		
 		sendingData.append('title',title);
-		sendingData.append('writer',writer);
 		sendingData.append('content',content);
 		alert($('#file_0').val()+"!!!!");
 		for(let i=0;i<fileArry.length;i++){

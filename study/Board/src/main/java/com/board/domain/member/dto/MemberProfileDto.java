@@ -10,18 +10,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MemberInfoDto {
+public class MemberProfileDto {
 	private String username;
+	private String name;
 	private String nickname;
 	private String email;
 	private Long id;
 	
 	@Builder
-	public MemberInfoDto(Member member) {
+	public MemberProfileDto(Member member) {
 		this.username = member.getUsername();
 		this.nickname = member.getNickname();
 		this.email = member.getEmail();
 		this.id = member.getId();
+		this.name = member.getName();
 	}
 	
 	@Builder
@@ -30,6 +32,7 @@ public class MemberInfoDto {
 		this.nickname = member.getNickname();
 		this.email = member.getEmail();
 		this.id = member.getId();
+		this.name = member.getName();
 	}
 	
 	public Member toEntity() {
@@ -38,6 +41,7 @@ public class MemberInfoDto {
 				.username(username)
 				.nickname(nickname)
 				.email(email)
+				.name(name)
 				.build();
 	}
 }

@@ -33,6 +33,7 @@ public class PostInfoDto {
 		this.comments = post.getComments().stream()
 				.map(comment -> new CommentGetDto(comment))
 				.collect(Collectors.toList());
+		this.createdDate = post.getCreatedDate();
 	}
 
 	
